@@ -1,65 +1,263 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from "react"
+import { CheckboxRow, SelectRow, TabSelectRow } from "./ui/input"
+import { GhostButton } from "./ui/button"
+import { antennaData, antennaTypes, kscDSNdata, type AntennaTypes } from "@/constants"
+import { getMaximumRange, getVesselPowerRating, type AntennaPayload, type BodyPayload } from "./logic/antenna"
+import { prettyNum } from "./logic/prettier"
+import { LucideMinus, LucidePlus, LucideX } from "./ui/icons"
+
+const defaultProp = {
+  level: "1",
+  hasCommandModule: false,
+  antennae: {
+    c16: 1,
+    c16s: 0,
+    c88: 0,
+    cdtsm1: 0,
+    chg55: 0,
+    hg5: 0,
+    ra100: 0,
+    ra15: 0,
+    ra2: 0,
+  }
+} as const
 
 export default function Home() {
+  const [ data, setData ] = useState<{
+    0: BodyPayload
+    1: BodyPayload
+  }>({
+    '0': {
+      ...defaultProp,
+      type: "ksc",
+    },
+    '1': {
+      ...defaultProp,
+      type: "ship",
+    },
+  })
+
+  const changeBodyType = (which: 0 | 1, type: "ksc" | "ship") => {
+    data[ which ].type = type
+    setData({ ...data })
+  }
+  const changeData = (which: 0 | 1, input: BodyPayload) => {
+    data[ which ] = input
+    setData({ ...data })
+  }
+  const maximumRange = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ] })
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="p-8 font-mono font-medium flex flex-col gap-4">
+      <h1 className="text-xl tracking-tight text-slate-400 font-semibold">
+        KSP Calculator: Maximum Antenna Range
+      </h1>
+
+      <div className="text-sm flex flex-col gap-1">
+
+        <h2 className="text-lg">
+          Mode
+        </h2>
+        <TabSelectRow
+          items={[
+            { value: "ksc-ship", label: "KSC to Ship" },
+            { value: "ship-ship", label: "Ship to Ship" },
+          ]}
+          value={data[ 0 ].type === "ksc" ? "ksc-ship" : "ship-ship"}
+          onValueChange={(v) => {
+            if (v === "ksc-ship") {
+              changeBodyType(0, "ksc")
+              changeBodyType(1, "ship")
+            } else {
+              changeBodyType(0, "ship")
+              changeBodyType(1, "ship")
+            }
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      </div>
+
+      <hr className="my-2 border-slate-200" />
+
+      <BodyDetailInput which={0} payload={data[ 0 ]} onChange={(n) => changeData(0, n)} />
+      <hr className="my-2 border-slate-200" />
+      <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} />
+      {/* <hr className="mt-2 border-slate-200" /> */}
+      <div className="py-8 bg-background sticky bottom-0 border-t border-slate-200">
+
+        <h2 className="text-lg">
+          Result
+        </h2>
+        <div className="sticky bottom-0">
+          <div className="text-sm text-slate-400">Maximum Antenna Range:</div>
+          <div className="text-2xl font-semibold text-slate-700">
+            {prettyNum(maximumRange, "k", "m")}
+          </div>
+          <div className="">
+            {maximumRange.toLocaleString() + "m"}
+          </div>
+          <div className=" text-sm text-slate-400 mt-2">Singal Strengths</div>
+          <div className="text-sm grid grid-cols-[3rem_auto] gap-x-2">
+            <div className="text-slate-400 text-end">{'≥'}95.5%</div>
+            <div>{prettyNum(maximumRange * 0.0414).toLocaleString() + "m"}</div>
+            <div className="text-slate-400 text-end">~90%</div>
+            <div>{prettyNum(maximumRange * 0.19580).toLocaleString() + "m"}</div>
+            <div className="text-slate-400 text-end">~80%</div>
+            <div>{prettyNum(maximumRange * 0.28714).toLocaleString() + "m"}</div>
+            <div className="text-slate-400 text-end">~70%</div>
+            <div>{prettyNum(maximumRange * 0.36326).toLocaleString() + "m"}</div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      <hr className="mb-2 border-slate-200" />
+
+      <div className="flex flex-col gap-2">
+        <h2 className="text-sm">
+          What is this?
+        </h2>
+        <div className="text-xs max-w-160 text-slate-600">
+          Maximum Antenna Range can be used to determine how high your relay orbit should
+          be if you want to constraint one type of antenna (as opposed to spamming 88-88 in everyship).
         </div>
-      </main>
+        <div className="text-xs max-w-160 text-slate-600">
+          It can also be used to calculate the strength of the rating to calculate how many
+          percent of science can be transmitted from a vessel.
+        </div>
+        <h2 className="text-xs">
+          Sources
+        </h2>
+        <ul className="text-slate-600 text-xs list-inside list-disc">
+          <li className="">https://wiki.kerbalspaceprogram.com/wiki/CommNet</li>
+        </ul>
+      </div>
+
+
+      <hr className="my-2 border-slate-200" />
+      <footer className="text-xs text-slate-500">
+        <div>Created by alfonsusac</div>
+        <div>No AI is used to create this</div>
+      </footer>
+
+
     </div>
-  );
+  )
+}
+
+
+function BodyDetailInput(props: {
+  which: 0 | 1,
+  payload: BodyPayload,
+  onChange: (newpayload: BodyPayload) => void,
+}) {
+
+  const changeKSCLevel = (level: "1" | "2" | "3") => {
+    if (props.payload.type !== "ksc") return
+    props.payload.level = level
+    props.onChange({ ...props.payload })
+  }
+
+  const changeHasCommandModule = (i: boolean) => {
+    if (props.payload.type !== "ship") return
+    props.payload.hasCommandModule = i
+    props.onChange({ ...props.payload })
+  }
+
+  const changeAntennaPayload = (a: AntennaPayload) => {
+    if (props.payload.type !== 'ship') return
+    props.payload.antennae = a
+    props.onChange({ ...props.payload })
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <header>
+        <div className="text-slate-400 text-xs">Body {props.which + 1}</div>
+        <h2 className="text-lg">
+          {props.payload.type === "ksc" ? "KSC" : "Ship"}
+        </h2>
+        <div className="text-slate-400 text-xs">Power Rating: {prettyNum(getVesselPowerRating(props.payload))}</div>
+      </header>
+      {
+        props.payload.type === "ksc" ?
+          <SelectRow
+            label="Tracking Station Upgrade Level"
+            data={[
+              { value: "1", label: "1" },
+              { value: "2", label: "2" },
+              { value: "3", label: "3" },
+            ]}
+            onValueChange={changeKSCLevel}
+            value={props.payload.level}
+          />
+          :
+          <>
+            <CheckboxRow
+              label="Has Command Module?"
+              value={props.payload.hasCommandModule}
+              onValueChange={changeHasCommandModule}
+            />
+            <AntennaInput
+              value={props.payload.antennae}
+              onChange={changeAntennaPayload}
+            />
+          </>
+      }
+    </div>
+  )
+}
+
+
+function AntennaInput(props: {
+  value: AntennaPayload,
+  onChange: (a: AntennaPayload) => void,
+}) {
+
+  const addAntenna = (type: AntennaTypes) => {
+    props.value[ type ] += 1
+    props.onChange({ ...props.value })
+  }
+
+  const removeAntenna = (type: AntennaTypes) => {
+    if (props.value[ type ] < 1) return
+    props.value[ type ] -= 1
+    props.onChange({ ...props.value })
+  }
+
+  const clearAntenna = (type: AntennaTypes) => {
+    props.value[ type ] = 0
+    props.onChange({ ...props.value })
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+      {antennaTypes.map(a => {
+        return (
+          <div key={a} className="border border-slate-200 rounded-md p-2 flex flex-col">
+            <img
+              className="aspect-square object-contain max-w-16"
+              src={antennaData[ a ].image}
+            />
+            <div className="text-xs">
+              {antennaData[ a ].label}
+            </div>
+            <div className="flex grid grid-cols-4 place-items-center">
+              <GhostButton onClick={() => removeAntenna(a)} className="">
+                <LucideMinus />
+              </GhostButton>
+              <div>{props.value[ a ]}</div>
+              <GhostButton onClick={() => addAntenna(a)} className="">
+                <LucidePlus />
+              </GhostButton>
+              <GhostButton onClick={() => clearAntenna(a)} className="">
+                <LucideX />
+              </GhostButton>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+
 }
