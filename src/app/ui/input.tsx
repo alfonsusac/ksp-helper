@@ -42,7 +42,7 @@ export function SelectRow<const T extends SelectPayload>(props: {
   const id = useId()
 
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex gap-4 items-center text-sm">
       <BSelect.Root
         value={props.value}
         items={props.data}
@@ -51,7 +51,7 @@ export function SelectRow<const T extends SelectPayload>(props: {
           props.onValueChange(e)
         }}
       >
-        <BSelect.Label className="text-slate-400 select-none">
+        <BSelect.Label className="text-slate-500 select-none">
           {props.label}
         </BSelect.Label>
         <BSelect.Trigger className={cn(
@@ -113,9 +113,9 @@ export function CheckboxRow(props: {
 }) {
   const id = useId()
   return (
-    <div className="flex gap-4 items-center">
-      <input className="mb-1" type="checkbox" id={id} checked={props.value} onChange={e => props.onValueChange(e.currentTarget.checked)} />
-      <label className="text-slate-500 select-none" htmlFor={id}>
+    <div className="flex gap-4 items-center cursor-pointer">
+      <input className="mb-1 cursor-pointer" type="checkbox" id={id} checked={props.value} onChange={e => props.onValueChange(e.currentTarget.checked)} />
+      <label className="text-slate-500 select-none cursor-pointer" htmlFor={id}>
         {props.label}
       </label>
     </div>
@@ -159,11 +159,12 @@ export default function Slider(props: {
   max: number,
   value: number,
   onValueChange: (n: number) => void,
-  thumbChildren: ReactNode,
+  thumbChildren?: ReactNode,
+  step?: number
 }) {
   return (
-    <BSlider.Root value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange}  >
-      <BSlider.Control className="flex w-56 touch-none items-center py-3 select-none">
+    <BSlider.Root value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge" >
+      <BSlider.Control className="flex w-full touch-none items-center py-3 select-none">
         <BSlider.Track className="h-1 w-full bg-slate-200 select-none rounded-lg">
           <BSlider.Indicator className="bg-slate-400 select-none rounded-lg" />
           <BSlider.Thumb
