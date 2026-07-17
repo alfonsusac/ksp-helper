@@ -53,6 +53,7 @@ export default function Home() {
       dsnModifier: "1"
     }
   })
+  const mode = data[ 0 ].type === "ksc" ? "direct" : "relay"
   const rangeModifier = parseInt(data.settings.rangeModifier) || 1
   const dsnModifier = parseInt(data.settings.dsnModifier) || 1
 
@@ -68,6 +69,7 @@ export default function Home() {
     data.settings[ setting ] = value
     setData({ ...data })
   }
+
 
 
   const maximumRange = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier })
@@ -102,8 +104,18 @@ export default function Home() {
         </h2>
         <TabSelectRow
           items={[
-            { value: "ksc-ship", label: "KSC to Ship" },
-            { value: "ship-ship", label: "Ship to Ship" },
+            {
+              value: "ksc-ship", label: <div className="flex flex-col">
+                <div>KSC to Ship</div>
+                <div className="text-xs text-slate-500">Direct Mode</div>
+              </div>
+            },
+            {
+              value: "ship-ship", label: <div className="flex flex-col">
+                <div>Ship to Ship</div>
+                <div className="text-xs text-slate-500">Relay Mode</div>
+              </div>
+            },
           ]}
           value={data[ 0 ].type === "ksc" ? "ksc-ship" : "ship-ship"}
           onValueChange={(v) => {
@@ -120,9 +132,9 @@ export default function Home() {
 
       <hr className="my-2 border-slate-200" />
 
-      <BodyDetailInput which={0} payload={data[ 0 ]} onChange={(n) => changeData(0, n)} dsnModifier={dsnModifier} />
+      <BodyDetailInput which={0} payload={data[ 0 ]} onChange={(n) => changeData(0, n)} dsnModifier={dsnModifier} mode={mode} />
       <hr className="my-2 border-slate-200" />
-      <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} dsnModifier={dsnModifier} />
+      <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} dsnModifier={dsnModifier} mode={mode} />
 
       <hr className="mt-2 border-slate-200" />
 
@@ -176,14 +188,14 @@ export default function Home() {
             <div className=" text-sm text-slate-400 mb-2">
               Strengths by Distance + Science Bonus
             </div>
-            <DistanceStrengthCalculator maximumRange={maximumRange} mode={data[ 0 ].type} />
+            <DistanceStrengthCalculator maximumRange={maximumRange} mode={mode} />
           </div>
           <div className="self-stretch w-full border-t border-slate-200" />
           <div>
             <div className=" text-sm text-slate-400 mb-2">
               Will it reach?
             </div>
-            <PlanetDistanceTableView maximumRange={maximumRange} mode={data[ 0 ].type} />
+            <PlanetDistanceTableView maximumRange={maximumRange} mode={mode} />
           </div>
         </div>
 
@@ -281,6 +293,7 @@ function BodyDetailInput(props: {
   which: 0 | 1,
   payload: BodyPayload,
   dsnModifier: number,
+  mode: "relay" | "direct",
   onChange: (newpayload: BodyPayload) => void,
 }) {
 
@@ -309,7 +322,7 @@ function BodyDetailInput(props: {
         <h2 className="text-lg">
           {props.payload.type === "ksc" ? "KSC" : "Ship"}
         </h2>
-        <div className="text-slate-400 text-xs">Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier))}</div>
+        <div className="text-slate-400 text-xs">Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier, props.mode))}</div>
       </header>
       {
         props.payload.type === "ksc" ?
@@ -414,7 +427,7 @@ function AntennaInput(props: {
 
 function DistanceStrengthCalculator(props: {
   maximumRange: number,
-  mode: "ship" | "ksc"
+  mode: "relay" | "direct"
 }) {
   const [ distance, setDistance ] = useState(props.maximumRange / 2)
 
@@ -499,7 +512,7 @@ function DistanceStrengthCalculator(props: {
 
 function PlanetDistanceTableView(props: {
   maximumRange: number,
-  mode: "ksc" | "ship"
+  mode: "direct" | "relay"
 }) {
 
   const [ from, setFrom ] = useState<"Kerbin" | string>("Kerbin")
@@ -522,7 +535,7 @@ function PlanetDistanceTableView(props: {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        {props.mode === "ksc" ?
+        {props.mode === "direct" ?
           <>
           </>
           :
@@ -542,7 +555,7 @@ function PlanetDistanceTableView(props: {
           :
           <div className="grid grid-cols-[6rem_auto_auto] text-xs gap-1">
             {
-              props.mode === "ksc" ?
+              props.mode === "direct" ?
                 <div className="pb-2">From KSC to my ship in:</div>
                 :
                 <div className="pb-2">My other ship is in:</div>

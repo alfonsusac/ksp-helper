@@ -6,7 +6,7 @@ import { Slider as BSlider } from '@base-ui/react/slider'
 
 export type SelectPayload = {
   value: string,
-  label: string
+  label: ReactNode
 }[]
 
 export function Select<const T extends SelectPayload>(props: {
@@ -79,7 +79,7 @@ export function SelectRow<const T extends SelectPayload>(props: {
               <BSelect.List className={cn("relative p-0.5 overflow-y-auto max-h-[var(--available-height)]")}>
                 {props.data.map(({ label, value }) => (
                   <BSelect.Item
-                    key={label}
+                    key={value}
                     value={value}
                     className={cn(
                       "cursor-default",
@@ -91,7 +91,6 @@ export function SelectRow<const T extends SelectPayload>(props: {
                     )}
                   >
                     <BSelect.ItemIndicator className="col-start-1">
-                      {/* <CheckIcon /> */}
                       <LucideCheck />
                     </BSelect.ItemIndicator>
                     <BSelect.ItemText className="col-start-2">{label}</BSelect.ItemText>
@@ -136,12 +135,12 @@ export function TabSelectRow<const T extends SelectPayload>(props: {
             onClick={() => props.onValueChange(e.value)}
             className={cn(
               "p-2 rounded-md px-3 w-40 border border-transparent",
-              "grid grid-cols-[1rem_auto] items-center gap-1",
+              "flex items-center gap-2",
               "select-none cursor-pointer",
               selected ? " border-slate-200 bg-background " : "hover:bg-slate-50"
             )}>
             <div className={cn(
-              "text-slate-700 rounded-lg size-4 grid place-items-center p-0.5",
+              "text-slate-700 rounded-lg size-4 grid place-items-center p-0.5 shrink-0",
               selected ? "opacity-100" : "opacity-0"
             )}>
               <LucideCheck className="size-full stroke-3" />
