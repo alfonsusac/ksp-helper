@@ -8,7 +8,9 @@ export function SignalSymbol(props: {
 
   const getSignalBarColor = (bar: 1 | 2 | 3 | 4) => {
     if (props.strength === undefined) return ""
-    if (props.strength < .25) {
+    if (props.strength === 0) {
+    }
+    else if (props.strength < .25) {
       if (bar === 1) return "bg-red-400"
     }
     else if (props.strength < .5) {
@@ -29,10 +31,10 @@ export function SignalSymbol(props: {
   }
   return (
     <div className={cn("grid grid-cols-4 gap-px size-4 items-end", props.className)}>
-      <div className={cn("h-1/4 bg-slate-200", props.barClassname, getSignalBarColor(1))}></div>
-      <div className={cn("h-1/2 bg-slate-200", props.barClassname, getSignalBarColor(2))}></div>
-      <div className={cn("h-3/4 bg-slate-200", props.barClassname, getSignalBarColor(3))}></div>
-      <div className={cn("h-4/4 bg-slate-200", props.barClassname, getSignalBarColor(4))}></div>
+      <div className={cn("h-1/4 bg-slate-500/20", props.barClassname, getSignalBarColor(1))}></div>
+      <div className={cn("h-1/2 bg-slate-500/20", props.barClassname, getSignalBarColor(2))}></div>
+      <div className={cn("h-3/4 bg-slate-500/20", props.barClassname, getSignalBarColor(3))}></div>
+      <div className={cn("h-4/4 bg-slate-500/20", props.barClassname, getSignalBarColor(4))}></div>
     </div>
   )
 }

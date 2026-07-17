@@ -3,15 +3,17 @@
 import { Fragment, useEffect, useState } from "react"
 import Slider, { CheckboxRow, SelectRow, TabSelectRow } from "./ui/input"
 import { GhostButton } from "./ui/button"
-import { antennaData, antennaTypes, planetDistanceMap, type AntennaTypes } from "@/constants"
+import { antennaData, antennaTypes, planetData, stockPlanets, type AntennaTypes } from "@/constants"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, isShipOnlyHaveDirectAntenna, type AntennaPayload, type BodyPayload } from "./lib/antenna"
 import { prettyNum } from "./lib/prettier"
-import { IcBaselineDiscord, LucideArrowUpRight, LucideMinus, LucidePlus, LucideRotateCcw, LucideX, MdiGithub } from "./ui/icons"
+import { IcBaselineDiscord, LucideArrowUpRight, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideX, MdiGithub } from "./ui/icons"
 import { cn } from "./ui/cn"
 import { CitationList } from "./ui/list"
 import { getSignalStrengthDistanceMap } from "./lib/distance"
 import { formatCss, interpolate } from "culori"
 import { SignalSymbol } from "./ui/common"
+import { Menu } from '@base-ui/react/menu'
+
 
 const defaultProp = {
   level: "1",
@@ -181,7 +183,7 @@ export default function Home() {
             <div className=" text-sm text-slate-400 mb-2">
               Will it reach?
             </div>
-            <PlanetDistanceTableView maximumRange={maximumRange} />
+            <PlanetDistanceTableView maximumRange={maximumRange} mode={data[ 0 ].type} />
           </div>
         </div>
 
@@ -435,32 +437,11 @@ function DistanceStrengthCalculator(props: {
     return getScienceBonusfromSignalStrength(str).bonusPercentage
   })
 
-  // const getSignalBarColor = (bar: 1 | 2 | 3 | 4) => {
-  //   if (signalStrength < .25) {
-  //     if (bar === 1) return "bg-red-400"
-  //   }
-  //   else if (signalStrength < .5) {
-  //     if (bar === 1) return "bg-orange-400"
-  //     if (bar === 2) return "bg-orange-400"
-  //   }
-  //   else if (signalStrength < .75) {
-  //     if (bar === 1) return "bg-yellow-400"
-  //     if (bar === 2) return "bg-yellow-400"
-  //     if (bar === 3) return "bg-yellow-400"
-  //   }
-  //   else {
-  //     if (bar === 1) return "bg-green-500"
-  //     if (bar === 2) return "bg-green-500"
-  //     if (bar === 3) return "bg-green-500"
-  //     if (bar === 4) return "bg-green-500"
-  //   }
-  // }
-
   return (
     <div className="flex flex-col gap-4">
 
       <div className="flex text-xs gap-4 items-center">
-        <div className="place-items-end grow max-w-34">Distance: {prettyNum(distance)}</div>
+        <div className="place-items-end min-w-34">Distance: {prettyNum(distance)}</div>
         <div className="border-l border-slate-300 h-6" />
         <div className="flex gap-2 grow max-w-20">
           <SignalSymbol strength={signalStrength} />
@@ -505,11 +486,6 @@ function DistanceStrengthCalculator(props: {
             max={props.maximumRange}
             value={distance}
             onValueChange={(e) => setDistance(e)}
-            thumbChildren={
-              <>
-
-              </>
-            }
           />
         </div>
 
@@ -523,9 +499,10 @@ function DistanceStrengthCalculator(props: {
 
 function PlanetDistanceTableView(props: {
   maximumRange: number,
+  mode: "ksc" | "ship"
 }) {
 
-  const [ from, setFrom ] = useState<"Kerbin">("Kerbin")
+  const [ from, setFrom ] = useState<"Kerbin" | string>("Kerbin")
 
   const result = getSignalStrengthDistanceMap(from, props.maximumRange)
 
@@ -545,14 +522,17 @@ function PlanetDistanceTableView(props: {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <SelectRow
-          label="I am in"
-          data={[
-            { value: "Kerbin", label: "Kerbin" },
-          ]}
-          onValueChange={setFrom}
-          value={from}
-        />
+        {props.mode === "ksc" ?
+          <>
+          </>
+          :
+          <>
+            <PlanetSelectMenu
+              value={from}
+              onValueChange={setFrom}
+            />
+          </>
+        }
       </div>
       {
         result === null ?
@@ -560,27 +540,99 @@ function PlanetDistanceTableView(props: {
             No data for this planet
           </div>
           :
-          <div className="grid grid-cols-[4rem_auto_auto] text-xs gap-1">
-            <div />
-            <div className="place-self-center text-slate-600 text-pretty max-w-34 text-center">Strength at Closest Distance</div>
-            <div className="place-self-center text-slate-600 text-pretty max-w-34 text-center">Strength at Fruthest Distance</div>
+          <div className="grid grid-cols-[6rem_auto_auto] text-xs gap-1">
+            {
+              props.mode === "ksc" ?
+                <div className="pb-2">From KSC to my ship in:</div>
+                :
+                <div className="pb-2">My other ship is in:</div>
+            }
+            <div className="pb-2 place-self-center text-slate-600 text-pretty max-w-34 text-center">Strength at Closest Distance</div>
+            <div className="pb-2 place-self-center text-slate-600 text-pretty max-w-34 text-center">Strength at Fruthest Distance</div>
             {result.map((row, i) => {
               return <Fragment key={i}>
                 <div className="h-6">{row.label}</div>
-                <div className="h-6 p-1 grid place-items-center bg-slate-100 w-full rounded-md"
+                <div className="h-6 p-1 bg-slate-100 w-full rounded-md flex gap-2 items-center justify-center"
                   style={{
                     background: row.minStrength !== null ? getStrengthColor(row.minStrength) : undefined
                   }}
-                >{row.minStrength === null ? <></> : Math.round(row.minStrength * 100) + "%"}</div>
-                <div className="h-6 p-1 grid place-items-center bg-slate-100 w-full rounded-md"
+                >
+                  <SignalSymbol strength={row.minStrength ?? undefined} />
+                  {row.minStrength === null ? <></> : Math.round(row.minStrength * 100) + "%"}
+                </div>
+                <div className="h-6 p-1 bg-slate-100 w-full rounded-md flex gap-2 items-center justify-center"
                   style={{
                     background: row.maxStrength !== null ? getStrengthColor(row.maxStrength) : undefined
                   }}
-                >{row.maxStrength === null ? <></> : Math.round(row.maxStrength * 100) + "%"}</div>
+                >
+                  <SignalSymbol strength={row.maxStrength ?? undefined} />
+                  {row.maxStrength === null ? <></> : Math.round(row.maxStrength * 100) + "%"}
+                </div>
               </Fragment>
             })}
           </ div>
       }
     </div>
+  )
+}
+
+
+function PlanetSelectMenu(props: {
+  value: string,
+  onValueChange: (planet: string) => void,
+}) {
+  return (
+    <Menu.Root>
+      <div className="text-sm flex gap-2 items-center text-slate-500">
+        I am in
+        <Menu.Trigger className={cn(
+          "border border-slate-200 p-1 px-3 text-sm text-slate-700 rounded-md",
+          "hover:bg-slate-100/75 active:bg-slate-100",
+          "flex items-center text-start",
+          "w-32 cursor-pointer"
+        )}>
+          <div className="grow">
+            {props.value}
+          </div>
+          <div><LucideChevronDown /></div>
+        </Menu.Trigger>
+      </div>
+      <Menu.Portal>
+        <Menu.Backdrop />
+        <Menu.Positioner side="top" sideOffset={4}>
+          <Menu.Popup className={cn(
+            "bg-background p-2 rounded-lg border border-slate-200",
+            "grid grid-cols-3 gap-px",
+            "shadow-md shadow-slate-100",
+            "transition-all duration-75",
+            "data-starting-style:opacity-0",
+            "data-ending-style:opacity-0",
+          )}>
+            {Object.entries(planetData).map(([ name, data ]) => {
+              return <Menu.Item key={name}
+                onClick={() => props.onValueChange(name)}
+                className={cn(
+                  "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",
+                  "cursor-pointer",
+                  "flex gap-2 items-center"
+                )}
+              >
+                <div className="size-10 rounded-full shrink-0">
+                  {data.image === undefined ? <>
+                    <div className="bg-slate-300 size-full rounded-full shadow-[inset_0.25rem_0_10px_#0045]"></div>
+                  </> : <>
+                    <img src={data.image} />
+                  </>}
+                </div>
+                <div className="flex flex-col">
+                  <div>{name}</div>
+                  <div className="capitalize text-[0.8em] text-slate-400">{data.package}</div>
+                </div>
+              </Menu.Item>
+            })}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
   )
 }

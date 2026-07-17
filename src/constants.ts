@@ -158,8 +158,10 @@ type DistanceRange = {
 }
 
 // thanks chatgpt
-export const planetoidDistancesRawinKM = {
+export const planetData = {
   Moho: {
+    package: "stock",
+    image: "https://wiki.kerbalspaceprogram.com/images/thumb/3/31/TinyMoho.png/100px-TinyMoho.png",
     to: {
       Eve: { min: 3_546_908_249, max: 16_117_620_965 },
       Kerbin: { min: 7_289_385_437, max: 19_913_538_689 },
@@ -175,6 +177,8 @@ export const planetoidDistancesRawinKM = {
   },
 
   Eve: {
+    package: "stock",
+    image: "https://wiki.kerbalspaceprogram.com/images/thumb/0/03/TinyEve.png/100px-TinyEve.png",
     to: {
       Kerbin: { min: 3_668_828_971, max: 23_530_851_543 },
       Duna: { min: 9_792_173_567, max: 31_665_478_335 },
@@ -189,6 +193,8 @@ export const planetoidDistancesRawinKM = {
   },
 
   Kerbin: {
+    package: "stock",
+    image: "https://wiki.kerbalspaceprogram.com/images/thumb/5/5d/TinyKerbin.png/100px-TinyKerbin.png",
     to: {
       Duna: { min: 6_069_283_350, max: 35_383_028_257 },
       Dres: { min: 21_402_401_940, max: 60_320_789_167 },
@@ -202,6 +208,8 @@ export const planetoidDistancesRawinKM = {
   },
 
   Duna: {
+    package: "stock",
+    image: "https://wiki.kerbalspaceprogram.com/images/thumb/1/17/TinyDuna.png/100px-TinyDuna.png",
     to: {
       Dres: { min: 13_732_281_489, max: 68_080_257_426 },
       Jool: { min: 44_584_549_836, max: 92_947_048_984 },
@@ -214,6 +222,8 @@ export const planetoidDistancesRawinKM = {
   },
 
   Dres: {
+    package: "stock",
+    image: "https://wiki.kerbalspaceprogram.com/images/thumb/d/dd/TinyDres.png/100px-TinyDres.png",
     to: {
       Jool: { min: 24_526_513_238, max: 113_360_806_852 },
       Eeloo: { min: 28_689_105_419, max: 151_339_309_036 },
@@ -225,6 +235,8 @@ export const planetoidDistancesRawinKM = {
   },
 
   Jool: {
+    package: "stock",
+    image: "https://wiki.kerbalspaceprogram.com/images/thumb/3/35/TinyJool.png/100px-TinyJool.png",
     to: {
       Eeloo: { min: 11_420_136_316, max: 169_943_755_910 },
       Sarnus: { min: 47_661_436_751, max: 203_907_220_758 },
@@ -235,6 +247,8 @@ export const planetoidDistancesRawinKM = {
   },
 
   Eeloo: {
+    package: "stock",
+    image: "https://wiki.kerbalspaceprogram.com/images/thumb/e/e0/TinyEeloo.png/100px-TinyEeloo.png",
     to: {
       Sarnus: { min: 16_988_828_162, max: 243_123_109_571 },
       Urlum: { min: 135_614_910_615, max: 373_212_339_800 },
@@ -244,6 +258,7 @@ export const planetoidDistancesRawinKM = {
   },
 
   Sarnus: {
+    package: "outer planets mod",
     to: {
       Urlum: { min: 112_410_337_108, max: 396_177_918_875 },
       Neidon: { min: 276_249_933_876, max: 542_407_146_909 },
@@ -252,6 +267,7 @@ export const planetoidDistancesRawinKM = {
   },
 
   Urlum: {
+    package: "outer planets mod",
     to: {
       Neidon: { min: 138_500_522_528, max: 680_197_580_053 },
       Plock: { min: 140_799_540_807, max: 932_918_586_457 },
@@ -259,62 +275,23 @@ export const planetoidDistancesRawinKM = {
   },
 
   Neidon: {
+    package: "outer planets mod",
     to: {
       Plock: { min: 227_326_990_695, max: 1_079_565_277_068 },
     },
   },
 
   Plock: {
+    package: "outer planets mod",
     to: {},
   },
-} as const
+} as Record<string, {
+  image?: string,
+  package: "stock" | (string & {})
+  to: Record<string, { min: number, max: number }>
+}>
+
+
 
 
 export const stockPlanets = [ "Moho", "Eve", "Kerbin", "Duna", "Dres", "Jool", "Eeloo" ] as const
-
-export const planetDistanceMap = (() => {
-
-  const getSortedPair = (a: string, b: string) => {
-    return [ a, b ].sort().join('|') as `${ string }|${ string }`
-  }
-
-  const planets = new Set<string>()
-  const mappedRawDistanceData = new Map<`${ string }|${ string }`, { min: number, max: number }>
-
-  for (const from in planetoidDistancesRawinKM) {
-    planets.add(from)
-    const distanceData = planetoidDistancesRawinKM[ from as keyof typeof planetoidDistancesRawinKM ].to
-    for (const to in distanceData) {
-      planets.add(to)
-      const sortedPair = getSortedPair(from, to)
-      mappedRawDistanceData.set(sortedPair, distanceData[ to as keyof typeof distanceData ])
-    }
-  }
-
-  const newLookup: Record<string, Record<string, { min: number, max: number } | null>> = {}
-
-  planets.forEach(fromPlanet => {
-    const tempLookup: Record<string, { min: number, max: number } | null> = {}
-    newLookup[ fromPlanet ] = tempLookup
-
-    planets.forEach(toPlanet => {
-      if (toPlanet === fromPlanet) {
-        tempLookup[ toPlanet ] = { min: 0, max: 0 }
-      } else {
-        const sortedPair = getSortedPair(fromPlanet, toPlanet)
-        const data = mappedRawDistanceData.get(sortedPair)
-        if (data) {
-          tempLookup[ toPlanet ] = data
-        } else {
-          console.log(`Planet Distance: No data for distance between ${ fromPlanet } and ${ toPlanet }`)
-          tempLookup[ toPlanet ] = null
-        }
-      }
-    })
-  })
-
-  // console.log(newLookup)
-  return newLookup
-})()
-
-
