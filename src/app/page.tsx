@@ -315,6 +315,12 @@ function BodyDetailInput(props: {
     props.onChange({ ...props.payload })
   }
 
+  const clearAntenna = (type: AntennaTypes) => {
+    if (props.payload.type !== 'ship') return
+    props.payload.antennae[ type ] = 0
+    props.onChange({ ...props.payload })
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <header>
@@ -338,11 +344,17 @@ function BodyDetailInput(props: {
           />
           :
           <>
-            <CheckboxRow
-              label="Has Command Module?"
-              value={props.payload.hasCommandModule}
-              onValueChange={changeHasCommandModule}
-            />
+            <div className="flex">
+              <CheckboxRow
+                label="Has Command Module?"
+                value={props.payload.hasCommandModule}
+                onValueChange={changeHasCommandModule}
+              />
+              <div className="grow" />
+              <GhostButton className="text-sm p-2 px-3 rounded-md w-fit self-end" onClick={() => {
+                antennaTypes.forEach(type => clearAntenna(type))
+              }}>Reset All</GhostButton>
+            </div>
             <AntennaInput
               value={props.payload.antennae}
               onChange={changeAntennaPayload}
@@ -416,9 +428,7 @@ function AntennaInput(props: {
           )
         })}
       </div>
-      <GhostButton className="text-sm p-2 px-3 rounded-md w-fit self-end" onClick={() => {
-        antennaTypes.forEach(type => clearAntenna(type))
-      }}>Reset All</GhostButton>
+
     </div>
   )
 
@@ -515,7 +525,10 @@ function PlanetDistanceTableView(props: {
   mode: "direct" | "relay"
 }) {
 
-  const [ from, setFrom ] = useState<"Kerbin" | string>("Kerbin")
+  const [ _from, setFrom ] = useState<"Kerbin" | string>("Kerbin")
+
+  const from = props.mode === "direct" ? "Kerbin" : _from
+
 
   const result = getSignalStrengthDistanceMap(from, props.maximumRange)
 
