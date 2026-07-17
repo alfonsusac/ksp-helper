@@ -11,6 +11,7 @@ import { cn } from "./ui/cn"
 import { CitationList } from "./ui/list"
 import { getSignalStrengthDistanceMap } from "./lib/distance"
 import { formatCss, interpolate } from "culori"
+import { SignalSymbol } from "./ui/common"
 
 const defaultProp = {
   level: "1",
@@ -169,15 +170,15 @@ export default function Home() {
         <div className="flex flex-col gap-6 grow">
           <div className="self-stretch w-full border-t sm:border-none border-slate-200 sm:hidden" />
 
-          <div className="pb-8 flex flex-col gap-2">
-            <div className=" text-sm text-slate-400 mb-4">
+          <div className="flex flex-col">
+            <div className=" text-sm text-slate-400 mb-2">
               Strengths by Distance + Science Bonus
             </div>
             <DistanceStrengthCalculator maximumRange={maximumRange} mode={data[ 0 ].type} />
           </div>
           <div className="self-stretch w-full border-t border-slate-200" />
           <div>
-            <div className=" text-sm text-slate-400 mb-4">
+            <div className=" text-sm text-slate-400 mb-2">
               Will it reach?
             </div>
             <PlanetDistanceTableView maximumRange={maximumRange} />
@@ -420,14 +421,6 @@ function DistanceStrengthCalculator(props: {
       setDistance(props.maximumRange)
   }, [ props.maximumRange ])
 
-  // const getStrength = (distance: number) => {
-  //   const relativeDistanceBetweenVessels = 1 - (distance / props.maximumRange)
-  //   const x = relativeDistanceBetweenVessels
-  //   const pow = Math.pow
-  //   const strength = -2 * pow(x, 3) + 3 * pow(x, 2)
-  //   return strength
-  // }
-
   const signalStrength = getStrength(props.maximumRange, distance)
   const scienceBonus = getScienceBonusfromSignalStrength(signalStrength)
 
@@ -442,90 +435,88 @@ function DistanceStrengthCalculator(props: {
     return getScienceBonusfromSignalStrength(str).bonusPercentage
   })
 
-  const getSignalBarColor = (bar: 1 | 2 | 3 | 4) => {
-    if (signalStrength < .25) {
-      if (bar === 1) return "bg-red-400"
-    }
-    else if (signalStrength < .5) {
-      if (bar === 1) return "bg-orange-400"
-      if (bar === 2) return "bg-orange-400"
-    }
-    else if (signalStrength < .75) {
-      if (bar === 1) return "bg-yellow-400"
-      if (bar === 2) return "bg-yellow-400"
-      if (bar === 3) return "bg-yellow-400"
-    }
-    else {
-      if (bar === 1) return "bg-green-500"
-      if (bar === 2) return "bg-green-500"
-      if (bar === 3) return "bg-green-500"
-      if (bar === 4) return "bg-green-500"
-    }
-  }
+  // const getSignalBarColor = (bar: 1 | 2 | 3 | 4) => {
+  //   if (signalStrength < .25) {
+  //     if (bar === 1) return "bg-red-400"
+  //   }
+  //   else if (signalStrength < .5) {
+  //     if (bar === 1) return "bg-orange-400"
+  //     if (bar === 2) return "bg-orange-400"
+  //   }
+  //   else if (signalStrength < .75) {
+  //     if (bar === 1) return "bg-yellow-400"
+  //     if (bar === 2) return "bg-yellow-400"
+  //     if (bar === 3) return "bg-yellow-400"
+  //   }
+  //   else {
+  //     if (bar === 1) return "bg-green-500"
+  //     if (bar === 2) return "bg-green-500"
+  //     if (bar === 3) return "bg-green-500"
+  //     if (bar === 4) return "bg-green-500"
+  //   }
+  // }
 
   return (
-    <div className="flex gap-2 text-sm items-center pb-14">
-      <div className="text-xs text-slate-400 font-normal pt-13 pr-2 capitalize">{props.mode}</div>
+    <div className="flex flex-col gap-4">
 
-      <div className="h-20 flex flex-col grow">
-        <div className="grow relative flex items-end -mb-3.5">
-          {bins.map((str, i) => {
-            return (
-              <div key={i} className="h-full relative" style={{ width: `calc(1 / ${ binCount } * 100%)` }}>
-                <div className={cn(
-                  "bg-slate-200 absolute w-full bottom-0",
-                  str < 0.25 ? "bg-red-200" : str < 0.5 ? "bg-orange-200" : str < 0.75 ? "bg-yellow-200" : "bg-green-200"
-                )} style={{
-                  height: (str * 100).toFixed(2) + '%',
-                }} />
-                <div className={cn(
-                  "bg-blue-200/50 absolute w-full bottom-0",
-                )} style={{
-                  height: (scienceBins[ i ] * 50).toFixed(2) + '%',
-                }} />
-              </div>
-            )
-          })}
+      <div className="flex text-xs gap-4 items-center">
+        <div className="place-items-end grow max-w-34">Distance: {prettyNum(distance)}</div>
+        <div className="border-l border-slate-300 h-6" />
+        <div className="flex gap-2 grow max-w-20">
+          <SignalSymbol strength={signalStrength} />
+          <div className="grow max-w-13">
+            {(signalStrength * 100).toFixed(2)}%
+          </div>
         </div>
-        <Slider
-          min={0}
-          max={props.maximumRange}
-          value={distance}
-          onValueChange={(e) => setDistance(e)}
-          thumbChildren={
-            <>
-              <div className={cn(
-                "size-3 rounded-full border border-slate-400 bg-slate-400 select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-neutral-950",
-                "active:scale-125",
-              )} />
-              <div className="mt-2 text-xs flex flex-col items-center w-max absolute left-1/2 -translate-x-1/2">
-                <div>{prettyNum(distance)}</div>
-                <div>{(signalStrength * 100).toFixed(2) + '%'}</div>
-                <div className="grid grid-cols-4 gap-px size-6 items-end">
-                  <div className={cn("h-1/4 bg-slate-200", getSignalBarColor(1))}></div>
-                  <div className={cn("h-1/2 bg-slate-200", getSignalBarColor(2))}></div>
-                  <div className={cn("h-3/4 bg-slate-200", getSignalBarColor(3))}></div>
-                  <div className={cn("h-4/4 bg-slate-200", getSignalBarColor(4))}></div>
-                </div>
-                <div className="flex gap-1 mt-2 items-center">
-                  <div className="grid grid-cols-4 gap-px size-4 items-end">
-                    <div className={cn("h-1/4 bg-blue-200")}></div>
-                    <div className={cn("h-1/2 bg-blue-200")}></div>
-                    <div className={cn("h-3/4 bg-blue-200")}></div>
-                    <div className={cn("h-4/4 bg-blue-200")}></div>
-                  </div>
-                  <div className="text-blue-500 text-[0.9em]">
-                    +{scienceBonus.bonus}%
-                  </div>
-                </div>
-              </div>
-            </>
-          }
-        />
+        <div className="border-l border-slate-300 h-6" />
+        <div className="flex gap-2 items-center">
+          <SignalSymbol barClassname="bg-blue-200" />
+          <div className="text-blue-500 text-[0.9em]">
+            +{scienceBonus.bonus}%
+          </div>
+        </div>
       </div>
 
-      <div className="text-xs text-slate-400 font-normal pt-13 pl-2">Max</div>
-    </div >
+      <div className="flex gap-2 text-sm items-center">
+        <div className="text-xs text-slate-400 font-normal pt-13 pr-2 capitalize">{props.mode}</div>
+
+        <div className="h-20 flex flex-col grow">
+          <div className="grow relative flex items-end -mb-3.5">
+            {bins.map((str, i) => {
+              return (
+                <div key={i} className="h-full relative" style={{ width: `calc(1 / ${ binCount } * 100%)` }}>
+                  <div className={cn(
+                    "bg-slate-200 absolute w-full bottom-0",
+                    str < 0.25 ? "bg-red-200" : str < 0.5 ? "bg-orange-200" : str < 0.75 ? "bg-yellow-200" : "bg-green-200"
+                  )} style={{
+                    height: (str * 100).toFixed(2) + '%',
+                  }} />
+                  <div className={cn(
+                    "bg-blue-200/50 absolute w-full bottom-0",
+                  )} style={{
+                    height: (scienceBins[ i ] * 50).toFixed(2) + '%',
+                  }} />
+                </div>
+              )
+            })}
+          </div>
+          <Slider
+            min={0}
+            max={props.maximumRange}
+            value={distance}
+            onValueChange={(e) => setDistance(e)}
+            thumbChildren={
+              <>
+
+              </>
+            }
+          />
+        </div>
+
+        <div className="text-xs text-slate-400 font-normal pt-13 pl-2">Max</div>
+      </div >
+    </div>
+
   )
 }
 
