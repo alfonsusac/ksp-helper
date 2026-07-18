@@ -13,6 +13,7 @@ import { formatCss, interpolate } from "culori"
 import { SignalSymbol } from "../ui/common"
 import { Menu } from '@base-ui/react/menu'
 import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
+import { groupToList } from "@/lib/object"
 
 
 const defaultProp = () => ({
@@ -658,6 +659,9 @@ function PlanetSelectMenu(props: {
   onValueChange: (planet: string) => void,
   planetData: PlanetData
 }) {
+
+  const groupedPlanet = groupToList(props.planetData.list, e => e.package)
+
   return (
     <Menu.Root>
       <div className="text-sm flex gap-2 items-center text-slate-500">
@@ -679,33 +683,44 @@ function PlanetSelectMenu(props: {
         <Menu.Positioner side="top" sideOffset={4}>
           <Menu.Popup className={cn(
             "bg-background p-2 rounded-lg border border-slate-200",
-            "grid grid-cols-3 gap-px",
-            "shadow-md shadow-slate-100",
+            // "grid grid-cols-3 gap-px",
+            "flex flex-col gap-2",
+            "shadow-2xl shadow-slate-300",
             "transition-all duration-75",
             "data-starting-style:opacity-0",
             "data-ending-style:opacity-0",
           )}>
-            {props.planetData.list.map((planet) => {
-              return <Menu.Item key={planet.id}
-                onClick={() => props.onValueChange(planet.id)}
-                className={cn(
-                  "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",
-                  "cursor-pointer",
-                  "flex gap-2 items-center"
-                )}
-              >
-                <div className="size-10 rounded-full shrink-0">
-                  {planet.image === undefined ? <>
-                    <div className="bg-slate-300 size-full rounded-full shadow-[inset_0.25rem_0_10px_#0045]"></div>
-                  </> : <>
-                    <img src={planet.image} />
-                  </>}
+            {groupedPlanet.map((pkg) => {
+              const packageLabel = packages[ pkg.key as keyof typeof packages ].name
+              return <div className="flex flex-col gap-1">
+                <div className="text-xs text-slate-400 pl-2">{packageLabel}</div>
+                <div className="grid grid-cols-3 gap-3">
+                  {pkg.list.map(planet => {
+                    return (<>
+                      <Menu.Item key={planet.id}
+                        onClick={() => props.onValueChange(planet.id)}
+                        className={cn(
+                          "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",
+                          "cursor-pointer",
+                          "flex gap-2 items-center"
+                        )}
+                      >
+                        <div className="size-10 rounded-full shrink-0">
+                          {planet.image === undefined ? <>
+                            <div className="bg-slate-300 size-full rounded-full shadow-[inset_0.25rem_0_10px_#0045]"></div>
+                          </> : <>
+                            <img src={planet.image} />
+                          </>}
+                        </div>
+                        <div className="flex flex-col">
+                          <div>{planet.id}</div>
+                          <div className="capitalize text-[0.8em] text-slate-400">{packageLabel}</div>
+                        </div>
+                      </Menu.Item>
+                    </>)
+                  })}
                 </div>
-                <div className="flex flex-col">
-                  <div>{planet.id}</div>
-                  <div className="capitalize text-[0.8em] text-slate-400">{planet.package}</div>
-                </div>
-              </Menu.Item>
+              </div>
             })}
           </Menu.Popup>
         </Menu.Positioner>

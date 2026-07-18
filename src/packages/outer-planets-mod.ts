@@ -1,7 +1,7 @@
 import type { Package } from "./types"
 
 export const outerplanets: Package = {
-  name: "Outer Planet Mods",
+  name: "Outer Planet Mod",
   dsnLevels: {},
   planets: {
     Sarnus: {
