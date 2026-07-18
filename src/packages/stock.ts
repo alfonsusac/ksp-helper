@@ -22,15 +22,6 @@ export const stock: Package = {
       bandwidthInMitsPerSec: 3.3333,
       image: "https://wiki.kerbalspaceprogram.com/images/d/da/Communotron_16-S.png",
     },
-    'c88': {
-      label: "Communotron 88-88",
-      rating: 100_000_000_000, // 100G
-      type: "direct",
-      combinabilityExponent: 0.75,
-      packetSizeInMits: 2,
-      bandwidthInMitsPerSec: 20,
-      image: "https://wiki.kerbalspaceprogram.com/images/c/cd/Communotron_88-88.png",
-    },
     'cdtsm1': {
       label: "Communotron DTS-M1",
       rating: 2_000_000_000, // 2G
@@ -49,6 +40,15 @@ export const stock: Package = {
       bandwidthInMitsPerSec: 20,
       image: "https://wiki.kerbalspaceprogram.com/images/3/30/Commutron_HG-55.png",
     },
+    'c88': {
+      label: "Communotron 88-88",
+      rating: 100_000_000_000, // 100G
+      type: "direct",
+      combinabilityExponent: 0.75,
+      packetSizeInMits: 2,
+      bandwidthInMitsPerSec: 20,
+      image: "https://wiki.kerbalspaceprogram.com/images/c/cd/Communotron_88-88.png",
+    },
     'hg5': {
       label: "HG-5 High Gain Antenna",
       rating: 5_000_000, // 5M
@@ -58,14 +58,14 @@ export const stock: Package = {
       bandwidthInMitsPerSec: 5.713,
       image: "https://wiki.kerbalspaceprogram.com/images/7/75/HG-5_High_Gain_Antenna_%28%2Bopen%29.png",
     },
-    'ra100': {
-      label: "RA-100 Relay Antenna",
-      rating: 100_000_000_000, // 100G
+    'ra2': {
+      label: "RA-2 Relay Antenna",
+      rating: 2_000_000_000, // 2G
       type: "relay",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 4,
-      bandwidthInMitsPerSec: 11.4286,
-      image: "https://wiki.kerbalspaceprogram.com/images/2/28/RA-100_Relay_Antenna.png",
+      packetSizeInMits: 1,
+      bandwidthInMitsPerSec: 2.8571,
+      image: "https://wiki.kerbalspaceprogram.com/images/e/e6/RA-2_Relay_Antenna.png"
     },
     'ra15': {
       label: "RA-15 Relay Antenna",
@@ -76,15 +76,15 @@ export const stock: Package = {
       bandwidthInMitsPerSec: 5.7143,
       image: "https://wiki.kerbalspaceprogram.com/images/7/7b/RA-15_Relay_Antenna.png",
     },
-    'ra2': {
-      label: "RA-2 Relay Antenna",
-      rating: 2_000_000_000, // 2G
+    'ra100': {
+      label: "RA-100 Relay Antenna",
+      rating: 100_000_000_000, // 100G
       type: "relay",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 1,
-      bandwidthInMitsPerSec: 2.8571,
-      image: "https://wiki.kerbalspaceprogram.com/images/e/e6/RA-2_Relay_Antenna.png"
-    }
+      packetSizeInMits: 4,
+      bandwidthInMitsPerSec: 11.4286,
+      image: "https://wiki.kerbalspaceprogram.com/images/2/28/RA-100_Relay_Antenna.png",
+    },
   },
   planets: {
     Moho: {

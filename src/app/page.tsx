@@ -66,8 +66,6 @@ export default function Home() {
 
   const { antennas, planets } = getData(data.settings.contents)
 
-  // console.log(planets)
-
   const maximumRange = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
   const isBothDirectAntenna = (() => {
@@ -443,10 +441,10 @@ function AntennaInput(props: {
                 src={antenna.image}
               />
               <div className="flex flex-col w-full">
-                <div className="text-pretty">
+                <div className="text-pretty leading-4">
                   {antenna.label}
                 </div>
-                <div className=" text-slate-400">
+                <div className=" text-slate-400 grow">
                   {prettyNum(antenna.rating)} <span className="capitalize">({(antenna.type)})</span>
                 </div>
                 <div className="flex text-sm items-center">
@@ -683,7 +681,6 @@ function PlanetSelectMenu(props: {
         <Menu.Positioner side="top" sideOffset={4}>
           <Menu.Popup className={cn(
             "bg-background p-2 rounded-lg border border-slate-200",
-            // "grid grid-cols-3 gap-px",
             "flex flex-col gap-2",
             "shadow-2xl shadow-slate-300",
             "transition-all duration-75",
