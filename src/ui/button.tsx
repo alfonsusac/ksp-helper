@@ -1,5 +1,6 @@
-import type { ComponentProps } from "react"
+import { useEffect, useRef, useState, type ComponentProps } from "react"
 import { cn } from "./cn"
+import { LucideCheck, LucideShare2 } from "./icons"
 
 export function GhostButton(props: ComponentProps<"button"> & {
   icon?: boolean,
@@ -16,5 +17,47 @@ export function GhostButton(props: ComponentProps<"button"> & {
         props.icon && "p-1.5 size-7",
         props.className
       )} />
+  )
+}
+
+
+export function CopyButton(props: {
+  value: string,
+  className?: string
+}) {
+
+  const [ copied, setCopied ] = useState(false)
+  const timer = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (timer.current) clearTimeout(timer.current)
+    }
+  }, [])
+  async function handleCopy() {
+    await navigator.clipboard.writeText(props.value)
+
+    setCopied(true)
+
+    if (timer.current) clearTimeout(timer.current)
+
+    timer.current = window.setTimeout(() => {
+      setCopied(false)
+    }, 1000)
+  }
+
+  return (
+    <GhostButton
+      className={cn("mt-4 text-sm gap-2 bg-slate-50", props.className)}
+      onClick={handleCopy}
+    >
+      {copied === false ? <>
+        <LucideShare2 />
+        Share URL
+      </> : <>
+        <LucideCheck />
+        Link Copied
+      </>}
+    </GhostButton >
   )
 }

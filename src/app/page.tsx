@@ -2,10 +2,10 @@
 
 import { Fragment, useEffect, useState } from "react"
 import { Slider, CheckboxRow, SelectRow, TabSelectRow, MenuPopup, MenuHelperText, MenuItem } from "../ui/input"
-import { GhostButton } from "../ui/button"
+import { CopyButton, GhostButton } from "../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../lib/antenna"
 import { prettyNum } from "../lib/prettier"
-import { EmojioneMonotoneSatelliteAntenna, EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowUpRight, LucideBadgeQuestionMark, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideSatelliteDish, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
+import { EmojioneMonotoneSatelliteAntenna, EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowUpRight, LucideBadgeQuestionMark, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
 import { cn } from "../ui/cn"
 import { CitationList } from "../ui/list"
 import { getSignalStrengthDistanceMap } from "../lib/distance"
@@ -14,60 +14,26 @@ import { SignalSymbol } from "../ui/common"
 import { Menu } from '@base-ui/react/menu'
 import { getData, getPackageName, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
 import { groupToList } from "@/lib/object"
+import { initialData, parseAppData, type AppData } from "@/lib/app-state"
+import { generateShareURL, loadFromLocalStorage, saveToLocalStorage } from "@/lib/persistance"
 
-
-const defaultProp = () => ({
-  level: "1",
-  hasCommandModule: true,
-  antennas: new Map<string, number>,
-  isRelay: false,
-} as const)
 
 export default function Home() {
-  const [ data, setData ] = useState<{
-    0: BodyPayload
-    1: BodyPayload
-    settings: {
-      rangeModifier: string,
-      dsnModifier: string,
-      contents: Record<PackageNames, boolean>
-    }
-  } | undefined>(undefined)
+  const [ data, setData ] = useState<AppData | undefined>(undefined)
 
   useEffect(() => {
-    if (data)
-      localStorage.setItem("settings", JSON.stringify(data, (_, value) => {
-        if (value instanceof Map) {
-          return { __type: "Map", value: [ ...value ] }
-        }
-        return value
-      }))
+    saveToLocalStorage(data)
   }, [ data ])
 
   useEffect(() => {
-    const stored = localStorage.getItem("settings")
-    const initialData = {
-      '0': { ...defaultProp(), type: "ksc" },
-      '1': { ...defaultProp(), type: "ship" },
-      settings: {
-        rangeModifier: "1",
-        dsnModifier: "1",
-        contents: { stock: true, outerplanets: false, commnetAntennasExtension: false, restockplus: false, dmagic: false, jsx2antenna: false, probesplus: false, venssr: false, nearfutureexpansion: false, }
-      },
-    } as const
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored, (key, value) => {
-          if (value?.__type === "Map")
-            return new Map(value.value)
-          return value
-        })
-        setData(parsed)
-      } catch (error) {
-        setData(initialData)
-      }
+    const fromSp = new URLSearchParams(window.location.search).get('data')
+    if (fromSp) {
+      setData(parseAppData(fromSp, initialData))
+      const url = new URL(window.location.href)
+      url.searchParams.delete("data")
+      window.history.replaceState({}, "", url);
     } else {
-      setData(initialData)
+      setData(loadFromLocalStorage())
     }
   }, [])
 
@@ -194,6 +160,8 @@ export default function Home() {
             <div className="text-slate-400 text-end">~70%</div>
             <div>{prettyNum(maximumRange * 0.36326).toLocaleString() + "m"}</div>
           </div>
+
+          <CopyButton value={generateShareURL(data)} />
         </div>
 
         <div className="h-auto self-stretch w-px border-l border-slate-200" />
@@ -278,6 +246,13 @@ export default function Home() {
               </GhostButton>
             </div>
           </div>
+          <GhostButton
+            className={cn("mt-4 text-sm gap-2 bg-slate-50 justify")}
+            onClick={() => setData(initialData)}
+          >
+            <LucideRotateCcw />
+            Reset All Data
+          </GhostButton >
         </div>
 
 
