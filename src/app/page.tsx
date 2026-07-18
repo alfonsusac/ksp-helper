@@ -32,24 +32,47 @@ export default function Home() {
       dsnModifier: string,
       contents: Record<PackageNames, boolean>
     }
-  }>({
-    '0': { ...defaultProp(), type: "ksc" },
-    '1': { ...defaultProp(), type: "ship" },
-    settings: {
-      rangeModifier: "1",
-      dsnModifier: "1",
-      contents: {
-        stock: true,
-        outerplanets: false,
-        commnetAntennasExtension: false,
-        restockplus: false,
-        dmagic: false,
-        jsx2antenna: false,
-        probesplus: false,
-        venssr: false,
+  } | undefined>(undefined)
+
+  useEffect(() => {
+    if (data)
+      localStorage.setItem("settings", JSON.stringify(data, (_, value) => {
+        if (value instanceof Map) {
+          return { __type: "Map", value: [ ...value ] }
+        }
+        return value
+      }))
+  }, [ data ])
+
+  useEffect(() => {
+    const stored = localStorage.getItem("settings")
+    const initialData = {
+      '0': { ...defaultProp(), type: "ksc" },
+      '1': { ...defaultProp(), type: "ship" },
+      settings: {
+        rangeModifier: "1",
+        dsnModifier: "1",
+        contents: { stock: true, outerplanets: false, commnetAntennasExtension: false, restockplus: false, dmagic: false, jsx2antenna: false, probesplus: false, venssr: false, nearfutureexpansion: false, }
+      },
+    } as const
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored, (key, value) => {
+          if (value?.__type === "Map")
+            return new Map(value.value)
+          return value
+        })
+        setData(parsed)
+      } catch (error) {
+        setData(initialData)
       }
-    },
-  })
+    } else {
+      setData(initialData)
+    }
+  }, [])
+
+  if (!data) return null
+
   const mode = data[ 0 ].type === "ksc" ? "direct" : "relay"
   const rangeModifier = parseInt(data.settings.rangeModifier) || 1
   const dsnModifier = parseInt(data.settings.dsnModifier) || 1
@@ -74,14 +97,6 @@ export default function Home() {
   const { antennas, planets } = getData(data.settings.contents)
 
   const { value: maximumRange, zeroReason } = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
-
-  // const isBothDirectAntenna = (() => {
-  //   if (data[ 0 ].type === "ksc" || data[ 1 ].type === "ksc") return false
-  //   const ship1directOnly = isShipOnlyHaveDirectAntenna(data[ 0 ], antennas)
-  //   const ship2directOnly = isShipOnlyHaveDirectAntenna(data[ 1 ], antennas)
-  //   if (ship1directOnly && ship2directOnly) return true
-  //   return false
-  // })()
 
   return (
     <div className="p-8 font-mono font-medium flex flex-col gap-4 max-w-200 w-screen">
@@ -387,7 +402,7 @@ function BodyDetailInput(props: {
           />
           :
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-x-3 flex-wrap">
               <CheckboxRow
                 label={<>
                   <EosIconsPod className="size-6 rotate-45 -translate-y-0.5" />
@@ -772,7 +787,7 @@ function PlanetSelectMenu(props: {
                 <MenuHelperText>{packageLabel}</MenuHelperText>
                 <div className="grid grid-cols-3 gap-3">
                   {pkg.list.map(planet => {
-                    return (<>
+                    return (<Fragment key={planet.id}>
                       <MenuItem key={planet.id}
                         onClick={() => props.onValueChange(planet.id)}
                       >
@@ -788,7 +803,7 @@ function PlanetSelectMenu(props: {
                           <div className="capitalize text-[0.8em] text-slate-400">{packageLabel}</div>
                         </div>
                       </MenuItem>
-                    </>)
+                    </Fragment>)
                   })}
                 </div>
               </div>

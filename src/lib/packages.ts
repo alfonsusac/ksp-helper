@@ -9,6 +9,7 @@ import { dmagic } from "@/packages/dmagic"
 import { probesplus } from "@/packages/probesplus"
 import { jsx2antenna } from "@/packages/jx2antenna"
 import { venssr } from "@/packages/venssr"
+import { nearfutureexpansion } from "@/packages/near-future-exploration"
 
 export const packages = {
   stock,
@@ -19,6 +20,7 @@ export const packages = {
   venssr,
   jsx2antenna,
   probesplus,
+  nearfutureexpansion,
 } as const
 
 export const packageNames = Object.keys(packages)
