@@ -3,9 +3,9 @@
 import { Fragment, useEffect, useState } from "react"
 import { Slider, CheckboxRow, SelectRow, TabSelectRow, MenuPopup, MenuHelperText, MenuItem } from "../ui/input"
 import { GhostButton } from "../ui/button"
-import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, isShipOnlyHaveDirectAntenna, type AntennaPayload, type BodyPayload } from "../lib/antenna"
+import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../lib/antenna"
 import { prettyNum } from "../lib/prettier"
-import { EosIconsPod, IcBaselineDiscord, LucideArrowUpRight, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideSatelliteDish, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
+import { EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowUpRight, LucideBadgeQuestionMark, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideSatelliteDish, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
 import { cn } from "../ui/cn"
 import { CitationList } from "../ui/list"
 import { getSignalStrengthDistanceMap } from "../lib/distance"
@@ -19,7 +19,8 @@ import { groupToList } from "@/lib/object"
 const defaultProp = () => ({
   level: "1",
   hasCommandModule: true,
-  antennas: new Map<string, number>
+  antennas: new Map<string, number>,
+  isRelay: false,
 } as const)
 
 export default function Home() {
@@ -66,15 +67,15 @@ export default function Home() {
 
   const { antennas, planets } = getData(data.settings.contents)
 
-  const maximumRange = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
+  const { value: maximumRange, zeroReason } = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
-  const isBothDirectAntenna = (() => {
-    if (data[ 0 ].type === "ksc" || data[ 1 ].type === "ksc") return false
-    const ship1directOnly = isShipOnlyHaveDirectAntenna(data[ 0 ], antennas)
-    const ship2directOnly = isShipOnlyHaveDirectAntenna(data[ 1 ], antennas)
-    if (ship1directOnly && ship2directOnly) return true
-    return false
-  })()
+  // const isBothDirectAntenna = (() => {
+  //   if (data[ 0 ].type === "ksc" || data[ 1 ].type === "ksc") return false
+  //   const ship1directOnly = isShipOnlyHaveDirectAntenna(data[ 0 ], antennas)
+  //   const ship2directOnly = isShipOnlyHaveDirectAntenna(data[ 1 ], antennas)
+  //   if (ship1directOnly && ship2directOnly) return true
+  //   return false
+  // })()
 
   return (
     <div className="p-8 font-mono font-medium flex flex-col gap-4 max-w-200 w-screen">
@@ -130,11 +131,15 @@ export default function Home() {
       <hr className="mt-2 border-slate-200" />
 
       {
-        isBothDirectAntenna &&
+        zeroReason &&
         <div className="text-sm p-2 border border-red-300 rounded-md bg-red-50 mb-8 text-red-600 px-3">
-          Warning! <br />
-          <div className="text-xs">
-            Both ship are only capable of direct conenctions to KSC. Either switch to "KSC to Ship" mode or add a relay antenna on one of the ship.
+          <div className="flex gap-1 items-center"> 
+            <LucideBadgeQuestionMark />
+            <div className="text-red-600">Reason why its zero</div>
+          </div>
+          <div className="text-xs text-red-500">
+            {zeroReason}
+            {/* Both ship are only capable of direct conenctions to KSC. Either switch to "KSC to Ship" mode or add a relay antenna on one of the ship. */}
           </div>
         </div>
       }
@@ -334,6 +339,12 @@ function BodyDetailInput(props: {
     props.onChange({ ...props.payload })
   }
 
+  const changeIsRelay = (v: boolean) => {
+    if (props.payload.type !== "ship") return
+    props.payload.isRelay = v
+    props.onChange({ ...props.payload })
+  }
+
   const changeAntennaPayload = (a: AntennaPayload) => {
     if (props.payload.type !== 'ship') return
     props.payload.antennas = a
@@ -355,7 +366,7 @@ function BodyDetailInput(props: {
         <h2 className="text-lg">
           {props.payload.type === "ksc" ? "KSC" : "Ship"}
         </h2>
-        <div className="text-slate-400 text-xs">Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier, props.mode, props.antennas))}</div>
+        <div className="text-slate-400 text-xs">Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier, props.antennas))}</div>
       </header>
       {
         props.payload.type === "ksc" ?
@@ -371,7 +382,7 @@ function BodyDetailInput(props: {
           />
           :
           <div className="flex flex-col gap-2">
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
               <CheckboxRow
                 label={<>
                   <EosIconsPod className="size-6 rotate-45 -translate-y-0.5" />
@@ -379,6 +390,14 @@ function BodyDetailInput(props: {
                 </>}
                 value={props.payload.hasCommandModule}
                 onValueChange={changeHasCommandModule}
+              />
+              <CheckboxRow
+                label={<>
+                  <IcRoundSatelliteAlt className="size-6 -translate-y-0.5" />
+                  Is a it relay?
+                </>}
+                value={props.payload.isRelay}
+                onValueChange={changeIsRelay}
               />
               <div className="grow" />
               <GhostButton className="text-sm p-2 px-3 rounded-md w-fit" onClick={() => {
