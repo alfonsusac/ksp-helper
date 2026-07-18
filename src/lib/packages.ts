@@ -1,7 +1,8 @@
 import { outerplanets } from "../packages/outer-planets-mod"
 import { stock } from "../packages/stock"
-import type { BaseAntennaData } from "../packages/types"
+import type { AntennaDefinition, DistanceRange } from "../packages/types"
 import { symmetrizePlanetDistanceMap } from "./distance"
+import { mapToListWithId } from "./object"
 
 export const packages = {
   stock,
@@ -13,42 +14,42 @@ export type PackageNames = keyof typeof packages
 
 
 // Parsed
-export type ParsedAntennas = Record<string, BaseAntennaData>
-export type ParsedPlanetDistancedStrengthsType = Record<string, {
-  image?: string,
-  package: string,
-  to: Record<string, { min: number, max: number } | null>
-}>
+export type AntennaData = ReturnType<typeof getAntennaData>
+export type PlanetData = ReturnType<typeof getPlanetData>
 
 export function getData(option: Record<PackageNames, boolean>) {
-  const antennas = getAntennas(option)
-  const planets = getPlanets(option)
+  const antennas = getAntennaData(option)
+  const planets = getPlanetData(option)
   return { antennas, planets }
 }
 
-function getAntennas(option: Record<PackageNames, boolean>) {
-  const antennas: ParsedAntennas = {}
+function getAntennaData(option: Record<PackageNames, boolean>) {
+  const map = new Map<string, AntennaDefinition>()
 
   Object.entries(packages).forEach(([ name, pack ]) => {
     if (!option[ name as PackageNames ]) return
-
     Object.entries(pack.antennas ?? {}).forEach(([ satName, sat ]) => {
-      antennas[ satName ] = sat
+      map.set(satName, sat)
     })
-
   })
 
-  return antennas
+  const list = mapToListWithId(map)
+
+  return list
 }
 
-function getPlanets(option: Record<PackageNames, boolean>) {
-  const planetData: ParsedPlanetDistancedStrengthsType = {}
+function getPlanetData(option: Record<PackageNames, boolean>) {
+
+  const planetData: Record<string, {
+    package: string,
+    to: Record<string, DistanceRange | null>,
+    image?: string,
+  }> = {}
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
     if (!option[ pkName as PackageNames ]) return
 
     Object.entries(pack.planets ?? {}).forEach(([ planetName, planet ]) => {
-
       planetData[ planetName ] = {
         package: pkName,
         to: planet.distanceToPlanets,

@@ -1,7 +1,7 @@
 import { kscDSNdata, signalStrengthToScienceBonusLookupMap } from "@/constants"
-import type { ParsedAntennas } from "./packages"
+import type { AntennaData } from "./packages"
 
-export type AntennaPayload = Record<string, number>
+export type AntennaPayload = Map<string, number>
 
 export type BodyPayload = {
   type: "ksc"
@@ -9,7 +9,7 @@ export type BodyPayload = {
 } | {
   type: "ship"
   hasCommandModule: boolean,
-  antennae: AntennaPayload
+  antennas: AntennaPayload
 }
 
 export function getMaximumRange(opts: {
@@ -17,7 +17,7 @@ export function getMaximumRange(opts: {
   body2: BodyPayload,
   rangeModifier: number,
   dsnModifier: number,
-  antennaData: ParsedAntennas
+  antennaData: AntennaData
 }) {
   const ship1directOnly = isShipOnlyHaveDirectAntenna(opts.body1, opts.antennaData)
   const ship2directOnly = isShipOnlyHaveDirectAntenna(opts.body2, opts.antennaData)
@@ -43,35 +43,41 @@ export function getStrength(maxRange: number, distance: number) {
 
 
 
-export function getPowerPowerRating(input: BodyPayload, dsnModifier: number, mode: "relay" | "direct", antennaData: ParsedAntennas) {
+export function getPowerPowerRating(
+  input: BodyPayload,
+  dsnModifier: number,
+  mode: "relay" | "direct",
+  antennaData: AntennaData
+) {
   if (input.type === "ksc")
     return kscDSNdata[ input.level ].rating * dsnModifier
 
-  const antennaTypes = Object.keys(antennaData)
-
   if (input.type === "ship") {
 
-    const sumPower = antennaTypes.reduce((acc, curr) => {
-      if (mode === "relay" && antennaData[ curr ].type === "direct") return acc
-      acc += antennaData[ curr ].rating * input.antennae[ curr ]
+    const sumPower = antennaData.reduce((acc, antenna) => {
+      if (mode === "relay" && antenna.type === "direct") return acc
+      const qty = input.antennas.get(antenna.id) ?? 0
+      acc += antenna.rating * qty
       return acc
     }, 0)
 
-    const avgCombinabilityExponent = antennaTypes.reduce((acc, curr) => {
-      if (mode === "relay" && antennaData[ curr ].type === "direct") return acc
-      const hasAntenna = input.antennae[ curr ] > 0
+    const avgCombinabilityExponent = antennaData.reduce((acc, antenna) => {
+      if (mode === "relay" && antenna.type === "direct") return acc
+      const qty = input.antennas.get(antenna.id) ?? 0
+      const hasAntenna = qty > 0
       if (!hasAntenna) return acc
-      acc += (antennaData[ curr ].rating * antennaData[ curr ].combinabilityExponent * input.antennae[ curr ]) / sumPower
+      acc += (antenna.rating * antenna.combinabilityExponent * qty) / sumPower
       return acc
     }, 0)
 
 
-    const strongestPower = antennaTypes.reduce((acc, curr) => {
-      if (mode === "relay" && antennaData[ curr ].type === "direct") return acc
-      const hasAntenna = input.antennae[ curr ] > 0
+    const strongestPower = antennaData.reduce((acc, antenna) => {
+      if (mode === "relay" && antenna.type === "direct") return acc
+      const qty = input.antennas.get(antenna.id) ?? 0
+      const hasAntenna = qty > 0
       if (!hasAntenna) return acc
-      if (antennaData[ curr ].rating > acc) {
-        acc = antennaData[ curr ].rating
+      if (antenna.rating > acc) {
+        acc = antenna.rating
       }
       return acc
     }, 0)
@@ -96,19 +102,20 @@ export function getPowerPowerRating(input: BodyPayload, dsnModifier: number, mod
 
 
 
-export function isShipOnlyHaveDirectAntenna(input: BodyPayload, antennaData: ParsedAntennas) {
+export function isShipOnlyHaveDirectAntenna(
+  input: BodyPayload,
+  antennaData: AntennaData
+) {
   if (input.type === "ksc") return false
 
   let directAntennaeCount = 0
   let relayAntennaeCount = 0
 
-  const antennaTypes = Object.keys(antennaData)
-
-  antennaTypes.map(type => {
-    const count = input.antennae[ type ]
+  antennaData.map(antenna => {
+    const count = input.antennas.get(antenna.id) ?? 0
     if (count < 1) return
-    if (antennaData[ type ].type === "direct") directAntennaeCount += 1
-    if (antennaData[ type ].type === "relay") relayAntennaeCount += 1
+    if (antenna.type === "direct") directAntennaeCount += 1
+    if (antenna.type === "relay") relayAntennaeCount += 1
   })
   // console.log(directAntennaeCount, relayAntennaeCount)
 

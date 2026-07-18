@@ -12,23 +12,13 @@ import { getSignalStrengthDistanceMap } from "../lib/distance"
 import { formatCss, interpolate } from "culori"
 import { SignalSymbol } from "../ui/common"
 import { Menu } from '@base-ui/react/menu'
-import { getData, packageNames, packages, type PackageNames, type ParsedAntennas, type ParsedPlanetDistancedStrengthsType } from "../lib/packages"
+import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
 
 
 const defaultProp = {
   level: "1",
   hasCommandModule: true,
-  antennae: {
-    c16: 1,
-    c16s: 0,
-    c88: 0,
-    cdtsm1: 0,
-    chg55: 0,
-    hg5: 0,
-    ra100: 0,
-    ra15: 0,
-    ra2: 0,
-  }
+  antennas: new Map<string, number>
 } as const
 
 export default function Home() {
@@ -41,14 +31,8 @@ export default function Home() {
       contents: Record<PackageNames, boolean>
     }
   }>({
-    '0': {
-      ...defaultProp,
-      type: "ksc",
-    },
-    '1': {
-      ...defaultProp,
-      type: "ship",
-    },
+    '0': { ...defaultProp, type: "ksc" },
+    '1': { ...defaultProp, type: "ship" },
     settings: {
       rangeModifier: "1",
       dsnModifier: "1",
@@ -224,7 +208,7 @@ export default function Home() {
             {packageNames.map(pack => {
               if (pack === "stock") return
               const pkg = packages[ pack as PackageNames ]
-              const antennaCount = Object.keys(pkg.antennas).length
+              const antennaCount = pkg.antennas.length
               const planetCount = Object.keys(pkg.planets).length
               return (
                 <CheckboxRow
@@ -342,7 +326,7 @@ function BodyDetailInput(props: {
   dsnModifier: number,
   mode: "relay" | "direct",
   onChange: (newpayload: BodyPayload) => void,
-  antennas: ParsedAntennas,
+  antennas: AntennaData,
 }) {
 
   const changeKSCLevel = (level: "1" | "2" | "3") => {
@@ -359,17 +343,17 @@ function BodyDetailInput(props: {
 
   const changeAntennaPayload = (a: AntennaPayload) => {
     if (props.payload.type !== 'ship') return
-    props.payload.antennae = a
+    props.payload.antennas = a
     props.onChange({ ...props.payload })
   }
 
   const clearAntenna = (type: string) => {
     if (props.payload.type !== 'ship') return
-    props.payload.antennae[ type ] = 0
+    props.payload.antennas.set(type, 0)
     props.onChange({ ...props.payload })
   }
 
-  const antennaTypes = Object.keys(props.antennas)
+  // const antennaTypes = Object.keys(props.antennas)
 
   return (
     <div className="flex flex-col gap-3">
@@ -402,11 +386,11 @@ function BodyDetailInput(props: {
               />
               <div className="grow" />
               <GhostButton className="text-sm p-2 px-3 rounded-md w-fit self-end" onClick={() => {
-                antennaTypes.forEach(type => clearAntenna(type))
+                props.antennas.forEach(antenna => clearAntenna(antenna.id))
               }}>Reset All</GhostButton>
             </div>
             <AntennaInput
-              value={props.payload.antennae}
+              value={props.payload.antennas}
               onChange={changeAntennaPayload}
               antennas={props.antennas}
             />
@@ -420,34 +404,36 @@ function BodyDetailInput(props: {
 function AntennaInput(props: {
   value: AntennaPayload,
   onChange: (a: AntennaPayload) => void,
-  antennas: ParsedAntennas
+  antennas: AntennaData
 }) {
 
   const addAntenna = (type: string) => {
-    props.value[ type ] += 1
-    props.onChange({ ...props.value })
+    const qty = props.value.get(type) ?? 0
+    props.value.set(type, qty + 1)
+    props.onChange(props.value)
   }
 
   const removeAntenna = (type: string) => {
-    if (props.value[ type ] < 1) return
-    props.value[ type ] -= 1
-    props.onChange({ ...props.value })
+    const qty = props.value.get(type) ?? 0
+    if (qty < 1) return
+    props.value.set(type, qty - 1)
+    props.onChange(props.value)
   }
 
   const clearAntenna = (type: string) => {
-    props.value[ type ] = 0
-    props.onChange({ ...props.value })
+    props.value.set(type, 0)
+    props.onChange(props.value)
   }
 
   return (
     <div className="flex flex-col gap-2">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-        {Object.entries(props.antennas).map(([ type, antenna ]) => {
-          const count = props.value[ type ]
+        {(props.antennas).map((antenna) => {
+          const qty = props.value.get(antenna.id) ?? 0
           return (
-            <div key={type} className={cn(
+            <div key={antenna.id} className={cn(
               "border rounded-md p-2 flex gap-2 text-[0.7em] tracking-tight",
-              count ? "border-slate-200" : "border-transparent",
+              qty ? "border-slate-200" : "border-transparent",
               "hover:border-slate-400",
               "cursor-pointer select-none"
             )}
@@ -464,14 +450,14 @@ function AntennaInput(props: {
                   {prettyNum(antenna.rating)} <span className="capitalize">({(antenna.type)})</span>
                 </div>
                 <div className="flex text-sm items-center">
-                  <div className="grow">{!!count && `x${ count }`}</div>
-                  <GhostButton icon className={cn("size-7 shrink-0", count ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(type)}>
+                  <div className="grow">{!!qty && `x${ qty }`}</div>
+                  <GhostButton icon className={cn("size-7 shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
                     <LucideX />
                   </GhostButton>
-                  <GhostButton icon className={cn("size-7 shrink-0", count ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(type)}>
+                  <GhostButton icon className={cn("size-7 shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(antenna.id)}>
                     <LucideMinus />
                   </GhostButton>
-                  <GhostButton icon className={cn("size-7 shrink-0")} onClick={() => addAntenna(type)} >
+                  <GhostButton icon className={cn("size-7 shrink-0")} onClick={() => addAntenna(antenna.id)} >
                     <LucidePlus />
                   </GhostButton>
                 </div>
@@ -575,7 +561,7 @@ function DistanceStrengthCalculator(props: {
 function PlanetDistanceTableView(props: {
   maximumRange: number,
   mode: "direct" | "relay",
-  planetData: ParsedPlanetDistancedStrengthsType
+  planetData: PlanetData
 }) {
 
   const [ _from, setFrom ] = useState<"Kerbin" | string>("Kerbin")
@@ -672,7 +658,7 @@ function PlanetDistanceStrengthCell(props: {
 function PlanetSelectMenu(props: {
   value: string,
   onValueChange: (planet: string) => void,
-  planetData: ParsedPlanetDistancedStrengthsType
+  planetData: PlanetData
 }) {
   return (
     <Menu.Root>

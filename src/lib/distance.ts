@@ -1,13 +1,17 @@
 import { getStrength } from "./antenna"
-import type { ParsedPlanetDistancedStrengthsType } from "./packages"
+import type { PlanetData } from "./packages"
 
-export function getSignalStrengthDistanceMap(from: string, maxRange: number, planetDistanceMap: ParsedPlanetDistancedStrengthsType) {
+export function getSignalStrengthDistanceMap(
+  from: string,
+  maxRange: number,
+  planetData: PlanetData
+) {
 
-  if (from in planetDistanceMap === false) {
+  if (from in planetData === false) {
     return null
   }
 
-  const map = planetDistanceMap[ from ]
+  const map = planetData[ from ]
 
   const result: {
     label: string,
@@ -33,7 +37,9 @@ export function getSignalStrengthDistanceMap(from: string, maxRange: number, pla
   return result
 }
 
-export function symmetrizePlanetDistanceMap(planetData: ParsedPlanetDistancedStrengthsType) {
+export function symmetrizePlanetDistanceMap(
+  planetData: PlanetData
+) {
   const getSortedPair = (a: string, b: string) => {
     return [ a, b ].sort().join('|') as `${ string }|${ string }`
   }

@@ -1,4 +1,4 @@
-import type { BasePlanetDistanceMap } from "./packages/types"
+import type { PlanetDefinition } from "./packages/types"
 
 
 // export const antennaTypes = [ 'c16', 'c16s', 'c88', 'cdtsm1', 'chg55', 'hg5', 'ra100', 'ra15', 'ra2' ] as const

@@ -2,12 +2,12 @@
 
 export type Package = {
   name: string
-  planets: Record<string, BasePlanetDistanceMap>,
-  antennas: Record<string, BaseAntennaData>,
+  planets: Record<string, PlanetDefinition>,
+  antennas: Record<string, AntennaDefinition>,
   dsnLevels: Record<string, { rating: number }>
 }
 
-export type BaseAntennaData = {
+export type AntennaDefinition = {
   label: string,
   rating: number,
   type: "direct" | "relay",
@@ -17,7 +17,9 @@ export type BaseAntennaData = {
   image: string,
 }
 
-export type BasePlanetDistanceMap = {
+export type DistanceRange = { min: number, max: number }
+
+export type PlanetDefinition = {
   image?: string,
-  distanceToPlanets: Record<string, { min: number, max: number } | null>
+  distanceToPlanets: Record<string, DistanceRange | null>
 }
