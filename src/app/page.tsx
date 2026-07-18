@@ -18,6 +18,7 @@ import { initialData, parseAppData, type AppData } from "@/lib/app-state"
 import { generateShareURL, loadFromLocalStorage, saveToLocalStorage } from "@/lib/persistance"
 
 
+
 export default function Home() {
   const [ data, setData ] = useState<AppData | undefined>(undefined)
 
@@ -31,7 +32,7 @@ export default function Home() {
       setData(parseAppData(fromSp, initialData))
       const url = new URL(window.location.href)
       url.searchParams.delete("data")
-      window.history.replaceState({}, "", url);
+      window.history.replaceState({}, "", url)
     } else {
       setData(loadFromLocalStorage())
     }
