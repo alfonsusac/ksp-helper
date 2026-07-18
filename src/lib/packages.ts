@@ -1,12 +1,24 @@
+import { commnetAntennasExtension } from "@/packages/commnet-antennas-ext"
 import { outerplanets } from "../packages/outer-planets-mod"
 import { stock } from "../packages/stock"
 import type { AntennaDefinition, DistanceRange } from "../packages/types"
 import { symmetrizePlanetDistanceMap } from "./distance"
 import { mapToListWithId } from "./object"
+import { restockplus } from "@/packages/restock-plus"
+import { dmagic } from "@/packages/dmagic"
+import { probesplus } from "@/packages/probesplus"
+import { jsx2antenna } from "@/packages/jx2antenna"
+import { venssr } from "@/packages/venssr"
 
 export const packages = {
   stock,
-  outerplanets
+  outerplanets,
+  restockplus,
+  commnetAntennasExtension,
+  dmagic,
+  venssr,
+  jsx2antenna,
+  probesplus,
 } as const
 
 export const packageNames = Object.keys(packages)

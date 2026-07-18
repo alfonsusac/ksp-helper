@@ -5,7 +5,7 @@ import { Slider, CheckboxRow, SelectRow, TabSelectRow, MenuPopup, MenuHelperText
 import { GhostButton } from "../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../lib/antenna"
 import { prettyNum } from "../lib/prettier"
-import { EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowUpRight, LucideBadgeQuestionMark, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideSatelliteDish, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
+import { EmojioneMonotoneSatelliteAntenna, EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowUpRight, LucideBadgeQuestionMark, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideSatelliteDish, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
 import { cn } from "../ui/cn"
 import { CitationList } from "../ui/list"
 import { getSignalStrengthDistanceMap } from "../lib/distance"
@@ -41,6 +41,12 @@ export default function Home() {
       contents: {
         stock: true,
         outerplanets: false,
+        commnetAntennasExtension: false,
+        restockplus: false,
+        dmagic: false,
+        jsx2antenna: false,
+        probesplus: false,
+        venssr: false,
       }
     },
   })
@@ -133,7 +139,7 @@ export default function Home() {
       {
         zeroReason &&
         <div className="text-sm p-2 border border-red-300 rounded-md bg-red-50 mb-8 text-red-600 px-3">
-          <div className="flex gap-1 items-center"> 
+          <div className="flex gap-1 items-center">
             <LucideBadgeQuestionMark />
             <div className="text-red-600">Reason why its zero</div>
           </div>
@@ -205,15 +211,16 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-0.5">
           <label className="text-xs text-slate-500">Additional Contents</label>
-          <div className="flex flex-col gap-1 mt-2">
+          <div className="flex flex-col gap-0 mt-2">
             {packageNames.map(pack => {
               if (pack === "stock") return
               const pkg = packages[ pack as PackageNames ]
-              const antennaCount = pkg.antennas.length
+              const antennaCount = Object.keys(pkg.antennas).length
               const planetCount = Object.keys(pkg.planets).length
               return (
                 <CheckboxRow
                   key={pack}
+                  className="w-full"
                   label={<div className="flex flex-col leading-4">
                     <div>{pkg.name}</div>
                     <div className="text-xs text-slate-400 leading-5 ">
@@ -357,8 +364,6 @@ function BodyDetailInput(props: {
     props.onChange({ ...props.payload })
   }
 
-  // const antennaTypes = Object.keys(props.antennas)
-
   return (
     <div className="flex flex-col gap-3">
       <header>
@@ -449,35 +454,42 @@ function AntennaInput(props: {
           const qty = props.value.get(antenna.id) ?? 0
           if (qty === 0) return null
           return (
-            <div key={antenna.id} className={cn(
-              "border rounded-md p-2 flex gap-2 text-[0.7em] tracking-tight",
-              qty ? "border-slate-200" : "border-transparent",
-              "hover:border-slate-400",
-              "cursor-pointer select-none"
-            )}
-            >
-              <img
-                className="aspect-square object-contain max-w-14 max-h-14"
-                src={antenna.image}
-              />
-              <div className="flex flex-col w-full">
-                <div className="text-pretty leading-4">
-                  {antenna.label}
+            <div key={antenna.id} className="flex items-start">
+              <div className={cn(
+                "grow h-full",
+                "border rounded-md p-2 flex gap-2 text-[0.7em] tracking-tight",
+                qty ? "border-slate-200" : "border-transparent",
+                "hover:border-slate-400",
+                "cursor-pointer select-none",
+              )}
+              >
+                <div className="aspect-square object-contain max-w-14 max-h-14 shrink-0 w-full">
+                  {antenna.image ?
+                    <img
+                      className="aspect-square object-contain"
+                      src={antenna.image}
+                    /> : <EmojioneMonotoneSatelliteAntenna className="size-full text-slate-300 p-2" />
+                  }
                 </div>
-                <div className=" text-slate-400 grow">
-                  {prettyNum(antenna.rating)} <span className="capitalize">({(antenna.type)})</span>
-                </div>
-                <div className="flex text-sm items-center">
-                  <div className="grow">{!!qty && `x${ qty }`}</div>
-                  <GhostButton icon className={cn("size-7 shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
-                    <LucideX />
-                  </GhostButton>
-                  <GhostButton icon className={cn("size-7 shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(antenna.id)}>
-                    <LucideMinus />
-                  </GhostButton>
-                  <GhostButton icon className={cn("size-7 shrink-0")} onClick={() => addAntenna(antenna.id)} >
-                    <LucidePlus />
-                  </GhostButton>
+                <div className="flex flex-col grow">
+                  <div className="text-pretty leading-4 shrink-0">
+                    {antenna.label}
+                  </div>
+                  <div className=" text-slate-400 grow shrink-0">
+                    {prettyNum(antenna.rating)} <span className="capitalize">({(antenna.type)})</span>
+                  </div>
+                  <div className="flex text-sm items-center shrink-0">
+                    <div className="grow">{!!qty && `x${ qty }`}</div>
+                    <GhostButton icon className={cn("size-7 shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
+                      <LucideX />
+                    </GhostButton>
+                    <GhostButton icon className={cn("size-7 shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(antenna.id)}>
+                      <LucideMinus />
+                    </GhostButton>
+                    <GhostButton icon className={cn("size-7 shrink-0")} onClick={() => addAntenna(antenna.id)} >
+                      <LucidePlus />
+                    </GhostButton>
+                  </div>
                 </div>
               </div>
             </div>
@@ -489,7 +501,6 @@ function AntennaInput(props: {
           render={
             <GhostButton className="text-sm p-2 px-3 rounded-md justify-start gap-2">
               <LucidePlus />
-              {/* <LucideSatelliteDish /> */}
               <StreamlineWifiAntennaRemix className="size-4 mr-1" />
               Add Antenna
             </GhostButton>
@@ -514,11 +525,18 @@ function AntennaInput(props: {
                             {antenna.image === undefined ? <>
                               <div className="bg-slate-300 size-full rounded-full shadow-[inset_0.25rem_0_10px_#0045]"></div>
                             </> : <>
-                              <img src={antenna.image} className="object-contain w-full h-full" />
+                              <div className="aspect-square max-w-14 max-h-14">
+                                {antenna.image ?
+                                  <img
+                                    className="aspect-square object-contain"
+                                    src={antenna.image}
+                                  /> : <EmojioneMonotoneSatelliteAntenna className="size-9 text-slate-300" />
+                                }
+                              </div>
                             </>}
                           </div>
                           <div className="flex flex-col">
-                            <div>{antenna.id}</div>
+                            <div className="text-xs">{antenna.label}</div>
                             <div className="capitalize text-[0.8em] text-slate-400">{prettyNum(antenna.rating)}</div>
                           </div>
                         </MenuItem>

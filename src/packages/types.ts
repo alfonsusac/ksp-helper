@@ -12,8 +12,8 @@ export type AntennaDefinition = {
   rating: number,
   type: "direct" | "relay",
   combinabilityExponent: number
-  packetSizeInMits: number,
-  bandwidthInMitsPerSec: number,
+  // packetSizeInMits: number,
+  // bandwidthInMitsPerSec: number,
   image: string,
 }
 

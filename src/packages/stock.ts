@@ -9,8 +9,8 @@ export const stock: Package = {
       rating: 500_000, // 500k
       type: "direct",
       combinabilityExponent: 1,
-      packetSizeInMits: 2,
-      bandwidthInMitsPerSec: 3.3333,
+      // packetSizeInMits: 2,
+      // bandwidthInMitsPerSec: 3.3333,
       image: "https://wiki.kerbalspaceprogram.com/images/4/49/Communotron_16.png",
     },
     'c16s': {
@@ -18,8 +18,8 @@ export const stock: Package = {
       rating: 500_000, // 500k
       type: "direct",
       combinabilityExponent: 0,
-      packetSizeInMits: 2,
-      bandwidthInMitsPerSec: 3.3333,
+      // packetSizeInMits: 2,
+      // bandwidthInMitsPerSec: 3.3333,
       image: "https://wiki.kerbalspaceprogram.com/images/d/da/Communotron_16-S.png",
     },
     'cdtsm1': {
@@ -27,8 +27,8 @@ export const stock: Package = {
       rating: 2_000_000_000, // 2G
       type: "direct",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 2,
-      bandwidthInMitsPerSec: 5.7143,
+      // packetSizeInMits: 2,
+      // bandwidthInMitsPerSec: 5.7143,
       image: "https://wiki.kerbalspaceprogram.com/images/a/aa/Comms_DTS-M1_02.png",
     },
     'chg55': {
@@ -36,8 +36,8 @@ export const stock: Package = {
       rating: 15_000_000_000, // 15G
       type: "direct",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 3,
-      bandwidthInMitsPerSec: 20,
+      // packetSizeInMits: 3,
+      // bandwidthInMitsPerSec: 20,
       image: "https://wiki.kerbalspaceprogram.com/images/3/30/Commutron_HG-55.png",
     },
     'c88': {
@@ -45,8 +45,8 @@ export const stock: Package = {
       rating: 100_000_000_000, // 100G
       type: "direct",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 2,
-      bandwidthInMitsPerSec: 20,
+      // packetSizeInMits: 2,
+      // bandwidthInMitsPerSec: 20,
       image: "https://wiki.kerbalspaceprogram.com/images/c/cd/Communotron_88-88.png",
     },
     'hg5': {
@@ -54,8 +54,8 @@ export const stock: Package = {
       rating: 5_000_000, // 5M
       type: "relay",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 2,
-      bandwidthInMitsPerSec: 5.713,
+      // packetSizeInMits: 2,
+      // bandwidthInMitsPerSec: 5.713,
       image: "https://wiki.kerbalspaceprogram.com/images/7/75/HG-5_High_Gain_Antenna_%28%2Bopen%29.png",
     },
     'ra2': {
@@ -63,8 +63,8 @@ export const stock: Package = {
       rating: 2_000_000_000, // 2G
       type: "relay",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 1,
-      bandwidthInMitsPerSec: 2.8571,
+      // packetSizeInMits: 1,
+      // bandwidthInMitsPerSec: 2.8571,
       image: "https://wiki.kerbalspaceprogram.com/images/e/e6/RA-2_Relay_Antenna.png"
     },
     'ra15': {
@@ -72,8 +72,8 @@ export const stock: Package = {
       rating: 15_000_000_000, // 15G
       type: "relay",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 2,
-      bandwidthInMitsPerSec: 5.7143,
+      // packetSizeInMits: 2,
+      // bandwidthInMitsPerSec: 5.7143,
       image: "https://wiki.kerbalspaceprogram.com/images/7/7b/RA-15_Relay_Antenna.png",
     },
     'ra100': {
@@ -81,8 +81,8 @@ export const stock: Package = {
       rating: 100_000_000_000, // 100G
       type: "relay",
       combinabilityExponent: 0.75,
-      packetSizeInMits: 4,
-      bandwidthInMitsPerSec: 11.4286,
+      // packetSizeInMits: 4,
+      // bandwidthInMitsPerSec: 11.4286,
       image: "https://wiki.kerbalspaceprogram.com/images/2/28/RA-100_Relay_Antenna.png",
     },
   },
