@@ -1,8 +1,9 @@
-import { useId, type ReactNode } from "react"
+import { useId, type ComponentProps, type ReactNode } from "react"
 import { Select as BSelect } from '@base-ui/react/select'
 import { cn } from "./cn"
 import { LucideCheck, LucideChevronDown } from "./icons"
 import { Slider as BSlider } from '@base-ui/react/slider'
+import { Menu } from '@base-ui/react/menu'
 
 export type SelectPayload = {
   value: string,
@@ -154,7 +155,7 @@ export function TabSelectRow<const T extends SelectPayload>(props: {
   )
 }
 
-export default function Slider(props: {
+export function Slider(props: {
   min: number,
   max: number,
   value: number,
@@ -178,5 +179,40 @@ export default function Slider(props: {
         </BSlider.Track>
       </BSlider.Control>
     </BSlider.Root>
+  )
+}
+
+export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
+  return (
+    <Menu.Popup {...props} className={cn(
+      "bg-background p-2 rounded-lg border border-slate-200",
+      "flex flex-col gap-2",
+      "shadow-2xl shadow-slate-300",
+      "transition-all duration-75",
+      "data-starting-style:opacity-0",
+      "data-ending-style:opacity-0",
+      "font-mono",
+      props.className
+    )} />
+  )
+}
+
+export function MenuHelperText(props: ComponentProps<"div">) {
+  return (
+    <div {...props} className={cn("text-xs text-slate-400 pl-2", props.className)} />
+  )
+}
+
+export function MenuItem(props: ComponentProps<typeof Menu[ 'Item' ]>) {
+  return (
+    <Menu.Item 
+      {...props}
+      className={cn(
+        "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",
+        "cursor-pointer",
+        "flex gap-2 items-center",
+        props.className
+      )}
+    />
   )
 }

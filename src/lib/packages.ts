@@ -12,6 +12,11 @@ export const packages = {
 export const packageNames = Object.keys(packages)
 export type PackageNames = keyof typeof packages
 
+export function getPackageName(id: string) {
+  if (id in packages === false) return null
+  return packages[ id as keyof typeof packages ].name
+}
+
 
 // Parsed
 export type AntennaData = ReturnType<typeof getAntennaData>
@@ -24,12 +29,17 @@ export function getData(option: Record<PackageNames, boolean>) {
 }
 
 function getAntennaData(option: Record<PackageNames, boolean>) {
-  const map = new Map<string, AntennaDefinition>()
+  const map = new Map<string, AntennaDefinition & {
+    package: string,
+  }>()
 
-  Object.entries(packages).forEach(([ name, pack ]) => {
-    if (!option[ name as PackageNames ]) return
+  Object.entries(packages).forEach(([ packName, pack ]) => {
+    if (!option[ packName as PackageNames ]) return
     Object.entries(pack.antennas ?? {}).forEach(([ satName, sat ]) => {
-      map.set(satName, sat)
+      map.set(satName, {
+        ...sat,
+        package: packName
+      })
     })
   })
 

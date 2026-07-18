@@ -1,18 +1,18 @@
 "use client"
 
 import { Fragment, useEffect, useState } from "react"
-import Slider, { CheckboxRow, SelectRow, TabSelectRow } from "../ui/input"
+import { Slider, CheckboxRow, SelectRow, TabSelectRow, MenuPopup, MenuHelperText, MenuItem } from "../ui/input"
 import { GhostButton } from "../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, isShipOnlyHaveDirectAntenna, type AntennaPayload, type BodyPayload } from "../lib/antenna"
 import { prettyNum } from "../lib/prettier"
-import { IcBaselineDiscord, LucideArrowUpRight, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideX, MdiGithub } from "../ui/icons"
+import { EosIconsPod, IcBaselineDiscord, LucideArrowUpRight, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideSatelliteDish, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
 import { cn } from "../ui/cn"
 import { CitationList } from "../ui/list"
 import { getSignalStrengthDistanceMap } from "../lib/distance"
 import { formatCss, interpolate } from "culori"
 import { SignalSymbol } from "../ui/common"
 import { Menu } from '@base-ui/react/menu'
-import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
+import { getData, getPackageName, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
 import { groupToList } from "@/lib/object"
 
 
@@ -198,10 +198,8 @@ export default function Home() {
         Settings
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
         <div className="flex flex-col gap-0.5">
           <label className="text-xs text-slate-500">Additional Contents</label>
-
           <div className="flex flex-col gap-1 mt-2">
             {packageNames.map(pack => {
               if (pack === "stock") return
@@ -214,13 +212,10 @@ export default function Home() {
                   label={<div className="flex flex-col leading-4">
                     <div>{pkg.name}</div>
                     <div className="text-xs text-slate-400 leading-5 ">
-                      {
-                        [
-                          !!antennaCount && `${ antennaCount } antennas`,
-                          !!planetCount && `${ planetCount } planets`
-                        ].filter(Boolean).join(' + ')
-                      }
-
+                      {[
+                        !!antennaCount && `${ antennaCount } antennas`,
+                        !!planetCount && `${ planetCount } planets`
+                      ].filter(Boolean).join(' + ')}
                     </div>
                   </div>}
                   onValueChange={(val) => changeContentToggle(pack as PackageNames, val)}
@@ -375,15 +370,18 @@ function BodyDetailInput(props: {
             value={props.payload.level}
           />
           :
-          <>
-            <div className="flex">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center">
               <CheckboxRow
-                label="Has Command Module?"
+                label={<>
+                  <EosIconsPod className="size-6 rotate-45 -translate-y-0.5" />
+                  Has Command Module?
+                </>}
                 value={props.payload.hasCommandModule}
                 onValueChange={changeHasCommandModule}
               />
               <div className="grow" />
-              <GhostButton className="text-sm p-2 px-3 rounded-md w-fit self-end" onClick={() => {
+              <GhostButton className="text-sm p-2 px-3 rounded-md w-fit" onClick={() => {
                 props.antennas.forEach(antenna => clearAntenna(antenna.id))
               }}>Reset All</GhostButton>
             </div>
@@ -392,7 +390,7 @@ function BodyDetailInput(props: {
               onChange={changeAntennaPayload}
               antennas={props.antennas}
             />
-          </>
+          </div>
       }
     </div>
   )
@@ -423,11 +421,14 @@ function AntennaInput(props: {
     props.onChange(props.value)
   }
 
+  const groupedAntennas = groupToList(props.antennas, e => e.package)
+
   return (
     <div className="flex flex-col gap-2">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-        {(props.antennas).map((antenna) => {
+        {props.antennas.map((antenna) => {
           const qty = props.value.get(antenna.id) ?? 0
+          if (qty === 0) return null
           return (
             <div key={antenna.id} className={cn(
               "border rounded-md p-2 flex gap-2 text-[0.7em] tracking-tight",
@@ -464,6 +465,54 @@ function AntennaInput(props: {
           )
         })}
       </div>
+      <Menu.Root>
+        <Menu.Trigger
+          render={
+            <GhostButton className="text-sm p-2 px-3 rounded-md justify-start gap-2">
+              <LucidePlus />
+              {/* <LucideSatelliteDish /> */}
+              <StreamlineWifiAntennaRemix className="size-4 mr-1" />
+              Add Antenna
+            </GhostButton>
+          }
+        >
+        </Menu.Trigger>
+        <Menu.Portal>
+          <Menu.Backdrop />
+          <Menu.Positioner side="top" sideOffset={4}>
+            <MenuPopup>
+              {groupedAntennas.map((pkg) => {
+                const packageLabel = getPackageName(pkg.key)
+                return <div key={pkg.key} className="flex flex-col gap-1">
+                  <MenuHelperText>{packageLabel}</MenuHelperText>
+                  <div className="grid grid-cols-3 gap-3">
+                    {pkg.list.map(antenna => {
+                      return (
+                        <MenuItem key={antenna.id}
+                          onClick={() => addAntenna(antenna.id)}
+                        >
+                          <div className="size-10 rounded-full shrink-0">
+                            {antenna.image === undefined ? <>
+                              <div className="bg-slate-300 size-full rounded-full shadow-[inset_0.25rem_0_10px_#0045]"></div>
+                            </> : <>
+                              <img src={antenna.image} className="object-contain w-full h-full" />
+                            </>}
+                          </div>
+                          <div className="flex flex-col">
+                            <div>{antenna.id}</div>
+                            <div className="capitalize text-[0.8em] text-slate-400">{prettyNum(antenna.rating)}</div>
+                          </div>
+                        </MenuItem>
+                      )
+                    })}
+                  </div>
+                </div>
+              })}
+            </MenuPopup>
+          </Menu.Positioner>
+        </Menu.Portal>
+      </Menu.Root>
+
 
     </div>
   )
@@ -500,7 +549,7 @@ function DistanceStrengthCalculator(props: {
     <div className="flex flex-col gap-4">
 
       <div className="flex text-xs gap-4 items-center">
-        <div className="place-items-end min-w-34">Distance: {prettyNum(distance)}</div>
+        <div className="place-items-end min-w-34">Distance: {prettyNum(distance, "k", "m")}</div>
         <div className="border-l border-slate-300 h-6" />
         <div className="flex gap-2 grow max-w-20">
           <SignalSymbol strength={signalStrength} />
@@ -679,28 +728,16 @@ function PlanetSelectMenu(props: {
       <Menu.Portal>
         <Menu.Backdrop />
         <Menu.Positioner side="top" sideOffset={4}>
-          <Menu.Popup className={cn(
-            "bg-background p-2 rounded-lg border border-slate-200",
-            "flex flex-col gap-2",
-            "shadow-2xl shadow-slate-300",
-            "transition-all duration-75",
-            "data-starting-style:opacity-0",
-            "data-ending-style:opacity-0",
-          )}>
+          <MenuPopup>
             {groupedPlanet.map((pkg) => {
               const packageLabel = packages[ pkg.key as keyof typeof packages ].name
-              return <div className="flex flex-col gap-1">
-                <div className="text-xs text-slate-400 pl-2">{packageLabel}</div>
+              return <div key={pkg.key} className="flex flex-col gap-1">
+                <MenuHelperText>{packageLabel}</MenuHelperText>
                 <div className="grid grid-cols-3 gap-3">
                   {pkg.list.map(planet => {
                     return (<>
-                      <Menu.Item key={planet.id}
+                      <MenuItem key={planet.id}
                         onClick={() => props.onValueChange(planet.id)}
-                        className={cn(
-                          "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",
-                          "cursor-pointer",
-                          "flex gap-2 items-center"
-                        )}
                       >
                         <div className="size-10 rounded-full shrink-0">
                           {planet.image === undefined ? <>
@@ -713,13 +750,13 @@ function PlanetSelectMenu(props: {
                           <div>{planet.id}</div>
                           <div className="capitalize text-[0.8em] text-slate-400">{packageLabel}</div>
                         </div>
-                      </Menu.Item>
+                      </MenuItem>
                     </>)
                   })}
                 </div>
               </div>
             })}
-          </Menu.Popup>
+          </MenuPopup>
         </Menu.Positioner>
       </Menu.Portal>
     </Menu.Root>
