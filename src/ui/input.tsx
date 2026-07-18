@@ -194,6 +194,8 @@ export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
       "data-starting-style:opacity-0",
       "data-ending-style:opacity-0",
       "font-mono",
+      "max-h-[52vh]",
+      "overflow-auto",
       props.className
     )} />
   )
