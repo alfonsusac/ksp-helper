@@ -15,11 +15,11 @@ import { Menu } from '@base-ui/react/menu'
 import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
 
 
-const defaultProp = {
+const defaultProp = () => ({
   level: "1",
   hasCommandModule: true,
   antennas: new Map<string, number>
-} as const
+} as const)
 
 export default function Home() {
   const [ data, setData ] = useState<{
@@ -31,8 +31,8 @@ export default function Home() {
       contents: Record<PackageNames, boolean>
     }
   }>({
-    '0': { ...defaultProp, type: "ksc" },
-    '1': { ...defaultProp, type: "ship" },
+    '0': { ...defaultProp(), type: "ksc" },
+    '1': { ...defaultProp(), type: "ship" },
     settings: {
       rangeModifier: "1",
       dsnModifier: "1",
