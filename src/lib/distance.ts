@@ -1,7 +1,7 @@
-import { planetData } from "@/constants"
 import { getStrength } from "./antenna"
+import type { ParsedPlanetDistancedStrengthsType } from "./packages"
 
-export function getSignalStrengthDistanceMap(from: string, maxRange: number) {
+export function getSignalStrengthDistanceMap(from: string, maxRange: number, planetDistanceMap: ParsedPlanetDistancedStrengthsType) {
 
   if (from in planetDistanceMap === false) {
     return null
@@ -17,8 +17,8 @@ export function getSignalStrengthDistanceMap(from: string, maxRange: number) {
     maxStrength: number | null,
   }[] = []
 
-  for (const planetName in map) {
-    const distanceToPlanet = map[ planetName ]
+  for (const planetName in map.to) {
+    const distanceToPlanet = map.to[ planetName ]
     const minDistance = distanceToPlanet?.min ?? null
     const maxDistance = distanceToPlanet?.max ?? null
     result.push({
@@ -33,10 +33,7 @@ export function getSignalStrengthDistanceMap(from: string, maxRange: number) {
   return result
 }
 
-
-
-export const planetDistanceMap = (() => {
-
+export function symmetrizePlanetDistanceMap(planetData: ParsedPlanetDistancedStrengthsType) {
   const getSortedPair = (a: string, b: string) => {
     return [ a, b ].sort().join('|') as `${ string }|${ string }`
   }
@@ -48,9 +45,11 @@ export const planetDistanceMap = (() => {
     planets.add(from)
     const distanceData = planetData[ from as keyof typeof planetData ].to
     for (const to in distanceData) {
-      planets.add(to)
+      // planets.add(to)
       const sortedPair = getSortedPair(from, to)
-      mappedRawDistanceData.set(sortedPair, distanceData[ to as keyof typeof distanceData ])
+      const distanceTo = distanceData[ to as keyof typeof distanceData ]
+      if (distanceTo === null) continue
+      mappedRawDistanceData.set(sortedPair, distanceTo)
     }
   }
 
@@ -78,6 +77,10 @@ export const planetDistanceMap = (() => {
 
   // console.log(newLookup)
   return newLookup
-})()
+}
+
+
+
+// export const planetDistanceMap = symmetrizePlanetDistanceMap(planetData)
 
 

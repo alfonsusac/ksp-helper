@@ -1,18 +1,18 @@
 "use client"
 
 import { Fragment, useEffect, useState } from "react"
-import Slider, { CheckboxRow, SelectRow, TabSelectRow } from "./ui/input"
-import { GhostButton } from "./ui/button"
-import { antennaData, antennaTypes, planetData, stockPlanets, type AntennaTypes } from "@/constants"
-import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, isShipOnlyHaveDirectAntenna, type AntennaPayload, type BodyPayload } from "./lib/antenna"
-import { prettyNum } from "./lib/prettier"
-import { IcBaselineDiscord, LucideArrowUpRight, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideX, MdiGithub } from "./ui/icons"
-import { cn } from "./ui/cn"
-import { CitationList } from "./ui/list"
-import { getSignalStrengthDistanceMap } from "./lib/distance"
+import Slider, { CheckboxRow, SelectRow, TabSelectRow } from "../ui/input"
+import { GhostButton } from "../ui/button"
+import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, isShipOnlyHaveDirectAntenna, type AntennaPayload, type BodyPayload } from "../lib/antenna"
+import { prettyNum } from "../lib/prettier"
+import { IcBaselineDiscord, LucideArrowUpRight, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideX, MdiGithub } from "../ui/icons"
+import { cn } from "../ui/cn"
+import { CitationList } from "../ui/list"
+import { getSignalStrengthDistanceMap } from "../lib/distance"
 import { formatCss, interpolate } from "culori"
-import { SignalSymbol } from "./ui/common"
+import { SignalSymbol } from "../ui/common"
 import { Menu } from '@base-ui/react/menu'
+import { getData, packageNames, packages, type PackageNames, type ParsedAntennas, type ParsedPlanetDistancedStrengthsType } from "../lib/packages"
 
 
 const defaultProp = {
@@ -38,6 +38,7 @@ export default function Home() {
     settings: {
       rangeModifier: string,
       dsnModifier: string,
+      contents: Record<PackageNames, boolean>
     }
   }>({
     '0': {
@@ -50,8 +51,12 @@ export default function Home() {
     },
     settings: {
       rangeModifier: "1",
-      dsnModifier: "1"
-    }
+      dsnModifier: "1",
+      contents: {
+        stock: true,
+        outerplanets: false,
+      }
+    },
   })
   const mode = data[ 0 ].type === "ksc" ? "direct" : "relay"
   const rangeModifier = parseInt(data.settings.rangeModifier) || 1
@@ -65,20 +70,24 @@ export default function Home() {
     data[ which ] = input
     setData({ ...data })
   }
-  const changeSetting = (setting: keyof typeof data[ 'settings' ], value: string) => {
+  const changeModifier = (setting: "rangeModifier" | "dsnModifier", value: string) => {
     data.settings[ setting ] = value
     setData({ ...data })
   }
+  const changeContentToggle = (which: PackageNames, value: boolean) => {
+    data.settings.contents[ which ] = value
+    setData({ ...data })
+  }
 
+  const { antennas, planets } = getData(data.settings.contents)
 
-
-  const maximumRange = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier })
+  const maximumRange = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
   const isBothDirectAntenna = (() => {
     if (data[ 0 ].type === "ksc" || data[ 1 ].type === "ksc") return false
 
-    const ship1directOnly = isShipOnlyHaveDirectAntenna(data[ 0 ])
-    const ship2directOnly = isShipOnlyHaveDirectAntenna(data[ 1 ])
+    const ship1directOnly = isShipOnlyHaveDirectAntenna(data[ 0 ], antennas)
+    const ship2directOnly = isShipOnlyHaveDirectAntenna(data[ 1 ], antennas)
 
     if (ship1directOnly && ship2directOnly) return true
 
@@ -132,9 +141,9 @@ export default function Home() {
 
       <hr className="my-2 border-slate-200" />
 
-      <BodyDetailInput which={0} payload={data[ 0 ]} onChange={(n) => changeData(0, n)} dsnModifier={dsnModifier} mode={mode} />
+      <BodyDetailInput which={0} payload={data[ 0 ]} onChange={(n) => changeData(0, n)} dsnModifier={dsnModifier} mode={mode} antennas={antennas} />
       <hr className="my-2 border-slate-200" />
-      <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} dsnModifier={dsnModifier} mode={mode} />
+      <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} dsnModifier={dsnModifier} mode={mode} antennas={antennas} />
 
       <hr className="mt-2 border-slate-200" />
 
@@ -195,7 +204,7 @@ export default function Home() {
             <div className=" text-sm text-slate-400 mb-2">
               Will it reach?
             </div>
-            <PlanetDistanceTableView maximumRange={maximumRange} mode={mode} />
+            <PlanetDistanceTableView maximumRange={maximumRange} mode={mode} planetData={planets} />
           </div>
         </div>
 
@@ -207,30 +216,68 @@ export default function Home() {
         Settings
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
         <div className="flex flex-col gap-0.5">
-          <label className="text-xs text-slate-500">Range Modifier</label>
-          <div className="flex gap-2 items-center">
-            <input className="p-2 text-sm focus:outline-none border border-slate-200 rounded-md max-w-60 px-3" type="number"
-              value={data.settings.rangeModifier}
-              onChange={(e) => {
-                changeSetting("rangeModifier", e.target.value)
-              }} />
-            <GhostButton icon onClick={() => changeSetting("rangeModifier", "1")}>
-              <LucideRotateCcw />
-            </GhostButton>
+          <label className="text-xs text-slate-500">Additional Contents</label>
+
+          <div className="flex flex-col gap-1 mt-2">
+            {packageNames.map(pack => {
+              if (pack === "stock") return
+              const pkg = packages[ pack as PackageNames ]
+              const antennaCount = Object.keys(pkg.antennas).length
+              const planetCount = Object.keys(pkg.planets).length
+              return (
+                <CheckboxRow
+                  key={pack}
+                  label={<div className="flex flex-col leading-4">
+                    <div>{pkg.name}</div>
+                    <div className="text-xs text-slate-400 leading-5 ">
+                      {
+                        [
+                          !!antennaCount && `${ antennaCount } antennas`,
+                          !!planetCount && `${ planetCount } planets`
+                        ].filter(Boolean).join(' + ')
+                      }
+
+                    </div>
+                  </div>}
+                  onValueChange={(val) => changeContentToggle(pack as PackageNames, val)}
+                  value={data.settings.contents[ pack as PackageNames ]}
+                />
+              )
+            })}
           </div>
         </div>
-        <div className="flex flex-col gap-0.5">
-          <label className="text-xs text-slate-500">DSN Modifier</label>
-          <div className="flex gap-2 items-center">
-            <input className="p-2 text-sm focus:outline-none border border-slate-200 rounded-md max-w-60 px-3" type="number"
-              value={data.settings.dsnModifier}
-              onChange={(e) => changeSetting("dsnModifier", e.currentTarget.value)} />
-            <GhostButton icon onClick={() => changeSetting("dsnModifier", "1")}>
-              <LucideRotateCcw />
-            </GhostButton>
+
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-0.5">
+            <label className="text-xs text-slate-500">Range Modifier</label>
+            <div className="flex gap-2 items-center">
+              <input className="p-2 text-sm focus:outline-none border border-slate-200 rounded-md max-w-60 px-3" type="number"
+                value={data.settings.rangeModifier}
+                onChange={(e) => {
+                  changeModifier("rangeModifier", e.target.value)
+                }} />
+              <GhostButton icon onClick={() => changeModifier("rangeModifier", "1")}>
+                <LucideRotateCcw />
+              </GhostButton>
+            </div>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <label className="text-xs text-slate-500">DSN Modifier</label>
+            <div className="flex gap-2 items-center">
+              <input className="p-2 text-sm focus:outline-none border border-slate-200 rounded-md max-w-60 px-3" type="number"
+                value={data.settings.dsnModifier}
+                onChange={(e) => changeModifier("dsnModifier", e.currentTarget.value)} />
+              <GhostButton icon onClick={() => changeModifier("dsnModifier", "1")}>
+                <LucideRotateCcw />
+              </GhostButton>
+            </div>
           </div>
         </div>
+
+
+
       </div>
 
       <hr className="my-2 border-slate-200" />
@@ -295,6 +342,7 @@ function BodyDetailInput(props: {
   dsnModifier: number,
   mode: "relay" | "direct",
   onChange: (newpayload: BodyPayload) => void,
+  antennas: ParsedAntennas,
 }) {
 
   const changeKSCLevel = (level: "1" | "2" | "3") => {
@@ -315,11 +363,13 @@ function BodyDetailInput(props: {
     props.onChange({ ...props.payload })
   }
 
-  const clearAntenna = (type: AntennaTypes) => {
+  const clearAntenna = (type: string) => {
     if (props.payload.type !== 'ship') return
     props.payload.antennae[ type ] = 0
     props.onChange({ ...props.payload })
   }
+
+  const antennaTypes = Object.keys(props.antennas)
 
   return (
     <div className="flex flex-col gap-3">
@@ -328,7 +378,7 @@ function BodyDetailInput(props: {
         <h2 className="text-lg">
           {props.payload.type === "ksc" ? "KSC" : "Ship"}
         </h2>
-        <div className="text-slate-400 text-xs">Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier, props.mode))}</div>
+        <div className="text-slate-400 text-xs">Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier, props.mode, props.antennas))}</div>
       </header>
       {
         props.payload.type === "ksc" ?
@@ -358,6 +408,7 @@ function BodyDetailInput(props: {
             <AntennaInput
               value={props.payload.antennae}
               onChange={changeAntennaPayload}
+              antennas={props.antennas}
             />
           </>
       }
@@ -369,20 +420,21 @@ function BodyDetailInput(props: {
 function AntennaInput(props: {
   value: AntennaPayload,
   onChange: (a: AntennaPayload) => void,
+  antennas: ParsedAntennas
 }) {
 
-  const addAntenna = (type: AntennaTypes) => {
+  const addAntenna = (type: string) => {
     props.value[ type ] += 1
     props.onChange({ ...props.value })
   }
 
-  const removeAntenna = (type: AntennaTypes) => {
+  const removeAntenna = (type: string) => {
     if (props.value[ type ] < 1) return
     props.value[ type ] -= 1
     props.onChange({ ...props.value })
   }
 
-  const clearAntenna = (type: AntennaTypes) => {
+  const clearAntenna = (type: string) => {
     props.value[ type ] = 0
     props.onChange({ ...props.value })
   }
@@ -390,7 +442,7 @@ function AntennaInput(props: {
   return (
     <div className="flex flex-col gap-2">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-        {antennaTypes.map(type => {
+        {Object.entries(props.antennas).map(([ type, antenna ]) => {
           const count = props.value[ type ]
           return (
             <div key={type} className={cn(
@@ -402,14 +454,14 @@ function AntennaInput(props: {
             >
               <img
                 className="aspect-square object-contain max-w-14 max-h-14"
-                src={antennaData[ type ].image}
+                src={antenna.image}
               />
               <div className="flex flex-col w-full">
                 <div className="text-pretty">
-                  {antennaData[ type ].label}
+                  {antenna.label}
                 </div>
                 <div className=" text-slate-400">
-                  {prettyNum(antennaData[ type ].rating)} <span className="capitalize">({(antennaData[ type ].type)})</span>
+                  {prettyNum(antenna.rating)} <span className="capitalize">({(antenna.type)})</span>
                 </div>
                 <div className="flex text-sm items-center">
                   <div className="grow">{!!count && `x${ count }`}</div>
@@ -522,28 +574,16 @@ function DistanceStrengthCalculator(props: {
 
 function PlanetDistanceTableView(props: {
   maximumRange: number,
-  mode: "direct" | "relay"
+  mode: "direct" | "relay",
+  planetData: ParsedPlanetDistancedStrengthsType
 }) {
 
   const [ _from, setFrom ] = useState<"Kerbin" | string>("Kerbin")
 
   const from = props.mode === "direct" ? "Kerbin" : _from
 
+  const result = getSignalStrengthDistanceMap(from, props.maximumRange, props.planetData)
 
-  const result = getSignalStrengthDistanceMap(from, props.maximumRange)
-
-  const getStrengthColor = (strength: number) => {
-    const gradient = interpolate(
-      [
-        "oklch(88.5% 0.062 18.334)",
-        "oklch(90.1% 0.076 70.697)",
-        "oklch(94.5% 0.129 101.54)",
-        "oklch(90.5% 0.093 164.15)"
-      ],
-      "oklch"
-    )
-    return formatCss(gradient(strength))
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -556,6 +596,7 @@ function PlanetDistanceTableView(props: {
             <PlanetSelectMenu
               value={from}
               onValueChange={setFrom}
+              planetData={props.planetData}
             />
           </>
         }
@@ -578,25 +619,50 @@ function PlanetDistanceTableView(props: {
             {result.map((row, i) => {
               return <Fragment key={i}>
                 <div className="h-6">{row.label}</div>
-                <div className="h-6 p-1 bg-slate-100 w-full rounded-md flex gap-2 items-center justify-center"
-                  style={{
-                    background: row.minStrength !== null ? getStrengthColor(row.minStrength) : undefined
-                  }}
-                >
-                  <SignalSymbol strength={row.minStrength ?? undefined} />
-                  {row.minStrength === null ? <></> : Math.round(row.minStrength * 100) + "%"}
-                </div>
-                <div className="h-6 p-1 bg-slate-100 w-full rounded-md flex gap-2 items-center justify-center"
-                  style={{
-                    background: row.maxStrength !== null ? getStrengthColor(row.maxStrength) : undefined
-                  }}
-                >
-                  <SignalSymbol strength={row.maxStrength ?? undefined} />
-                  {row.maxStrength === null ? <></> : Math.round(row.maxStrength * 100) + "%"}
-                </div>
+                <PlanetDistanceStrengthCell strength={row.minStrength} />
+                <PlanetDistanceStrengthCell strength={row.maxStrength} />
               </Fragment>
             })}
           </ div>
+      }
+    </div>
+  )
+}
+
+function PlanetDistanceStrengthCell(props: {
+  strength: number | null
+}) {
+  const getStrengthColor = (strength: number) => {
+    const gradient = interpolate(
+      [
+        "oklch(88.5% 0.062 18.334)",
+        "oklch(90.1% 0.076 70.697)",
+        "oklch(94.5% 0.129 101.54)",
+        "oklch(90.5% 0.093 164.15)"
+      ],
+      "oklch"
+    )
+    return formatCss(gradient(strength))
+  }
+
+  const scienceBonus = getScienceBonusfromSignalStrength(props.strength ?? 0)
+
+  return (
+    <div className="h-6 p-1 bg-slate-100 w-full rounded-md flex gap-2 items-center justify-center"
+      style={{
+        background: props.strength !== null ? getStrengthColor(props.strength) : undefined
+      }}
+    >
+      <SignalSymbol strength={props.strength ?? undefined} />
+      {props.strength === null ? <></> : Math.round(props.strength * 100) + "%"}
+      {props.strength !== null &&
+        <>
+          <div className="border-l border-slate-600/30 h-full" />
+          <SignalSymbol barClassname="bg-blue-500/20" />
+          <div className="text-blue-500 text-[0.9em]">
+            +{scienceBonus.bonus}%
+          </div>
+        </>
       }
     </div>
   )
@@ -606,6 +672,7 @@ function PlanetDistanceTableView(props: {
 function PlanetSelectMenu(props: {
   value: string,
   onValueChange: (planet: string) => void,
+  planetData: ParsedPlanetDistancedStrengthsType
 }) {
   return (
     <Menu.Root>
@@ -634,7 +701,7 @@ function PlanetSelectMenu(props: {
             "data-starting-style:opacity-0",
             "data-ending-style:opacity-0",
           )}>
-            {Object.entries(planetData).map(([ name, data ]) => {
+            {Object.entries(props.planetData).map(([ name, data ]) => {
               return <Menu.Item key={name}
                 onClick={() => props.onValueChange(name)}
                 className={cn(

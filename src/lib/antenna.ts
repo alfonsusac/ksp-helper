@@ -1,6 +1,7 @@
-import { antennaData, antennaTypes, kscDSNdata, signalStrengthToScienceBonusLookupMap, type AntennaTypes } from "@/constants"
+import { kscDSNdata, signalStrengthToScienceBonusLookupMap } from "@/constants"
+import type { ParsedAntennas } from "./packages"
 
-export type AntennaPayload = Record<AntennaTypes, number>
+export type AntennaPayload = Record<string, number>
 
 export type BodyPayload = {
   type: "ksc"
@@ -16,15 +17,16 @@ export function getMaximumRange(opts: {
   body2: BodyPayload,
   rangeModifier: number,
   dsnModifier: number,
+  antennaData: ParsedAntennas
 }) {
-  const ship1directOnly = isShipOnlyHaveDirectAntenna(opts.body1)
-  const ship2directOnly = isShipOnlyHaveDirectAntenna(opts.body2)
+  const ship1directOnly = isShipOnlyHaveDirectAntenna(opts.body1, opts.antennaData)
+  const ship2directOnly = isShipOnlyHaveDirectAntenna(opts.body2, opts.antennaData)
   if (ship1directOnly && ship2directOnly) return 0
 
   const mode = opts.body1.type === "ksc" ? "direct" : "relay"
 
-  const body1rating = getPowerPowerRating(opts.body1, opts.dsnModifier, mode)
-  const body2rating = getPowerPowerRating(opts.body2, opts.dsnModifier, mode)
+  const body1rating = getPowerPowerRating(opts.body1, opts.dsnModifier, mode, opts.antennaData)
+  const body2rating = getPowerPowerRating(opts.body2, opts.dsnModifier, mode, opts.antennaData)
   const maxRange = Math.sqrt(body1rating * body2rating)
   return maxRange * opts.rangeModifier
 }
@@ -41,14 +43,16 @@ export function getStrength(maxRange: number, distance: number) {
 
 
 
-export function getPowerPowerRating(input: BodyPayload, dsnModifier: number, mode: "relay" | "direct") {
+export function getPowerPowerRating(input: BodyPayload, dsnModifier: number, mode: "relay" | "direct", antennaData: ParsedAntennas) {
   if (input.type === "ksc")
     return kscDSNdata[ input.level ].rating * dsnModifier
+
+  const antennaTypes = Object.keys(antennaData)
 
   if (input.type === "ship") {
 
     const sumPower = antennaTypes.reduce((acc, curr) => {
-      if (mode === "relay" && antennaData[curr].type === "direct") return acc
+      if (mode === "relay" && antennaData[ curr ].type === "direct") return acc
       acc += antennaData[ curr ].rating * input.antennae[ curr ]
       return acc
     }, 0)
@@ -79,7 +83,7 @@ export function getPowerPowerRating(input: BodyPayload, dsnModifier: number, mod
     const combinedCombineablePowerRatings = strongestPower * Math.pow((sumPower / strongestPower), avgCombinabilityExponent)
 
     if (!combinedCombineablePowerRatings) {
-      console.log(input.hasCommandModule)
+      // console.log(input.hasCommandModule)
       if (input.hasCommandModule) return 5_000
       else return 0
     }
@@ -92,11 +96,13 @@ export function getPowerPowerRating(input: BodyPayload, dsnModifier: number, mod
 
 
 
-export function isShipOnlyHaveDirectAntenna(input: BodyPayload) {
+export function isShipOnlyHaveDirectAntenna(input: BodyPayload, antennaData: ParsedAntennas) {
   if (input.type === "ksc") return false
 
   let directAntennaeCount = 0
   let relayAntennaeCount = 0
+
+  const antennaTypes = Object.keys(antennaData)
 
   antennaTypes.map(type => {
     const count = input.antennae[ type ]

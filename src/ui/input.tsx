@@ -106,7 +106,7 @@ export function SelectRow<const T extends SelectPayload>(props: {
 }
 
 export function CheckboxRow(props: {
-  label: string,
+  label: ReactNode,
   value: boolean,
   onValueChange: (n: boolean) => void
 }) {
