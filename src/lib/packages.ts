@@ -40,32 +40,37 @@ function getAntennaData(option: Record<PackageNames, boolean>) {
 
 function getPlanetData(option: Record<PackageNames, boolean>) {
 
-  const planetData: Record<string, {
+  const map: Map<string, {
     package: string,
     to: Record<string, DistanceRange | null>,
     image?: string,
-  }> = {}
+  }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
     if (!option[ pkName as PackageNames ]) return
-
     Object.entries(pack.planets ?? {}).forEach(([ planetName, planet ]) => {
-      planetData[ planetName ] = {
+      map.set(planetName, {
         package: pkName,
         to: planet.distanceToPlanets,
         image: planet.image
-      }
+      })
     })
 
   })
 
-  const symmetrized = symmetrizePlanetDistanceMap(planetData)
+  const symmetrized = symmetrizePlanetDistanceMap(map)
+
+  // console.log("symetrized", symmetrized)
 
   Object.entries(symmetrized).forEach(([ fromName, fromPlanet ]) => {
     if (fromPlanet === null) return
-    if (fromName in planetData === false) return
-    planetData[ fromName ].to = fromPlanet
+    if (map.has(fromName) === false) return
+    const planet = map.get(fromName)
+    if (!planet) return
+    planet.to = fromPlanet
   })
 
-  return planetData
+  const list = mapToListWithId(map)
+
+  return { list, map }
 }

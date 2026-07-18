@@ -65,16 +65,15 @@ export default function Home() {
 
   const { antennas, planets } = getData(data.settings.contents)
 
+  // console.log(planets)
+
   const maximumRange = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
   const isBothDirectAntenna = (() => {
     if (data[ 0 ].type === "ksc" || data[ 1 ].type === "ksc") return false
-
     const ship1directOnly = isShipOnlyHaveDirectAntenna(data[ 0 ], antennas)
     const ship2directOnly = isShipOnlyHaveDirectAntenna(data[ 1 ], antennas)
-
     if (ship1directOnly && ship2directOnly) return true
-
     return false
   })()
 
@@ -570,7 +569,6 @@ function PlanetDistanceTableView(props: {
 
   const result = getSignalStrengthDistanceMap(from, props.maximumRange, props.planetData)
 
-
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -588,7 +586,7 @@ function PlanetDistanceTableView(props: {
         }
       </div>
       {
-        result === null ?
+        !result ?
           <div className="text-xs p-2 px-3 bg-slate-100 text-slate-600 border border-slate-200 rounded-md">
             No data for this planet
           </div>
@@ -687,9 +685,9 @@ function PlanetSelectMenu(props: {
             "data-starting-style:opacity-0",
             "data-ending-style:opacity-0",
           )}>
-            {Object.entries(props.planetData).map(([ name, data ]) => {
-              return <Menu.Item key={name}
-                onClick={() => props.onValueChange(name)}
+            {props.planetData.list.map((planet) => {
+              return <Menu.Item key={planet.id}
+                onClick={() => props.onValueChange(planet.id)}
                 className={cn(
                   "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",
                   "cursor-pointer",
@@ -697,15 +695,15 @@ function PlanetSelectMenu(props: {
                 )}
               >
                 <div className="size-10 rounded-full shrink-0">
-                  {data.image === undefined ? <>
+                  {planet.image === undefined ? <>
                     <div className="bg-slate-300 size-full rounded-full shadow-[inset_0.25rem_0_10px_#0045]"></div>
                   </> : <>
-                    <img src={data.image} />
+                    <img src={planet.image} />
                   </>}
                 </div>
                 <div className="flex flex-col">
-                  <div>{name}</div>
-                  <div className="capitalize text-[0.8em] text-slate-400">{data.package}</div>
+                  <div>{planet.id}</div>
+                  <div className="capitalize text-[0.8em] text-slate-400">{planet.package}</div>
                 </div>
               </Menu.Item>
             })}

@@ -1,3 +1,4 @@
+import type { DistanceRange } from "@/packages/types"
 import { getStrength } from "./antenna"
 import type { PlanetData } from "./packages"
 
@@ -7,11 +8,15 @@ export function getSignalStrengthDistanceMap(
   planetData: PlanetData
 ) {
 
-  if (from in planetData === false) {
+  if (planetData.map.has(from) === false) {
     return null
   }
 
-  const map = planetData[ from ]
+  // console.log("planetData", planetData)
+
+  const distanceMap = planetData.map.get(from)!.to
+
+  // console.log("distanceMap", distanceMap)
 
   const result: {
     label: string,
@@ -21,8 +26,9 @@ export function getSignalStrengthDistanceMap(
     maxStrength: number | null,
   }[] = []
 
-  for (const planetName in map.to) {
-    const distanceToPlanet = map.to[ planetName ]
+  for (const planetName in distanceMap) {
+    if (planetData.map.has(planetName) === false) continue
+    const distanceToPlanet = distanceMap[ planetName ]
     const minDistance = distanceToPlanet?.min ?? null
     const maxDistance = distanceToPlanet?.max ?? null
     result.push({
@@ -34,11 +40,15 @@ export function getSignalStrengthDistanceMap(
     })
   }
 
-  return result
+  return result ?? null
 }
 
 export function symmetrizePlanetDistanceMap(
-  planetData: PlanetData
+  planetData: Map<string, {
+    package: string,
+    to: Record<string, DistanceRange | null>,
+    image?: string,
+  }>
 ) {
   const getSortedPair = (a: string, b: string) => {
     return [ a, b ].sort().join('|') as `${ string }|${ string }`
@@ -47,13 +57,14 @@ export function symmetrizePlanetDistanceMap(
   const planets = new Set<string>()
   const mappedRawDistanceData = new Map<`${ string }|${ string }`, { min: number, max: number }>
 
-  for (const from in planetData) {
-    planets.add(from)
-    const distanceData = planetData[ from as keyof typeof planetData ].to
-    for (const to in distanceData) {
+  for (const [ fromName, data ] of planetData) {
+    planets.add(fromName)
+    // const distanceData = planetData.get(fromName)?.to
+    // if (!distanceData) continue
+    for (const to in data.to) {
       // planets.add(to)
-      const sortedPair = getSortedPair(from, to)
-      const distanceTo = distanceData[ to as keyof typeof distanceData ]
+      const sortedPair = getSortedPair(fromName, to)
+      const distanceTo = data.to[ to ]
       if (distanceTo === null) continue
       mappedRawDistanceData.set(sortedPair, distanceTo)
     }
@@ -80,6 +91,8 @@ export function symmetrizePlanetDistanceMap(
       }
     })
   })
+
+  // console.log(planets)
 
   // console.log(newLookup)
   return newLookup
