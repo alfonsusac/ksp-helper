@@ -114,7 +114,7 @@ export function CheckboxRow(props: {
   return (
     <label className={cn(
       "text-slate-500 select-none cursor-pointer flex gap-2",
-      "inline-flex self-start p-2 gap-4 items-center cursor-pointer hover:bg-slate-100/75 active:bg-slate-100 rounded-md",
+      "inline-flex self-start p-2 gap-2 items-center cursor-pointer hover:bg-slate-100/75 active:bg-slate-100 rounded-md",
     )} htmlFor={id}>
       <input className="mb-1 cursor-pointer" type="checkbox" id={id} checked={props.value} onChange={e => props.onValueChange(e.currentTarget.checked)} />
       {props.label}
