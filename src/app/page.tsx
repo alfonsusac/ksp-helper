@@ -675,7 +675,7 @@ function PlanetDistanceTableView(props: {
                 <div className="pb-2">My other ship is in:</div>
             }
             <div className="pb-2 place-self-center text-slate-600 text-pretty max-w-34 text-center">Strength at Closest Distance</div>
-            <div className="pb-2 place-self-center text-slate-600 text-pretty max-w-34 text-center">Strength at Fruthest Distance</div>
+            <div className="pb-2 place-self-center text-slate-600 text-pretty max-w-34 text-center">Strength at Furthest Distance</div>
             {result.map((row, i) => {
               return <Fragment key={i}>
                 <div className="h-6">{row.label}</div>
