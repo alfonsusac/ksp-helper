@@ -4,35 +4,12 @@ import { cn } from "./cn"
 import { LucideCheck, LucideChevronDown } from "./icons"
 import { Slider as BSlider } from '@base-ui/react/slider'
 import { Menu } from '@base-ui/react/menu'
+import { cns } from "./design-system"
 
 export type SelectPayload = {
   value: string,
   label: ReactNode
 }[]
-
-export function Select<const T extends SelectPayload>(props: {
-  id: string,
-  data: T,
-  value: T[ number ][ 'value' ],
-  onValueChange: (value: T[ number ][ 'value' ]) => void
-}) {
-  return (
-    <select
-      id={props.id}
-      value={props.value}
-      onChange={(e) => props.onValueChange(e.currentTarget.value as T[ number ][ 'value' ])}
-      className="border border-slate-300 p-1 rounded-md"
-    >
-      {props.data.map((d, i) => {
-        return (
-          <option key={i} value={d.value}>{d.label}</option>
-        )
-      })}
-    </select>
-  )
-}
-
-
 
 export function SelectRow<const T extends SelectPayload>(props: {
   data: T,
@@ -52,13 +29,10 @@ export function SelectRow<const T extends SelectPayload>(props: {
           props.onValueChange(e)
         }}
       >
-        <BSelect.Label className="text-slate-500 select-none">
+        <BSelect.Label className="select-none">
           {props.label}
         </BSelect.Label>
-        <BSelect.Trigger className={cn(
-          "border border-slate-300 p-1 pl-3 min-w-30 rounded-md hover:bg-slate-100",
-          "flex gap-2 items-center"
-        )}>
+        <BSelect.Trigger className={cns.input.box()}>
           <BSelect.Value className="grow text-start" />
           <BSelect.Icon>
             <LucideChevronDown />
@@ -69,26 +43,16 @@ export function SelectRow<const T extends SelectPayload>(props: {
           <BSelect.Positioner className={cn(
             "outline-hidden select-none z-10"
           )} sideOffset={4}>
-            <BSelect.Popup className={cn(
-              "outline-hidden",
-              "bg-background rounded-md rounded-md border border-slate-400",
-              "shadow-md shadow-slate-300",
-              "min-w-40",
-              "transition-[scale,opacity] duration-100 ease-out",
-              "data-ending-style:scale-[0.98] data-ending-style:opacity-0",
-            )}>
+            <BSelect.Popup className={cns.popover.base("min-w-40")}>
               <BSelect.List className={cn("relative p-0.5 overflow-y-auto max-h-[var(--available-height)]")}>
                 {props.data.map(({ label, value }) => (
                   <BSelect.Item
                     key={value}
                     value={value}
-                    className={cn(
-                      "cursor-default",
-                      "grid  grid-cols-[0.5rem_1fr] items-center gap-2",
-                      "p-1 rounded-md text-sm outline-hidden",
-                      "select-none ",
-                      "data-highlighted:bg-slate-100"
-                      // "dark:data-highlighted:bg-white dark:data-highlighted:text-neutral-950"
+                    className={cns.popover.item(
+                      cns.popover.selectItemLayout(),
+                      "grid grid-cols-[0.5rem_1fr] items-center gap-2",
+                      "p-1 text-sm",
                     )}
                   >
                     <BSelect.ItemIndicator className="col-start-1">
@@ -115,7 +79,7 @@ export function CheckboxRow(props: {
   const id = useId()
   return (
     <label className={cn(
-      "text-slate-500 select-none cursor-pointer flex gap-2",
+      "select-none cursor-pointer flex gap-2",
       "inline-flex self-start p-2 gap-2 items-center cursor-pointer hover:bg-slate-100/75 active:bg-slate-100 rounded-md",
       props.className,
     )} htmlFor={id}>
@@ -187,6 +151,7 @@ export function Slider(props: {
 export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
   return (
     <Menu.Popup {...props} className={cn(
+      cns.text.base(),
       "bg-background p-2 rounded-lg border border-slate-200",
       "flex flex-col gap-2",
       "shadow-2xl shadow-slate-300",
@@ -209,7 +174,7 @@ export function MenuHelperText(props: ComponentProps<"div">) {
 
 export function MenuItem(props: ComponentProps<typeof Menu[ 'Item' ]>) {
   return (
-    <Menu.Item 
+    <Menu.Item
       {...props}
       className={cn(
         "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",

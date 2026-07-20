@@ -1,4 +1,6 @@
+import type { ComponentProps } from "react"
 import { cn } from "./cn"
+import { cns } from "./design-system"
 
 export function SignalSymbol(props: {
   strength?: number,
@@ -36,5 +38,24 @@ export function SignalSymbol(props: {
       <div className={cn("h-3/4 bg-slate-500/20", props.barClassname, getSignalBarColor(3))}></div>
       <div className={cn("h-4/4 bg-slate-500/20", props.barClassname, getSignalBarColor(4))}></div>
     </div>
+  )
+}
+
+export function Divider(props: ComponentProps<"div">) {
+  return (
+    <div {...props} className={cns.divider(
+      "border-b border-l border-slate-200 self-stretch",
+      props.className
+    )} />
+  )
+}
+
+export function PageSection(props: ComponentProps<"div">) {
+  return (
+    <div {...props} className={
+      cn(
+        props.className
+      )
+    } />
   )
 }
