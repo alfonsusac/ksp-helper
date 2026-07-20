@@ -8,6 +8,7 @@ export const cns = {
   bgActive: cnr("bg-slate-200/75"),
   divider: cnr("border-slate-200"),
   dividerStrong: cnr("border-slate-300"),
+  dividerFaded: cnr("border-slate-600/30"),
   text: {
     strong: cnr("text-slate-700"),
     base: cnr("text-slate-500 font-medium font-mono"),
@@ -28,9 +29,33 @@ export const cns = {
     )
   },
 
+  // Common Components
+
   clickableUI: cnr(
     "select-none cursor-pointer"
   ),
+
+  tab: {
+    containerBg: cnr("bg-slate-100"),
+    containerBorder: cnr("border-slate-200/50"),
+    selectedBg: cnr("bg-white"),
+    selectedBorder: cnr("border border-slate-200"),
+    selectedShadow: cnr("shadow-sm shadow-slate-200"),
+    itemHoverBg: cnr("hover:bg-slate-200/75"),
+  },
+
+  button: {
+    base: (...c: any) => cns.clickableUI(
+      cn(
+        "flex items-center justify-center rounded-md gap-2",
+        "px-3 py-2",
+        "focus:outline-none",
+        "hover:bg-slate-200/40",
+        "active:hover:bg-slate-200/55",
+        ...c
+      ),
+    )
+  },
 
   popover: {
     base: (...c: any) => cns.text.base(
@@ -46,15 +71,13 @@ export const cns = {
     ),
     transition: cnr(
       "transition-[scale,opacity] duration-75 ease-out",
-      "data-starting-style:scale-[0.95] data-starting-style:opacity-0",
-      "data-ending-style:scale-[0.95] data-ending-style:opacity-0",
+      "data-starting-style:scale-[0.95] ",
+      "data-starting-style:opacity-0",
+      "data-ending-style:scale-[0.95]",
+      "data-ending-style:opacity-0",
     ),
-    shadow: cnr(
-      "shadow-md shadow-slate-300",
-    ),
-    border: cnr(
-      "border border-slate-400"
-    ),
+    shadow: cnr("shadow-md shadow-slate-300/50"),
+    border: cnr("border border-slate-300/75"),
 
     item: (...c: any) => cns.text.base(
       cns.clickableUI(),
@@ -70,7 +93,11 @@ export const cns = {
     )
   },
 
-
+  slider: {
+    track: cnr("bg-slate-200"),
+    indicator: cnr("bg-slate-400"),
+    thumb: cnr("bg-slate-400"),
+  },
 
 
   // Specials
@@ -78,12 +105,19 @@ export const cns = {
   bgScience: cnr("bg-blue-200"),
   textScience: cnr("text-blue-500"),
 
+  signalBarBg: cnr("bg-slate-500/20"),
+  signalBarRed: cnr("bg-red-400"),
+  signalBarOrange: cnr("bg-orange-400"),
+  signalBarYellow: cnr("bg-yellow-400"),
+  signalBarGreen: cnr("bg-green-400"),
+
   graphBarBg1: cnr("bg-red-200"),
   graphBarBg2: cnr("bg-orange-200"),
   graphBarBg3: cnr("bg-yellow-200"),
   graphBarBg4: cnr("bg-green-200"),
 
   graphBarScience: cnr("bg-blue-200/50"),
+  graphBarScience2: cnr("bg-blue-500/20"),
 
   cellNoData: cnr("bg-slate-100"),
   cellGradient1: "oklch(88.5% 0.062 18.334)",
@@ -95,19 +129,19 @@ export const cns = {
 
 }
 
-export const buttonBase = cnr(
-  cns.clickableUI(),
-  "flex items-center justify-center rounded-sm gap-2",
-  "px-3 py-2",
-  "focus:outline-none",
-  "hover:bg-slate-200/40",
-  "active:hover:bg-slate-200/55"
-)
+// export const buttonBase = cnr(
+//   cns.clickableUI(),
+//   "flex items-center justify-center rounded-md gap-2",
+//   "px-3 py-2",
+//   "focus:outline-none",
+//   "hover:bg-slate-200/40",
+//   "active:hover:bg-slate-200/55"
+// )
 
 export const button = {
-  ghost: cnr(buttonBase("opacity-65 hover:opacity-100")),
-  iconGhost: cnr(buttonBase("p-1.5 size-7")),
-  default: cnr(buttonBase(
+  ghost: cnr(cns.button.base("opacity-65 hover:opacity-100")),
+  iconGhost: cnr(cns.button.base("p-1.5 size-7")),
+  default: cnr(cns.button.base(
     "bg-slate-50 py-2",
   ))
 }
@@ -138,7 +172,7 @@ export const card = cnr(
 
 export const menuTrigger = cnr(
   cns.input.box(
-    buttonBase(),
+    cns.button.base(),
     "text-sm w-32",
   )
 )

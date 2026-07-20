@@ -78,11 +78,9 @@ export function CheckboxRow(props: {
 }) {
   const id = useId()
   return (
-    <label className={cn(
-      "select-none cursor-pointer flex gap-2",
-      "inline-flex self-start p-2 gap-2 items-center cursor-pointer hover:bg-slate-100/75 active:bg-slate-100 rounded-md",
-      props.className,
-    )} htmlFor={id}>
+    <label
+      className={cns.button.base(props.className)}
+      htmlFor={id}>
       <input className="mb-1 cursor-pointer" type="checkbox" id={id} checked={props.value} onChange={e => props.onValueChange(e.currentTarget.checked)} />
       {props.label}
     </label>
@@ -95,7 +93,11 @@ export function TabSelectRow<const T extends SelectPayload>(props: {
   onValueChange: (value: T[ number ][ 'value' ]) => void,
 }) {
   return (
-    <div className="p-1 flex self-start gap-1 bg-slate-100 border border-slate-200/50 rounded-xl">
+    <div className={cn(
+      cns.tab.containerBg(),
+      cns.tab.containerBorder(),
+      "p-1 flex self-start gap-1 border rounded-xl"
+    )}>
       {props.items.map((e, i) => {
         const selected = props.value === e.value
         return (
@@ -105,13 +107,17 @@ export function TabSelectRow<const T extends SelectPayload>(props: {
               "p-2 rounded-md px-3 w-40 border border-transparent",
               "flex items-center gap-2",
               "select-none cursor-pointer",
-              selected ? " border-slate-200 bg-background " : "hover:bg-slate-50"
+              selected ? [
+                cns.tab.selectedBg(),
+                cns.tab.selectedBorder(),
+                cns.tab.selectedShadow(),
+              ] : cns.tab.itemHoverBg()
             )}>
             <div className={cn(
-              "text-slate-700 rounded-lg size-4 grid place-items-center p-0.5 shrink-0",
+              "size-4 grid place-items-center p-0.5 shrink-0",
               selected ? "opacity-100" : "opacity-0"
             )}>
-              <LucideCheck className="size-full stroke-3" />
+              <LucideCheck className="size-full stroke-4" />
             </div>
             {e.label}
           </div>
@@ -132,11 +138,16 @@ export function Slider(props: {
   return (
     <BSlider.Root value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge" >
       <BSlider.Control className="flex w-full touch-none items-center py-3 select-none">
-        <BSlider.Track className="h-1 w-full bg-slate-200 select-none rounded-lg">
-          <BSlider.Indicator className="bg-slate-400 select-none rounded-lg" />
+        <BSlider.Track className={cns.slider.track(
+          "h-1 w-full select-none rounded-lg"
+        )}>
+          <BSlider.Indicator className={cns.slider.indicator(
+            "select-none rounded-lg"
+          )} />
           <BSlider.Thumb
-            className={cn(
-              "size-3 rounded-full border border-slate-400 bg-slate-400 select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-neutral-950",
+            className={cns.slider.thumb(
+              "size-3 rounded-full select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ",
+              // "has-[:focus-visible]:outline-neutral-950",
               "hover:cursor-pointer"
             )}
           >
@@ -150,15 +161,9 @@ export function Slider(props: {
 
 export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
   return (
-    <Menu.Popup {...props} className={cn(
-      cns.text.base(),
-      "bg-background p-2 rounded-lg border border-slate-200",
+    <Menu.Popup {...props} className={cns.popover.base(
+      "p-2",
       "flex flex-col gap-2",
-      "shadow-2xl shadow-slate-300",
-      "transition-all duration-75",
-      "data-starting-style:opacity-0",
-      "data-ending-style:opacity-0",
-      "font-mono",
       "max-h-[52vh]",
       "overflow-auto",
       props.className
@@ -168,7 +173,7 @@ export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
 
 export function MenuHelperText(props: ComponentProps<"div">) {
   return (
-    <div {...props} className={cn("text-xs text-slate-400 pl-2", props.className)} />
+    <div {...props} className={cns.text.muted("text-xs pl-2", props.className)} />
   )
 }
 
@@ -176,9 +181,8 @@ export function MenuItem(props: ComponentProps<typeof Menu[ 'Item' ]>) {
   return (
     <Menu.Item
       {...props}
-      className={cn(
-        "p-2 px-3 font-mono hover:bg-slate-100 rounded-md text-sm",
-        "cursor-pointer",
+      className={cns.popover.item(
+        "p-2 px-3 text-sm",
         "flex gap-2 items-center",
         props.className
       )}

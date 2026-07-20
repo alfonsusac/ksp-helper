@@ -213,7 +213,7 @@ export default function Home() {
               return (
                 <CheckboxRow
                   key={pack}
-                  className="w-full"
+                  className="w-full justify-start"
                   label={<div className="flex flex-col leading-4">
                     <div>{pkg.name}</div>
                     <div className={cns.text.muted("text-xs leading-5")}>
@@ -614,7 +614,7 @@ function DistanceStrengthCalculator(props: {
               return (
                 <div key={i} className="h-full relative" style={{ width: `calc(1 / ${ binCount } * 100%)` }}>
                   <div className={cn(
-                    "bg-slate-200 absolute w-full bottom-0",
+                    "absolute w-full bottom-0",
                     str < 0.25 ? cns.graphBarBg1() : str < 0.5 ? cns.graphBarBg2() : str < 0.75 ? cns.graphBarBg3() : cns.graphBarBg4()
                   )} style={{
                     height: (str * 100).toFixed(2) + '%',
@@ -721,8 +721,8 @@ function PlanetDistanceStrengthCell(props: {
       {props.strength === null ? <></> : Math.round(props.strength * 100) + "%"}
       {props.strength !== null &&
         <>
-          <div className="border-l border-slate-600/30 h-full" />
-          <SignalSymbol barClassname="bg-blue-500/20" />
+          <Divider className={cns.dividerFaded()} />
+          <SignalSymbol barClassname={cns.graphBarScience2()} />
           <div className={cns.textScience("text-[0.9em]")}>
             +{scienceBonus.bonus}%
           </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
+import { cns } from "@/ui/design-system"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,7 @@ export default function RootLayout({
       lang="en"
       className={`${ geistSans.variable } ${ geistMono.variable } h-full antialiased`}
     >
-      <body className="min-h-full ">
+      <body className={cns.bg("min-h-full")}>
         <div className="root">
           <div className="flex flex-col items-center">
             <Analytics />
