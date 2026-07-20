@@ -79,7 +79,7 @@ export function CheckboxRow(props: {
   const id = useId()
   return (
     <label
-      className={cns.button.base(props.className)}
+      className={cns.button.ghost('opacity-100', props.className)}
       htmlFor={id}>
       <input className="mb-1 cursor-pointer" type="checkbox" id={id} checked={props.value} onChange={e => props.onValueChange(e.currentTarget.checked)} />
       {props.label}

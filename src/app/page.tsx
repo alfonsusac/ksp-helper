@@ -9,14 +9,14 @@ import { EmojioneMonotoneSatelliteAntenna, EosIconsPod, IcBaselineDiscord, IcRou
 import { cn } from "../ui/cn"
 import { CitationList } from "../ui/list"
 import { getSignalStrengthDistanceMap } from "../lib/distance"
-import { formatCss, interpolate } from "culori"
+import { formatCss, interpolate, oklch } from "culori"
 import { Divider, SignalSymbol } from "../ui/common"
 import { Menu } from '@base-ui/react/menu'
 import { getData, getPackageName, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
 import { groupToList } from "@/lib/object"
 import { initialData, parseAppData, type AppData } from "@/lib/app-state"
 import { generateShareURL, loadFromLocalStorage, saveToLocalStorage } from "@/lib/persistance"
-import { errorColor, cardDanger, cns, button, card, menuTrigger } from "@/ui/design-system"
+import { cns, menuTrigger } from "@/ui/design-system"
 
 
 
@@ -118,12 +118,12 @@ export default function Home() {
 
       {
         zeroReason &&
-        <div className={cardDanger("text-sm mb-8")}>
+        <div className={cns.errorCard("text-sm mb-8")}>
           <div className="flex gap-1 items-center">
             <LucideBadgeQuestionMark />
             <div>Reason why its zero</div>
           </div>
-          <div className={errorColor.text.desc("text-xs")}>
+          <div className={cns.error.text.muted("text-xs")}>
             {zeroReason}
           </div>
         </div>
@@ -163,7 +163,7 @@ export default function Home() {
 
           <ShareURLButton
             value={generateShareURL(data)}
-            className={button.default("text-sm w-full mt-4")}
+            className={cns.button.base("text-sm w-full mt-4")}
             label={<>
               <LucideShare2 />
               Share URL</>}
@@ -240,7 +240,7 @@ export default function Home() {
                 onChange={(e) => {
                   changeModifier("rangeModifier", e.target.value)
                 }} />
-              <button className={button.iconGhost()} onClick={() => changeModifier("dsnModifier", "1")}>
+              <button className={cns.button.iconGhost()} onClick={() => changeModifier("dsnModifier", "1")}>
                 <LucideRotateCcw />
               </button>
             </div>
@@ -251,13 +251,13 @@ export default function Home() {
               <input className={cns.input.box("text-sm max-w-60")} type="number"
                 value={data.settings.dsnModifier}
                 onChange={(e) => changeModifier("dsnModifier", e.currentTarget.value)} />
-              <button className={button.iconGhost()} onClick={() => changeModifier("dsnModifier", "1")}>
+              <button className={cns.button.iconGhost()} onClick={() => changeModifier("dsnModifier", "1")}>
                 <LucideRotateCcw />
               </button>
             </div>
           </div>
           <button
-            className={button.default("mt-4 text-sm")}
+            className={cns.button.base("mt-4 text-sm")}
             onClick={() => setData(initialData)}
           >
             <LucideRotateCcw />
@@ -406,7 +406,7 @@ function BodyDetailInput(props: {
               />
               <div className="grow" />
               <button
-                className={button.ghost("text-sm w-fit")}
+                className={cns.button.ghost("text-sm w-fit")}
                 onClick={() => {
                   props.antennas.forEach(antenna => clearAntenna(antenna.id))
                 }}
@@ -458,8 +458,7 @@ function AntennaInput(props: {
           if (qty === 0) return null
           return (
             <div key={antenna.id} className="flex items-start">
-              <div className={cn(
-                card(),
+              <div className={cns.card(
                 "grow h-full",
                 "p-2 flex gap-2 text-[0.7em] tracking-tight",
               )}
@@ -481,13 +480,13 @@ function AntennaInput(props: {
                   </div>
                   <div className="flex text-sm items-center shrink-0">
                     <div className="grow">{!!qty && `x${ qty }`}</div>
-                    <button className={button.iconGhost("shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
+                    <button className={cns.button.iconGhost("shrink-0", qty ? "" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
                       <LucideX />
                     </button>
-                    <button className={button.iconGhost("shrink-0", qty ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(antenna.id)}>
+                    <button className={cns.button.iconGhost("shrink-0", qty ? "" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(antenna.id)}>
                       <LucideMinus />
                     </button>
-                    <button className={button.iconGhost("shrink-0")} onClick={() => addAntenna(antenna.id)} >
+                    <button className={cns.button.iconGhost("shrink-0")} onClick={() => addAntenna(antenna.id)} >
                       <LucidePlus />
                     </button>
                   </div>
@@ -500,7 +499,7 @@ function AntennaInput(props: {
       <Menu.Root>
         <Menu.Trigger
           render={
-            <button className={button.ghost("text-sm justify-start")}>
+            <button className={cns.button.ghost("text-sm justify-start")}>
               <LucidePlus />
               <StreamlineWifiAntennaRemix className="size-4 mr-1" />
               Add Antenna
@@ -664,7 +663,7 @@ function PlanetDistanceTableView(props: {
       </div>
       {
         !result ?
-          <div className={card("text-xs p-2 px-3")}>
+          <div className={cns.card("text-xs p-2 px-3")}>
             No data for this planet
           </div>
           :
@@ -706,7 +705,9 @@ function PlanetDistanceStrengthCell(props: {
       ],
       "oklch"
     )
-    return formatCss(gradient(strength))
+    const res = gradient(strength)
+    res.alpha = 0.2
+    return formatCss(res)
   }
 
   const scienceBonus = getScienceBonusfromSignalStrength(props.strength ?? 0)
