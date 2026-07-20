@@ -129,15 +129,6 @@ export const cns = {
 
 }
 
-// export const buttonBase = cnr(
-//   cns.clickableUI(),
-//   "flex items-center justify-center rounded-md gap-2",
-//   "px-3 py-2",
-//   "focus:outline-none",
-//   "hover:bg-slate-200/40",
-//   "active:hover:bg-slate-200/55"
-// )
-
 export const button = {
   ghost: cnr(cns.button.base("opacity-65 hover:opacity-100")),
   iconGhost: cnr(cns.button.base("p-1.5 size-7")),
