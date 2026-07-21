@@ -113,7 +113,7 @@ export const cns = {
       cns.clickableUI(),
       cn(
         "rounded-md outline-hidden",
-        "data-highlighted:bg-slate-100",
+        "data-highlighted:bg-slate-100 data-highlighted:bg-zinc-800",
         ...c,
       ),
     ),
