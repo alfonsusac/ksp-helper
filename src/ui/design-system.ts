@@ -89,7 +89,7 @@ export const cns = {
 
   popover: {
     base: (...c: any) => cns.text.base(
-      cns.bg(),
+      cns.popover.bg(),
       cns.popover.transition(),
       cns.popover.border(),
       cns.popover.shadow(),
@@ -107,8 +107,8 @@ export const cns = {
       "data-ending-style:opacity-0",
     ),
     shadow: cnr("shadow-md shadow-slate-300/50  dark:shadow-zinc-950/50 dark:shadow-lg"),
-    border: cnr("border   border-slate-300/75  dark:border-zinc-700/50"),
-
+    border: cnr("border   border-slate-300/75 dark:border-zinc-700"),
+    bg: cnr("             bg-white            dark:bg-zinc-900"),
     item: (...c: any) => cns.text.base(
       cns.clickableUI(),
       cn(
