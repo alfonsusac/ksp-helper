@@ -5,11 +5,11 @@ import { Slider, CheckboxRow, SelectRow, TabSelectRow, MenuPopup, MenuHelperText
 import { ShareURLButton } from "../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../lib/antenna"
 import { prettyNum } from "../lib/prettier"
-import { EmojioneMonotoneSatelliteAntenna, EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowUpRight, LucideBadgeQuestionMark, LucideCheck, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideShare2, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
+import { EmojioneMonotoneSatelliteAntenna, EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowRight, LucideArrowUpRight, LucideBadgeQuestionMark, LucideCheck, LucideChevronDown, LucideMinus, LucidePlus, LucideRotateCcw, LucideShare2, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../ui/icons"
 import { cn } from "../ui/cn"
 import { CitationList } from "../ui/list"
 import { getSignalStrengthDistanceMap } from "../lib/distance"
-import { formatCss, interpolate, oklch } from "culori"
+import { formatCss, interpolate } from "culori"
 import { Divider, SignalSymbol } from "../ui/common"
 import { Menu } from '@base-ui/react/menu'
 import { getData, getPackageName, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../lib/packages"
@@ -135,10 +135,18 @@ export default function Home() {
           Result
         </h2>
       </header>
-      <div className="pb-10 flex flex-col sm:flex-row gap-6">
+
+      <ResultSection
+        className="pb-10"
+        data={data}
+        maximumRange={maximumRange}
+        mode={mode}
+        planets={planets}
+      />
+      {/* <div className="pb-10 flex flex-col sm:flex-row gap-6">
         <div className="min-w-50">
 
-          <div className="flex gap-x-8 gap-y-4 flex-wrap">
+          <div className="flex sm:flex-col gap-x-8 gap-y-4 flex-wrap">
             <div className="">
               <div className={cns.text.muted("text-sm")}>
                 Maximum Antenna Range
@@ -168,11 +176,9 @@ export default function Home() {
             </div>
           </div>
 
-
-
           <ShareURLButton
             value={generateShareURL(data)}
-            className={cns.button.base("text-sm w-full mt-4")}
+            className={cns.button.base("text-sm mt-4 w-full")}
             label={<>
               <LucideShare2 />
               Share URL</>}
@@ -203,7 +209,7 @@ export default function Home() {
           </div>
         </div>
 
-      </div>
+      </div> */}
 
       <Divider className="mb-2" />
 
@@ -332,6 +338,127 @@ export default function Home() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function ResultSection(props: {
+  className?: string,
+  maximumRange: number,
+  data: AppData,
+  planets: PlanetData,
+  mode: "direct" | "relay"
+}) {
+  const { maximumRange, className, data, planets, mode } = props
+
+  const [ d, setD ] = useState(props.maximumRange / 2)
+  useEffect(() => {
+    if (d > props.maximumRange)
+      setD(props.maximumRange)
+  }, [ props.maximumRange ])
+
+  return (
+    <div className={cn("flex flex-col sm:flex-row gap-6", className)}>
+      <div className="min-w-50">
+
+        <div className="flex sm:flex-col gap-x-8 gap-y-4 flex-wrap">
+          <div className="">
+            <div className={cns.text.muted("text-sm")}>
+              Maximum Antenna Range
+            </div>
+            <div className="text-2xl font-semibold">
+              {prettyNum(maximumRange, "k", "m")}
+            </div>
+            <div>
+              {maximumRange.toLocaleString() + "m"}
+            </div>
+          </div>
+
+          <div className="">
+            <div className={cns.text.muted("text-sm mb-2")}>
+              Signal Strengths
+            </div>
+            <div className="text-sm grid grid-cols-[3rem_auto_2rem] gap-x-2">
+              <div className={cns.text.muted("text-end")}>{'≥'}95.5%</div>
+              <div>{prettyNum(maximumRange * 0.0414).toLocaleString() + "m"}</div>
+              <div className={cns.button.iconGhost("size-5 p-1")}
+                onClick={() => setD(maximumRange * 0.0414)}
+              ><LucideArrowRight /></div>
+
+              <div className={cns.text.muted("text-end")}>~90%</div>
+              <div>{prettyNum(maximumRange * 0.19580).toLocaleString() + "m"}</div>
+              <div className={cns.button.iconGhost("size-5 p-1")}
+                onClick={() => setD(maximumRange * 0.19580)}
+              ><LucideArrowRight /></div>
+
+              <div className={cns.text.muted("text-end")}>~80%</div>
+              <div>{prettyNum(maximumRange * 0.28714).toLocaleString() + "m"}</div>
+              <div className={cns.button.iconGhost("size-5 p-1")}
+                onClick={() => setD(maximumRange * 0.28714)}
+              ><LucideArrowRight /></div>
+
+              <div className={cns.text.muted("text-end")}>~70%</div>
+              <div>{prettyNum(maximumRange * 0.36326).toLocaleString() + "m"}</div>
+              <div className={cns.button.iconGhost("size-5 p-1")}
+                onClick={() => setD(maximumRange * 0.36326)}
+              ><LucideArrowRight /></div>
+            </div>
+          </div>
+        </div>
+
+        <ShareURLButton
+          value={generateShareURL(data)}
+          className={cns.button.base("text-sm mt-4 w-full")}
+          label={<>
+            <LucideShare2 />
+            Share URL</>}
+          copied={<>
+            <LucideCheck />
+            Link Copied
+          </>}
+        />
+      </div>
+
+      <Divider className="hidden sm:block" />
+
+      <div className="flex flex-col gap-6 grow">
+        <Divider className="sm:hidden" />
+
+        <div className="flex flex-col">
+          <div className={cns.text.muted("text-sm mb-2")}>
+            Strengths by Distance + Science Bonus
+          </div>
+          <DistanceStrengthCalculator
+            maximumRange={maximumRange}
+            mode={mode}
+            distance={d}
+            setDistance={setD}
+          />
+        </div>
+        <Divider />
+        <div>
+          <div className={cns.text.muted("text-sm mb-2")}>
+            Will it reach?
+          </div>
+          <PlanetDistanceTableView maximumRange={maximumRange} mode={mode} planetData={planets} />
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
 
 
 function BodyDetailInput(props: {
@@ -567,14 +694,17 @@ function AntennaInput(props: {
 
 function DistanceStrengthCalculator(props: {
   maximumRange: number,
-  mode: "relay" | "direct"
+  mode: "relay" | "direct",
+  distance: number,
+  setDistance: (d: number) => void,
 }) {
-  const [ distance, setDistance ] = useState(props.maximumRange / 2)
+  const { distance, setDistance } = props
+  // const [ distance, setDistance ] = useState(props.maximumRange / 2)
 
-  useEffect(() => {
-    if (distance > props.maximumRange)
-      setDistance(props.maximumRange)
-  }, [ props.maximumRange ])
+  // useEffect(() => {
+  //   if (distance > props.maximumRange)
+  //     setDistance(props.maximumRange)
+  // }, [ props.maximumRange ])
 
   const signalStrength = getStrength(props.maximumRange, distance)
   const scienceBonus = getScienceBonusfromSignalStrength(signalStrength)
