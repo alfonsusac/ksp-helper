@@ -138,28 +138,37 @@ export default function Home() {
       <div className="pb-10 flex flex-col sm:flex-row gap-6">
         <div className="min-w-50">
 
-          <div className={cns.text.muted("text-sm")}>
-            Maximum Antenna Range
+          <div className="flex gap-x-8 gap-y-4 flex-wrap">
+            <div className="">
+              <div className={cns.text.muted("text-sm")}>
+                Maximum Antenna Range
+              </div>
+              <div className="text-2xl font-semibold">
+                {prettyNum(maximumRange, "k", "m")}
+              </div>
+              <div>
+                {maximumRange.toLocaleString() + "m"}
+              </div>
+            </div>
+
+            <div className="">
+              <div className={cns.text.muted("text-sm mb-2")}>
+                Signal Strengths
+              </div>
+              <div className="text-sm grid grid-cols-[3rem_auto] gap-x-2">
+                <div className={cns.text.muted("text-end")}>{'≥'}95.5%</div>
+                <div>{prettyNum(maximumRange * 0.0414).toLocaleString() + "m"}</div>
+                <div className={cns.text.muted("text-end")}>~90%</div>
+                <div>{prettyNum(maximumRange * 0.19580).toLocaleString() + "m"}</div>
+                <div className={cns.text.muted("text-end")}>~80%</div>
+                <div>{prettyNum(maximumRange * 0.28714).toLocaleString() + "m"}</div>
+                <div className={cns.text.muted("text-end")}>~70%</div>
+                <div>{prettyNum(maximumRange * 0.36326).toLocaleString() + "m"}</div>
+              </div>
+            </div>
           </div>
-          <div className="text-2xl font-semibold">
-            {prettyNum(maximumRange, "k", "m")}
-          </div>
-          <div>
-            {maximumRange.toLocaleString() + "m"}
-          </div>
-          <div className={cns.text.muted("text-sm mt-4 mb-2")}>
-            Signal Strengths
-          </div>
-          <div className="text-sm grid grid-cols-[3rem_auto] gap-x-2">
-            <div className={cns.text.muted("text-end")}>{'≥'}95.5%</div>
-            <div>{prettyNum(maximumRange * 0.0414).toLocaleString() + "m"}</div>
-            <div className={cns.text.muted("text-end")}>~90%</div>
-            <div>{prettyNum(maximumRange * 0.19580).toLocaleString() + "m"}</div>
-            <div className={cns.text.muted("text-end")}>~80%</div>
-            <div>{prettyNum(maximumRange * 0.28714).toLocaleString() + "m"}</div>
-            <div className={cns.text.muted("text-end")}>~70%</div>
-            <div>{prettyNum(maximumRange * 0.36326).toLocaleString() + "m"}</div>
-          </div>
+
+
 
           <ShareURLButton
             value={generateShareURL(data)}
