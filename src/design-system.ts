@@ -1,4 +1,4 @@
-import { cn } from "./cn"
+import { cn } from "./ui/cn"
 
 const cnr = (...a: any[]) => (...b: any[]) => cn(...a, ...b)
 
@@ -7,7 +7,7 @@ export const cns = {
   divider: cnr("      border-slate-200 dark:border-zinc-800"),
   dividerStrong: cnr("border-slate-300 dark:border-zinc-700"),
   text: {
-    base: cnr("font-medium font-mono",
+    base: cnr("font-medium font-mono text-base",
       "               text-slate-500   dark:text-zinc-300",
     ),
     muted: cnr("      text-slate-400   dark:text-zinc-500"),
@@ -55,6 +55,14 @@ export const cns = {
     cns.error.bg(),
     cns.error.text.base(),
     cns.cardShadow(),
+    ...c,
+  ),
+  linkCard: (...c: any[]) => cn(
+    "dark:hover:bg-zinc-800/25",
+    "transition-shadow duration-75",
+    "hover:shadow-lg hover:shadow-zinc-950/50",
+    cns.card(),
+    cns.clickableUI(),
     ...c,
   ),
 
@@ -168,6 +176,6 @@ export const cns = {
 export const menuTrigger = cnr(
   cns.input.box(
     cns.button.base(),
-    "text-sm w-32",
+    "w-32",
   )
 )

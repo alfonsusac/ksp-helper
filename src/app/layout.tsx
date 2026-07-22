@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
-import { cns } from "@/ui/design-system"
+import { cns } from "@/design-system"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

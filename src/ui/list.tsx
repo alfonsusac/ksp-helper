@@ -1,4 +1,4 @@
-import { cns } from "./design-system"
+import { cns } from "@/design-system"
 
 export function CitationList(props: {
   title: string,

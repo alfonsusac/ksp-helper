@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react"
 import { cn } from "./cn"
-import { cns } from "./design-system"
+import { cns } from "@/design-system"
 
 export function SignalSymbol(props: {
   strength?: number,

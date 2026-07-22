@@ -4,7 +4,7 @@ import { cn } from "./cn"
 import { LucideCheck, LucideChevronDown } from "./icons"
 import { Slider as BSlider } from '@base-ui/react/slider'
 import { Menu } from '@base-ui/react/menu'
-import { cns } from "./design-system"
+import { cns } from "@/design-system"
 
 export type SelectPayload = {
   value: string,
@@ -20,7 +20,7 @@ export function SelectRow<const T extends SelectPayload>(props: {
   const id = useId()
 
   return (
-    <div className="flex gap-4 items-center text-sm">
+    <div className="flex gap-4 items-center">
       <BSelect.Root
         value={props.value}
         items={props.data}
@@ -52,7 +52,7 @@ export function SelectRow<const T extends SelectPayload>(props: {
                     className={cns.popover.item(
                       cns.popover.selectItemLayout(),
                       "grid grid-cols-[0.5rem_1fr] items-center gap-2",
-                      "p-1 text-sm",
+                      "p-1 text",
                     )}
                   >
                     <BSelect.ItemIndicator className="col-start-1">
@@ -163,6 +163,7 @@ export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
   return (
     <Menu.Popup {...props} className={cns.popover.base(
       "p-2",
+      "text-base",
       "flex flex-col gap-2",
       "max-h-[52vh]",
       "overflow-auto",
@@ -173,7 +174,7 @@ export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
 
 export function MenuHelperText(props: ComponentProps<"div">) {
   return (
-    <div {...props} className={cns.text.muted("text-xs pl-2", props.className)} />
+    <div {...props} className={cns.text.muted("text-sm pl-2", props.className)} />
   )
 }
 
@@ -182,7 +183,7 @@ export function MenuItem(props: ComponentProps<typeof Menu[ 'Item' ]>) {
     <Menu.Item
       {...props}
       className={cns.popover.item(
-        "p-2 px-3 text-sm",
+        "p-2 px-3",
         "flex gap-2 items-center",
         props.className
       )}
