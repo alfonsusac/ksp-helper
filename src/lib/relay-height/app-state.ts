@@ -6,6 +6,7 @@ export type RelayHeightData = {
   relay: AntennaPayload,
   relayCount: number,
   planet: string,
+  strength: number,
   settings: {
     rangeModifier: string,
     dsnModifier: string,
@@ -18,6 +19,7 @@ export const initialData: RelayHeightData = {
   relay: new Map<string, number>,
   relayCount: 3,
   planet: "Kerbin",
+  strength: 0.95,
   settings: {
     rangeModifier: "1",
     dsnModifier: "1",

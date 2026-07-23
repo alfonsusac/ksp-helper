@@ -6,11 +6,13 @@ import { EmojioneMonotoneSatelliteAntenna, LucideMinus, LucidePlus, LucideX, Str
 import { prettyNum } from "@/lib/prettier"
 import { Menu } from "@base-ui/react"
 import { MenuHelperText, MenuItem, MenuPopup } from "./input"
+import { cn } from "./cn"
 
 export function AntennaInput(props: {
   value: AntennaPayload,
   onChange: (a: AntennaPayload) => void,
-  antennas: AntennaData
+  antennas: AntennaData,
+  className?: string,
 }) {
 
   const addAntenna = (type: string) => {
@@ -38,7 +40,10 @@ export function AntennaInput(props: {
     <div className="flex flex-col gap-2">
 
       {hasAntenna &&
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        <div className={cn(
+          "grid grid-cols-2 md:grid-cols-3 gap-2",
+          props.className
+        )}>
           {props.antennas.map((antenna) => {
             const qty = props.value.get(antenna.id) ?? 0
             if (qty === 0) return null

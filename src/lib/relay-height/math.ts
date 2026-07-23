@@ -127,3 +127,22 @@ export function getMaximumRelayHeightRelativeToEachOther(
 
   return ((0.5 * d) / sin(PI / n)) - r
 }
+
+
+export function lawOfCosineFindSide(
+  a: number,
+  theta: number,
+  b: number
+) {
+  const { pow, sqrt, cos } = Math
+  return sqrt(pow(a, 2) + pow(b, 2) - 2 * (a) * (b) * cos(theta))
+}
+
+export function lawOfCosineFindAngle(
+  a: number,
+  b: number,
+  c: number,
+) {
+  const { acos, pow } = Math
+  return acos((pow(a, 2) + pow(b, 2) - pow(c, 2)) / (2 * a * b))
+}

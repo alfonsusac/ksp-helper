@@ -35,6 +35,7 @@ export function getPackageName(id: string) {
 // Parsed
 export type AntennaData = ReturnType<typeof getAntennaData>
 export type PlanetData = ReturnType<typeof getPlanetData>
+export type PlanetItemData = PlanetData['map'] extends Map<any, infer V> ? V : never
 
 export function getData(option: Record<PackageNames, boolean>) {
   const antennas = getAntennaData(option)
