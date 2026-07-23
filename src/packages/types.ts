@@ -21,5 +21,8 @@ export type DistanceRange = { min: number, max: number }
 
 export type PlanetDefinition = {
   image?: string,
-  distanceToPlanets: Record<string, DistanceRange | null>
+  distanceToPlanets?: Record<string, DistanceRange | null>,
+  radius?: number,
+  soi?: number,
+  atmHeight?: number,
 }

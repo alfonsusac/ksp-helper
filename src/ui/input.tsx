@@ -1,4 +1,4 @@
-import { useId, type ComponentProps, type ReactNode } from "react"
+import { useEffect, useId, useState, type ComponentProps, type ReactNode } from "react"
 import { Select as BSelect } from '@base-ui/react/select'
 import { cn } from "./cn"
 import { LucideCheck, LucideChevronDown } from "./icons"
@@ -134,9 +134,10 @@ export function Slider(props: {
   onValueChange: (n: number) => void,
   thumbChildren?: ReactNode,
   step?: number
+  className?: string,
 }) {
   return (
-    <BSlider.Root value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge" >
+    <BSlider.Root className={props.className} value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge" >
       <BSlider.Control className="flex w-full touch-none items-center py-3 select-none">
         <BSlider.Track className={cns.slider.track(
           "h-1 w-full select-none rounded-lg"
@@ -187,6 +188,31 @@ export function MenuItem(props: ComponentProps<typeof Menu[ 'Item' ]>) {
         "flex gap-2 items-center",
         props.className
       )}
+    />
+  )
+}
+
+export function IntegerInput(props: ComponentProps<"input"> & {
+  onValueChange: (num: number) => void
+}) {
+  const { onValueChange, ...rest } = props
+
+  const [ val, setVal ] = useState(props.value)
+  useEffect(() => {
+    setVal(props.value)
+  }, [ props.value ])
+
+  return (
+    <input {...rest}
+      value={val}
+      onChange={(e) => {
+        props.onChange?.(e)
+        const v = e.currentTarget.value
+        setVal(v)
+        if (v === "") return
+        console.log(v)
+        props.onValueChange(parseInt(v))
+      }}
     />
   )
 }

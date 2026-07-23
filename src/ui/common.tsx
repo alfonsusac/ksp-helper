@@ -1,6 +1,8 @@
 import type { ComponentProps } from "react"
 import { cn } from "./cn"
 import { cns } from "@/design-system"
+import Link from "next/link"
+import { LucideHouse } from "./icons"
 
 export function SignalSymbol(props: {
   strength?: number,
@@ -50,12 +52,13 @@ export function Divider(props: ComponentProps<"div">) {
   )
 }
 
-export function PageSection(props: ComponentProps<"div">) {
+export function HomeButton(props: {
+
+}) {
   return (
-    <div {...props} className={
-      cn(
-        props.className
-      )
-    } />
+    <Link className={cns.button.ghost("w-fit -mx-3 -mt-3")} href="/">
+      <LucideHouse />
+      Home
+    </Link>
   )
 }

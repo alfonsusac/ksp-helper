@@ -46,6 +46,14 @@ export function getStrength(maxRange: number, distance: number) {
   return strength
 }
 
+export function getDistance(maxRange: number, strength: number) {
+  if (strength <= 0) return maxRange
+  if (strength >= 1) return 0
+  const sin = Math.sin
+  const asin = Math.asin
+  return maxRange * (0.5 + sin(asin(1 - 2 * strength) / 3))
+}
+
 
 
 export function getPowerPowerRating(

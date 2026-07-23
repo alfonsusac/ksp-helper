@@ -66,8 +66,11 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
 
   const map: Map<string, {
     package: string,
-    to: Record<string, DistanceRange | null>,
+    to?: Record<string, DistanceRange | null>,
     image?: string,
+    radius?: number,
+    soi?: number,
+    atmHeight?: number,
   }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
@@ -76,15 +79,16 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
       map.set(planetName, {
         package: pkName,
         to: planet.distanceToPlanets,
-        image: planet.image
+        image: planet.image,
+        atmHeight: planet.atmHeight,
+        radius: planet.radius,
+        soi: planet.soi
       })
     })
 
   })
 
   const symmetrized = symmetrizePlanetDistanceMap(map)
-
-  // console.log("symetrized", symmetrized)
 
   Object.entries(symmetrized).forEach(([ fromName, fromPlanet ]) => {
     if (fromPlanet === null) return

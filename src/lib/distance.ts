@@ -46,7 +46,7 @@ export function getSignalStrengthDistanceMap(
 export function symmetrizePlanetDistanceMap(
   planetData: Map<string, {
     package: string,
-    to: Record<string, DistanceRange | null>,
+    to?: Record<string, DistanceRange | null>,
     image?: string,
   }>
 ) {
@@ -85,7 +85,7 @@ export function symmetrizePlanetDistanceMap(
         if (data) {
           tempLookup[ toPlanet ] = data
         } else {
-          console.log(`Planet Distance: No data for distance between ${ fromPlanet } and ${ toPlanet }`)
+          // console.log(`Planet Distance: No data for distance between ${ fromPlanet } and ${ toPlanet }`)
           tempLookup[ toPlanet ] = null
         }
       }

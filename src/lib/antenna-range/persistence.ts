@@ -1,6 +1,6 @@
-import { initialData, parseAppData, serializeAppData, type AppData } from "./app-state"
+import { initialData, parseAppData, serializeAppData, type AntennaCalculatorData } from "./app-state"
 
-export function saveToLocalStorage(data: AppData | undefined) {
+export function saveToLocalStorage(data: AntennaCalculatorData | undefined) {
   if (data) localStorage.setItem("settings", serializeAppData(data))
 }
 
@@ -12,7 +12,7 @@ export function loadFromLocalStorage() {
     return initialData
 }
 
-export function generateShareURL(data: AppData | undefined) {
+export function generateShareURL(data: AntennaCalculatorData | undefined) {
   if (data === undefined) return ""
   const url = new URL(window.location.origin)
   url.searchParams.set("data", serializeAppData(data))

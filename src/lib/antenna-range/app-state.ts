@@ -1,7 +1,7 @@
-import type { BodyPayload } from "./antenna"
-import type { PackageNames } from "./packages"
+import type { BodyPayload } from "../antenna"
+import type { PackageNames } from "../packages"
 
-export type AppData = {
+export type AntennaCalculatorData = {
   0: BodyPayload
   1: BodyPayload
   settings: {
@@ -18,7 +18,7 @@ const defaultProp = () => ({
   isRelay: false,
 } as const)
 
-export const initialData: AppData = {
+export const initialData: AntennaCalculatorData = {
   '0': { ...defaultProp(), type: "ksc" },
   '1': { ...defaultProp(), type: "ship" },
   settings: {
@@ -29,7 +29,7 @@ export const initialData: AppData = {
 }
 
 
-export function serializeAppData(data: AppData) {
+export function serializeAppData(data: AntennaCalculatorData) {
   return JSON.stringify(data, (_, value) => {
     if (value instanceof Map) {
       return { __type: "Map", value: [ ...value ] }
@@ -38,7 +38,7 @@ export function serializeAppData(data: AppData) {
   })
 }
 
-export function parseAppData(str: string, onErrorReturn: AppData) {
+export function parseAppData(str: string, onErrorReturn: AntennaCalculatorData) {
   try {
     return JSON.parse(str, (key, value) => {
       if (value?.__type === "Map")

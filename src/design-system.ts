@@ -38,6 +38,13 @@ export const cns = {
     },
   },
 
+  page: (...c: any[]) => cn(
+    "p-8 flex flex-col gap-4 max-w-200 w-screen",
+    cns.text.base(),
+    c,
+  ),
+  pageTitle: cnr("text-xl tracking-tight font-semibold"),
+  pageDescription: (...c: any[]) => cn(cns.text.muted("font-semibold"), c),
 
   // Common Components
 
@@ -48,14 +55,14 @@ export const cns = {
     cns.cardShadow(),
     "p-2 px-3",
     "rounded-md",
-    ...c,
+    c,
   ),
   errorCard: (...c: any[]) => cns.card(
     cns.error.border(),
     cns.error.bg(),
     cns.error.text.base(),
     cns.cardShadow(),
-    ...c,
+    c,
   ),
   linkCard: (...c: any[]) => cn(
     "dark:hover:bg-zinc-800/25",
@@ -63,7 +70,7 @@ export const cns = {
     "hover:shadow-lg hover:shadow-zinc-950/50",
     cns.card(),
     cns.clickableUI(),
-    ...c,
+    c,
   ),
 
   clickableUI: cnr(
@@ -104,7 +111,7 @@ export const cns = {
       cn(
         "outline-hidden",
         "rounded-lg",
-        ...c,
+        c,
       )
     ),
     transition: cnr(
@@ -122,7 +129,7 @@ export const cns = {
       cn(
         "rounded-md outline-hidden",
         "data-highlighted:bg-slate-100 data-highlighted:bg-zinc-800",
-        ...c,
+        c,
       ),
     ),
     selectItemLayout: cnr(
