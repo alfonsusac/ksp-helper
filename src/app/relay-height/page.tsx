@@ -6,42 +6,44 @@ import { getData, type AntennaData, type PlanetData, type PlanetItemData } from 
 import { prettyNum } from "@/lib/prettier"
 import { initialData, type RelayHeightData } from "@/lib/relay-height/app-state"
 import { getMaximumRelayHeightRelativeToEachOther, getMinimumRelayHeight, lawOfCosineFindAngle, lawOfCosineFindSide } from "@/lib/relay-height/math"
+import { useAppState } from "@/lib/use-app-state"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 import { cn } from "@/ui/cn"
 import { HomeButton } from "@/ui/common"
 import { EmojioneSatellite, FluentEmojiRocket } from "@/ui/icons"
 import { Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
-import { Fragment, useState, type ReactNode } from "react"
+import { Fragment, type ReactNode } from "react"
 
 export default function RelayHeight() {
 
-  const [ data, setData ] = useState<RelayHeightData>(initialData)
+  const [ data, setData ] = useAppState<RelayHeightData>("relay-height", () => initialData)
+  if (!data) return null
+
   const { antennas, planets } = getData(data.settings.contents)
 
-  function changePlanet(planet: string) {
+  const changePlanet = (planet: string) => {
     data.planet = planet
     setData({ ...data })
   }
-  function changeVesselAntenna(a: AntennaPayload) {
+  const changeVesselAntenna = (a: AntennaPayload) => {
     data.vessel = a
     setData({ ...data })
   }
-  function changeRelayAntenna(a: AntennaPayload) {
+  const changeRelayAntenna = (a: AntennaPayload) => {
     data.relay = a
     setData({ ...data })
   }
-  function changeRelayCount(n: number) {
+  const changeRelayCount = (n: number) => {
     data.relayCount = n
     setData({ ...data })
   }
-  function changeTargetStrength(str: number) {
+  const changeTargetStrength = (str: number) => {
     data.strength = str
     setData({ ...data })
   }
 
   const result = getResult(data, antennas, planets)
-
 
   return (
     <div className={cns.page("max-w-240")}>

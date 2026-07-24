@@ -12,36 +12,26 @@ import { getSignalStrengthDistanceMap } from "../../lib/distance"
 import { formatCss, interpolate } from "culori"
 import { Divider, HomeButton, SignalSymbol } from "../../ui/common"
 import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../../lib/packages"
-import { initialData, parseAppData, type AntennaCalculatorData } from "@/lib/antenna-range/app-state"
-import { generateShareURL, loadFromLocalStorage, saveToLocalStorage } from "@/lib/antenna-range/persistence"
+import { initialData, type AntennaCalculatorData } from "@/lib/antenna-range/app-state"
+import { generateShareURL } from "@/lib/antenna-range/persistence"
 import { cns } from "@/design-system"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { AntennaInput } from "@/ui/antenna-select-menu"
+import { useAppState } from "@/lib/use-app-state"
+
+
 
 export default function Home() {
-  const [ data, setData ] = useState<AntennaCalculatorData | undefined>(undefined)
 
-  useEffect(() => {
-    saveToLocalStorage(data)
-  }, [ data ])
-
-  useEffect(() => {
-    const fromSp = new URLSearchParams(window.location.search).get('data')
-    if (fromSp) {
-      setData(parseAppData(fromSp, initialData))
-      const url = new URL(window.location.href)
-      url.searchParams.delete("data")
-      window.history.replaceState({}, "", url)
-    } else {
-      setData(loadFromLocalStorage())
-    }
-  }, [])
-
+  const [data, setData] = useAppState("antenna-range", () => initialData)
   if (!data) return null
 
   const mode = data[ 0 ].type === "ksc" ? "direct" : "relay"
   const rangeModifier = parseInt(data.settings.rangeModifier) || 1
   const dsnModifier = parseInt(data.settings.dsnModifier) || 1
+
+  const { antennas, planets } = getData(data.settings.contents)
+  const { value: maximumRange, zeroReason } = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
   const changeBodyType = (which: 0 | 1, type: "ksc" | "ship") => {
     data[ which ].type = type
@@ -59,10 +49,6 @@ export default function Home() {
     data.settings.contents[ which ] = value
     setData({ ...data })
   }
-
-  const { antennas, planets } = getData(data.settings.contents)
-
-  const { value: maximumRange, zeroReason } = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
   return (
     <div className={cns.page()}>
@@ -503,12 +489,6 @@ function DistanceStrengthCalculator(props: {
   setDistance: (d: number) => void,
 }) {
   const { distance, setDistance } = props
-  // const [ distance, setDistance ] = useState(props.maximumRange / 2)
-
-  // useEffect(() => {
-  //   if (distance > props.maximumRange)
-  //     setDistance(props.maximumRange)
-  // }, [ props.maximumRange ])
 
   const signalStrength = getStrength(props.maximumRange, distance)
   const scienceBonus = getScienceBonusfromSignalStrength(signalStrength)

@@ -14,7 +14,8 @@ export function loadFromLocalStorage() {
 
 export function generateShareURL(data: AntennaCalculatorData | undefined) {
   if (data === undefined) return ""
-  const url = new URL(window.location.origin)
+  console.log(window.location)
+  const url = new URL(window.location.origin + window.location.pathname)
   url.searchParams.set("data", serializeAppData(data))
   const res = url.toString()
   console.log(res)
