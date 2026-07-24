@@ -34,6 +34,7 @@ export function getPackageName(id: string) {
 
 // Parsed
 export type AntennaData = ReturnType<typeof getAntennaData>
+export type AntennaItemData = AntennaData[number]
 export type PlanetData = ReturnType<typeof getPlanetData>
 export type PlanetItemData = PlanetData['map'] extends Map<any, infer V> ? V : never
 

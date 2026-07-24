@@ -1,7 +1,7 @@
 import { cns } from "@/design-system"
 import type { AntennaPayload } from "@/lib/antenna"
 import { groupToList } from "@/lib/object"
-import { getPackageName, type AntennaData } from "@/lib/packages"
+import { getPackageName, type AntennaData, type AntennaItemData } from "@/lib/packages"
 import { EmojioneMonotoneSatelliteAntenna, LucideMinus, LucidePlus, LucideX, StreamlineWifiAntennaRemix } from "./icons"
 import { prettyNum } from "@/lib/prettier"
 import { Menu } from "@base-ui/react"
@@ -13,6 +13,7 @@ export function AntennaInput(props: {
   onChange: (a: AntennaPayload) => void,
   antennas: AntennaData,
   className?: string,
+  filter?: (antenna: AntennaItemData) => boolean
 }) {
 
   const addAntenna = (type: string) => {
@@ -129,7 +130,16 @@ export function AntennaInput(props: {
                           </div>
                           <div className="flex flex-col">
                             <div>{antenna.label}</div>
-                            <div className={cns.text.muted("capitalize text-xs")}>{prettyNum(antenna.rating)}</div>
+                            <div className={cns.text.muted("text-xs")}>
+                              {prettyNum(antenna.rating)}{' '}
+                              <span>|{' '}
+                                {antenna.combinabilityExponent === 0 ?
+                                  <span className="opacity-50">non-combinable</span> :
+                                  antenna.combinabilityExponent > 0.75 ?
+                                  "very combinable" : "combinable"
+                                }
+                              </span>
+                            </div>
                           </div>
                         </MenuItem>
                       )
