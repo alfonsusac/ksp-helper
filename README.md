@@ -14,6 +14,9 @@ Features:
 - Settings and Mod compatibility
 - Share URL and persist data between page loads.
 
+Todo:
+- List other tools made by other kerbanauts!
+
 ### Development
 
 I use `pnpm`. So just type `pnpm i` then `pnpm dev` and open `localhost:3000` to preview development build while you change the code.

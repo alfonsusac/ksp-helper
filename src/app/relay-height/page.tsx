@@ -1,18 +1,21 @@
 "use client"
 
 import { cns } from "@/design-system"
-import { getDistance, getMaximumRange, type AntennaPayload } from "@/lib/antenna"
+import { getDistance, getMaximumRange, getStrength, type AntennaPayload } from "@/lib/antenna"
 import { getData, type AntennaData, type PlanetData, type PlanetItemData } from "@/lib/packages"
 import { prettyNum } from "@/lib/prettier"
 import { initialData, type RelayHeightData } from "@/lib/relay-height/app-state"
-import { getMaximumRelayHeightRelativeToEachOther, getMinimumRelayHeight, lawOfCosineFindAngle, lawOfCosineFindSide } from "@/lib/relay-height/math"
+import { getMaximumRelayHeightRelativeToEachOther, getMaximumRelayHeightRelativeToVessel, getMinimumRelayHeight, lawOfCosineFindAngle, lawOfCosineFindSide, mid } from "@/lib/relay-height/math"
 import { useAppState } from "@/lib/use-app-state"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 import { cn } from "@/ui/cn"
-import { HomeButton } from "@/ui/common"
+import { Divider, HomeButton } from "@/ui/common"
+import { Footer } from "@/ui/footer"
 import { EmojioneSatellite, FluentEmojiRocket } from "@/ui/icons"
 import { Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
+import { WhatIsThisSection } from "@/ui/prose"
+import { formatCss, interpolate } from "culori"
 import { Fragment, type ReactNode } from "react"
 
 export default function RelayHeight() {
@@ -100,12 +103,12 @@ export default function RelayHeight() {
             <div className="flex gap-2 items-center w-full gap-4">
               <Slider
                 className="max-w-60 w-full"
-                min={0} max={1} step={0.01}
+                min={0} max={0.99} step={0.01}
                 value={data.strength}
                 onValueChange={changeTargetStrength}
               />
-              <div className="shrink-0 w-8">
-                {data.strength}
+              <div className="shrink-0 w-8 text-end">
+                {Math.round(data.strength * 100) + '%'}
               </div>
             </div>
           </div>
@@ -119,18 +122,70 @@ export default function RelayHeight() {
             />
           </div>
 
-
-
-
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-4">
           <Visualization {...result} />
           <ResultInfo {...result} />
         </div>
 
-
       </section>
+
+      <Divider />
+
+      <WhatIsThisSection
+        descs={[
+          `This calculator helps find the ideal orbit height between relays satellites and vessels 
+          that are on the surface of a planet. It calculates the minimum and maximum orbit and
+          find the middle orbit.`,
+        ]}
+        sources={[
+          {
+            title: "KSP Wiki - CommNet",
+            href: "https://wiki.kerbalspaceprogram.com/wiki/CommNet",
+          },
+          {
+            title: "Ranges and Signal Strength | KSP Let's Do The Math",
+            author: "Mike Ruben",
+            href: "https://www.youtube.com/watch?v=hVd-WhL4tZ8",
+          },
+          {
+            title: "The Best Relay Orbit | KSP Let's Do The Math",
+            author: "Mike Ruben",
+            href: "https://www.youtube.com/watch?v=gpQmvwU1x8c&t=3s",
+          },
+          {
+            title: "Science transmission relation to signal strength",
+            href: "https://forum.kerbalspaceprogram.com/topic/200317-science-transmission-relation-to-signal-strength",
+          },
+          {
+            title: "Signal Strength vs Science Bonus (Redone)",
+            href: "https://docs.google.com/spreadsheets/d/1Wr7to96dpo56xZZxFquQo3WHYJjuv0ZZ9Vpc3BViSh8",
+          },
+        ]}
+        priorWork={[
+          {
+            title: "Comnet Planner",
+            author: "blaarkies",
+            href: "https://ksp-visual-calculator.blaarkies.com/commnet-planner",
+          },
+          {
+            title: "KSP Signal Strength Calculator",
+            author: "Westbrooke117",
+            href: "https://westbrooke117.github.io/KSPSSC/",
+          },
+          {
+            title: "Resonant Orbit Calculator",
+            author: "Eric Meyer",
+            href: "https://meyerweb.com/eric/ksp/resonant-orbits/",
+          },
+        ]}
+      />
+
+      <Divider />
+
+      <Footer />
+
     </div>
   )
 }
@@ -144,10 +199,11 @@ function getResult(
   if (!planet) return {
     status: "no planet data" as const
   }
+  const planetimg = planet.image
 
   const planetRadius = planet.radius ?? 0
   const atmHeight = planet.atmHeight ?? 0
-  const soiHeight = planet.soi ?? 0
+  const soiRadius = planet.soi ?? 0
   const relayCount = data.relayCount
   const maxRelayRange = getMaximumRange({
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
@@ -156,28 +212,122 @@ function getResult(
     dsnModifier: parseInt(data.settings.dsnModifier),
     rangeModifier: parseInt(data.settings.rangeModifier),
   }).value
-  const maxHeightFromRelays = getMaximumRelayHeightRelativeToEachOther(
-    data.relayCount,
-    getDistance(maxRelayRange, data.strength),
-    planetRadius
-  )
-  const minHeightFromPlanet = getMinimumRelayHeight(planetRadius, relayCount)
-  const minRadius = Math.max(planetRadius + atmHeight, minHeightFromPlanet + planetRadius)
-  const maxRadius = Math.min(maxHeightFromRelays)
-  const midRadius = (minRadius + maxRadius) / 2
+
+  if (maxRelayRange === 0) {
+    return {
+      status: "impossible" as const,
+      reason: "no relay satellite" as const,
+      planetimg,
+      maxRelayRange,
+      relayCount,
+      soiRadius,
+      atmHeight,
+      planetRadius,
+    }
+  }
+
+  const minRadiusBasedOnPlanet = getMinimumRelayHeight(planetRadius, relayCount) + planetRadius
+  const maxRadiusFromRelays = getMaximumRelayHeightRelativeToEachOther(data.relayCount, getDistance(maxRelayRange, data.strength), planetRadius) + planetRadius
+
+  const antennaRangeToVessel = getMaximumRange({
+    body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
+    body2: { type: "ship", isRelay: false, hasCommandModule: true, antennas: data.vessel, },
+    antennaData: antennas,
+    dsnModifier: parseInt(data.settings.dsnModifier),
+    rangeModifier: parseInt(data.settings.rangeModifier),
+  }).value
+  const maxRadiusFromVessel = getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), planetRadius) + planetRadius
+
+
+  // Get min, max, mid, status, and reason
+  const {
+    maxRadius,
+    midRadius,
+    minRadius,
+    status,
+    reason,
+  } = (() => {
+    if (maxRadiusFromRelays < minRadiusBasedOnPlanet) {
+      const midRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, planetRadius + atmHeight)
+      return {
+        status: "impossible" as const,
+        reason: "no inter-relay connection" as const,
+        midRadius
+      }
+    }
+    if (Number.isNaN(maxRadiusFromVessel)) {
+      const midRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
+      return {
+        status: "impossible" as const,
+        reason: "no vessel connection" as const,
+        midRadius
+      }
+    }
+    const minRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
+    const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel), minRadius)
+    const midRadius = mid(minRadius, maxRadius)
+
+    return {
+      status: "ok" as const,
+      midRadius, minRadius, maxRadius
+    }
+  })()
+
+  const maxHeightFromRelays = maxRadiusFromRelays + planetRadius
+  const minHeightBasedOnPlanet = minRadiusBasedOnPlanet + planetRadius
+  const distanceBetweenRelays = (midRadius) * Math.sin(Math.PI / relayCount) * 2
+  const relayStrength = getStrength(maxRelayRange, distanceBetweenRelays)
+
+  const distanceFromVesselToRelay = (() => {
+    const a = (midRadius) * Math.sin(Math.PI / relayCount)
+    const b = (midRadius) * Math.cos(Math.PI / relayCount) - planetRadius
+    const c = Math.sqrt(a * a + b * b)
+    return c
+  })()
+  const vesselStrength = getStrength(antennaRangeToVessel, distanceFromVesselToRelay)
+
+  const getLinkColor = (strength: number) => {
+    const gradient = interpolate(
+      [
+        cns.cellGradient1,
+        cns.cellGradient2,
+        cns.cellGradient3,
+        cns.cellGradient4,
+      ],
+      "oklch"
+    )
+    const res = gradient(strength)
+    return formatCss(res)
+  }
+  const vesselLinkColor = getLinkColor(vesselStrength)
+  const relayLinkColor = getLinkColor(relayStrength)
 
   return {
-    status: "ok" as const,
+    status,
+    reason,
+    planetimg,
     maxRelayRange,
+    maxRadiusFromRelays,
     maxHeightFromRelays,
-    minHeightFromPlanet,
+    minRadiusBasedOnPlanet,
+    minHeightBasedOnPlanet,
     planetRadius,
-    soiHeight,
+    soiRadius,
     maxRadius,
     minRadius,
     atmHeight,
     midRadius,
     relayCount,
+    maxRadiusFromVessel,
+
+    relayStrength,
+    distanceBetweenRelays,
+
+    distanceFromVesselToRelay,
+    vesselStrength,
+
+    vesselLinkColor,
+    relayLinkColor
   }
 }
 
@@ -185,26 +335,77 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
 
   if (props.status === "no planet data") return <></>
 
-  return <div className="flex flex-col gap-2">
-    <div>
-      <p className={cns.text.muted()}>Planet Radius</p>
-      <p className="">{props.planetRadius ? prettyNum(props.planetRadius) : "-"}</p>
+  return <div className="grid grid-cols-[auto_6rem] gap-2 text-sm leading-4 px-4">
+    {props.status === "impossible" && <>
+      <div className={cns.card("text-sm text-pretty col-span-2 mb-1")}>
+        <div className={cns.text.muted("text-xs")}>warning: {props.reason}</div>
+        {props.reason === "no relay satellite" && "Please add a relay antenna to your relay satellite."}
+        {props.reason === "no inter-relay connection" && "Relay Antenna can't reach target strength."}
+        {props.reason === "no vessel connection" && "Vessel Antenna can't reach target strength."}
+      </div>
+    </>}
+
+    <div className="grid grid-cols-3 col-span-2 text-base">
+      <div>
+        <p className={cns.text.muted()}>Max</p>
+        <p className="">{prettyNum(props.maxRadius ?? NaN)}</p>
+      </div>
+
+      <div>
+        <p className={cns.text.muted()}>Mid</p>
+        <p className="">{prettyNum(props.midRadius ?? NaN)}</p>
+      </div>
+
+      <div>
+        <p className={cns.text.muted()}>Min</p>
+        <p className="">{prettyNum(props.minRadius ?? NaN)}</p>
+      </div>
     </div>
 
-    <div>
-      <p className={cns.text.muted()}>Minimum Height</p>
-      <p className="">{prettyNum(props.minHeightFromPlanet)}</p>
+    <Divider className="col-span-2" />
+
+    <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Between Each Relays</p>
+
+    <p className={cns.text.muted()}>Distance</p>
+    <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN)}</p>
+
+    <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
+    <p className="">{Math.round((props.relayStrength ?? NaN) * 100) + '%'}</p>
+
+    <Divider className="col-span-2" />
+
+    <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Vessel to Relay</p>
+
+    <p className={cns.text.muted()}>Distance to Vessel</p>
+    <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN)}</p>
+
+    <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
+    <p className="">{Math.round((props.vesselStrength ?? NaN) * 100) + '%'}</p>
+
+    <Divider className="col-span-2" />
+
+    <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>More Informations</p>
+
+    <p className={cns.text.muted()}>Planet Radius</p>
+    <p className="">{props.planetRadius ? prettyNum(props.planetRadius) : "-"}</p>
+
+    <p className={cns.text.muted()}>Minimum Radius Based of Planet Radius</p>
+    <p className="">{prettyNum(props.minRadiusBasedOnPlanet ?? NaN)}</p>
+
+    <p className={cns.text.muted()}>Maximum Relay Range</p>
+    <p className="">{prettyNum(props.maxRelayRange)}</p>
+
+    <p className={cns.text.muted()}>Maximum Radius based on Relay to Relay</p>
+    <p className="">{prettyNum(props.maxRadiusFromRelays ?? NaN)}</p>
+
+    <p className={cns.text.muted()}>Maximum Radius based on Relay to Vessel</p>
+    <p className="">{prettyNum(props.maxRadiusFromVessel ?? NaN)}</p>
+
+    <div className="col-span-2">
+      <p className={cns.text.muted()}>Ideal / Midpoint orbits raw value</p>
+      <p className={cns.text.muted()}>{props.midRadius ?? NaN}m</p>
     </div>
 
-    <div>
-      <p className={cns.text.muted()}>Maximum Relay Range</p>
-      <p className="">{prettyNum(props.maxRelayRange)}</p>
-    </div>
-
-    <div>
-      <p className={cns.text.muted()}>Maximum Height based on Relay to Relay</p>
-      <p className="">{prettyNum(props.maxHeightFromRelays)}</p>
-    </div>
   </div>
 }
 
@@ -212,10 +413,11 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
 function Visualization(props: ReturnType<typeof getResult>) {
   if (props.status === "no planet data") return <></>
 
-  const maxViewportScale = Math.max(props.maxHeightFromRelays, props.planetRadius)
+  const maxViewportScale = Math.max(props.maxRadius ?? 0, props.planetRadius, props.midRadius ?? 0)
 
   const rocketPos = getSatellitePosition(props.relayCount, 0.5)
 
+  // Probably would've been more performant using SVG / canvas
   return <div className={cns.card(
     "w-full aspect-square rounded-2xl",
     "bg-zinc-950",
@@ -224,10 +426,10 @@ function Visualization(props: ReturnType<typeof getResult>) {
   )}>
     <Circle
       maxHeight={maxViewportScale}
-      height={props.soiHeight}
+      height={props.soiRadius}
       className="bg-black"
     >
-      <div className="absolute text-xs left-1/2 opacity-50">SOI</div>
+      <div className="absolute text-xs left-1/2 -translate-y-full opacity-50">SOI</div>
     </Circle>
     <Circle
       maxHeight={maxViewportScale}
@@ -251,8 +453,11 @@ function Visualization(props: ReturnType<typeof getResult>) {
     <Circle
       maxHeight={maxViewportScale}
       height={props.planetRadius}
-      className="bg-zinc-400/80"
+      className=""
     >
+      <img
+        src={props.planetimg}
+        className="absolute w-full h-full rounded-full overflow-hidden" />
       <FluentEmojiRocket
         style={{
           left: `${ 50 + (-rocketPos.x * 50) }%`,
@@ -260,55 +465,61 @@ function Visualization(props: ReturnType<typeof getResult>) {
         }}
         className="-translate-1/2 absolute"
       />
-      <div
-        style={{
-          left: `${ 50 + (-rocketPos.x * 50) }%`,
-          top: `${ 50 + (rocketPos.y * 50) }%`,
-          transformOrigin: '0 0',
-          rotate: (() => {
-            const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
-            const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-            const c = Math.atan(b / a)
-            return `${ (Math.PI / props.relayCount) - c }rad`
-          })(),
-          width: (() => {
-            const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
-            const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-            const c = Math.sqrt(a * a + b * b)
-            console.log(c / props.planetRadius * 50)
-            return `${ c / props.planetRadius * 50 }%`
-          })()
-        }}
-        className="absolute w-1/2 h-px bg-green-500 transition-transform duration-75"
-      >
-      </div>
-      <div
-        style={{
-          left: `${ 50 + (-rocketPos.x * 50) }%`,
-          top: `${ 50 + (rocketPos.y * 50) }%`,
-          transformOrigin: '0 0',
-          rotate: (() => {
-            const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
-            const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-            const c = Math.atan(b / a)
-            return `${ (Math.PI / props.relayCount) + c - Math.PI }rad`
-          })(),
-          width: (() => {
-            const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
-            const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-            const c = Math.sqrt(a * a + b * b)
-            console.log(c / props.planetRadius * 50)
-            return `${ c / props.planetRadius * 50 }%`
-          })()
-        }}
-        className="absolute w-1/2 h-px bg-green-500 transition-transform duration-75"
-      >
-      </div>
+      {props.reason !== "no relay satellite" && <>
+        <div
+          style={{
+            left: `${ 50 + (-rocketPos.x * 50) }%`,
+            top: `${ 50 + (rocketPos.y * 50) }%`,
+            transformOrigin: '0 0',
+            rotate: (() => {
+              const a = (props.midRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.midRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const c = Math.atan(b / a)
+              return `${ (Math.PI / props.relayCount) - c }rad`
+            })(),
+            width: (() => {
+              const a = (props.midRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.midRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const c = Math.sqrt(a * a + b * b)
+              return `${ c / props.planetRadius * 50 }%`
+            })(),
+            background: props.vesselLinkColor
+          }}
+          className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
+        >
+        </div>
+        <div
+          style={{
+            left: `${ 50 + (-rocketPos.x * 50) }%`,
+            top: `${ 50 + (rocketPos.y * 50) }%`,
+            transformOrigin: '0 0',
+            rotate: (() => {
+              const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const c = Math.atan(b / a)
+              return `${ (Math.PI / props.relayCount) + c - Math.PI }rad`
+            })(),
+            width: (() => {
+              const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const c = Math.sqrt(a * a + b * b)
+              return `${ c / props.planetRadius * 50 }%`
+            })(),
+            background: props.vesselLinkColor
+
+          }}
+          className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
+        >
+        </div>
+      </>
+      }
     </Circle>
     <Circle
       maxHeight={maxViewportScale}
       height={props.midRadius}
-      className="border border-px border-emerald-400/50"
+      className={cn(
+        "border border-px border-emerald-400/50",
+      )}
     >
       {Array.from({ length: props.relayCount }, (_, i) => {
 
@@ -320,13 +531,18 @@ function Visualization(props: ReturnType<typeof getResult>) {
         const top = `${ 50 + (y * 50) }%`
 
         return <Fragment key={i}>
+
           <div style={{
             left, top,
             width: `${ length }%`,
             transform: 'translate(0, -50%)',
             transformOrigin: '0 0',
-            rotate: `${ Math.PI / props.relayCount + 2 * Math.PI / props.relayCount * i }rad` // lots of trial and error...
-          }} className="absolute w-1/2 h-px bg-green-500 transition-all starting:opacity-0">
+            rotate: `${ Math.PI / props.relayCount + 2 * Math.PI / props.relayCount * i }rad`, // lots of trial and error...
+            background: props.relayLinkColor,
+          }} className={cn(
+            "absolute w-1/2 h-px bg-green-500 transition-all starting:opacity-0",
+            props.status === "impossible" && props.reason === "no inter-relay connection" && "bg-red-500 "
+          )}>
           </div>
 
 
@@ -336,8 +552,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
             <EmojioneSatellite className="absolute" />
             {i === 1 &&
               <div className="absolute text-nowrap text-white bottom-2 left-2 text-xs">
-                Alt: {prettyNum(props.midRadius)}
-                MID
+                Midpoint Alt: {prettyNum((props.midRadius ?? 0) - props.planetRadius)}
               </div>
             }
           </div>
@@ -359,10 +574,11 @@ function getSatellitePosition(relayCount: number, i: number) {
 
 function Circle(props: {
   maxHeight: number,
-  height: number
+  height: number | undefined,
   className: string,
   children?: ReactNode,
 }) {
+  if (props.height === undefined) return null
   const heightPercent = (props.height / props.maxHeight * 80) + '%'
   return (
     <div style={{ width: heightPercent }} className={cn("absolute aspect-square rounded-full transition-all", props.className)} >

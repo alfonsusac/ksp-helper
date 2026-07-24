@@ -146,3 +146,12 @@ export function lawOfCosineFindAngle(
   const { acos, pow } = Math
   return acos((pow(a, 2) + pow(b, 2) - pow(c, 2)) / (2 * a * b))
 }
+
+
+
+export function mid(
+  a: number,
+  b: number
+) {
+  return (a + b) / 2
+}

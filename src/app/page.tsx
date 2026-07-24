@@ -1,4 +1,6 @@
 import { cns } from "@/design-system"
+import { Divider } from "@/ui/common"
+import { Footer } from "@/ui/footer"
 import Link from "next/link"
 
 export default function HomePage() {
@@ -18,13 +20,15 @@ export default function HomePage() {
               href: "/antenna-range",
               thumb: "/icon.png",
               title: "Maximum Antenna Range Calculator",
-              desc: "Calculate the maximum range of antennas between two vessels"
+              desc: "Calculate the maximum range of antennas between two vessels",
+              beta: false,
             },
             {
               href: "/relay-height",
               thumb: "/relay-height/icon.png",
               title: "Ideal Relay Height",
-              desc: "Get the ideal height for a relay network"
+              desc: "Get the ideal height for a relay network",
+              beta: true,
             },
           ].map((o) => {
             return (
@@ -36,7 +40,7 @@ export default function HomePage() {
                   <img src={o.thumb} />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <div className="leading-4">{o.title}</div>
+                  <div className="leading-4">{o.title}{o.beta && <span className={cns.text.muted("ml-1 text-xs")}>beta</span>}</div>
                   <div className={cns.text.muted("text-sm leading-3.5")}>{o.desc}</div>
                 </div>
               </Link>
@@ -45,7 +49,11 @@ export default function HomePage() {
         }
       </div>
 
+      <div className="grow" />
 
+      <Divider />
+
+      <Footer />
     </main>
   )
 }

@@ -18,12 +18,14 @@ import { cns } from "@/design-system"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 import { useAppState } from "@/lib/use-app-state"
+import { Footer } from "@/ui/footer"
+import { WhatIsThisSection } from "@/ui/prose"
 
 
 
 export default function Home() {
 
-  const [data, setData] = useAppState("antenna-range", () => initialData)
+  const [ data, setData ] = useAppState("antenna-range", () => initialData)
   if (!data) return null
 
   const mode = data[ 0 ].type === "ksc" ? "direct" : "relay"
@@ -205,55 +207,57 @@ export default function Home() {
 
       <Divider className="my-2" />
 
-      <div className="flex flex-col gap-2 text-sm">
-        <h2 className={cns.text.muted("text")}>
-          What is this?
-        </h2>
-        <div className={("max-w-160")}>
-          This calculator helps determine the Maximum Antenna Range in the game Kerbal Space Program which can be used to determine how high your relay orbit should
-          be if you want to constraint to one type of antenna (as opposed to spamming 88-88 in every ship).
-        </div>
-        <div className={("max-w-160")}>
-          It can also be used to calculate the strength of the rating to calculate how many
-          percent of science can be transmitted from a vessel.
-        </div>
-        <h2 className={cns.text.muted("mt-2")}>
-          Sources
-        </h2>
-        <ul className={"list-outside pl-4 list-disc"}>
-          <CitationList title="KSP Wiki - Comnet" href="https://wiki.kerbalspaceprogram.com/wiki/CommNet" />
-          <CitationList title="Ranges and Signal Strength | KSP Let's Do The Math" author="Mike Ruben" href="https://www.youtube.com/watch?v=hVd-WhL4tZ8" />
-          <CitationList title="Science transmission relation to signal strength" href="https://forum.kerbalspaceprogram.com/topic/200317-science-transmission-relation-to-signal-strength" />
-          <CitationList title="Signal Strength vs Science Bonus (Redone)" href="https://docs.google.com/spreadsheets/d/1Wr7to96dpo56xZZxFquQo3WHYJjuv0ZZ9Vpc3BViSh8" />
-          <CitationList title="Min and Max Distance between Planets" href="https://forum.kerbalspaceprogram.com/topic/100439-min-max-distances-betwen-planets/" />
-        </ul>
-        <h2 className={cns.text.muted("mt-2")}>
-          Prior work
-        </h2>
-        <ul className={"list-outside pl-4 list-disc"}>
-          <CitationList title="KSP CommNet Signal Strength Calculator & Antenna Selector" author="poodmund" href="https://docs.google.com/spreadsheets/d/1qIgFB8OXnlgpPCGsxv7JYUYQq5O671IcZXpumVaStek/htmlview" />
-          <CitationList title="Comnet Planner" author="blaarkies" href="https://ksp-visual-calculator.blaarkies.com/commnet-planner" />
-          <CitationList title="KSP Signal Strength Calculator" author="Westbrooke117" href="https://westbrooke117.github.io/KSPSSC/" />
-        </ul>
-      </div>
-
-
+      <WhatIsThisSection
+        descs={[
+          `This calculator helps determine the Maximum Antenna Range in the game Kerbal Space Program which can be used to determine how high your relay orbit should
+          be if you want to constraint to one type of antenna (as opposed to spamming 88-88 in every ship).`,
+          
+          `It can also be used to calculate the strength of the rating to calculate how many
+          percent of science can be transmitted from a vessel.`
+        ]}
+        sources={[
+          {
+            title: "KSP Wiki - CommNet",
+            href: "https://wiki.kerbalspaceprogram.com/wiki/CommNet",
+          },
+          {
+            title: "Ranges and Signal Strength | KSP Let's Do The Math",
+            author: "Mike Ruben",
+            href: "https://www.youtube.com/watch?v=hVd-WhL4tZ8",
+          },
+          {
+            title: "Science transmission relation to signal strength",
+            href: "https://forum.kerbalspaceprogram.com/topic/200317-science-transmission-relation-to-signal-strength",
+          },
+          {
+            title: "Signal Strength vs Science Bonus (Redone)",
+            href: "https://docs.google.com/spreadsheets/d/1Wr7to96dpo56xZZxFquQo3WHYJjuv0ZZ9Vpc3BViSh8",
+          },
+          {
+            title: "Min and Max Distance between Planets",
+            href: "https://forum.kerbalspaceprogram.com/topic/100439-min-max-distances-betwen-planets/",
+          },
+        ]}
+        priorWork={[
+          {
+            title: "KSP CommNet Signal Strength Calculator & Antenna Selector",
+            author: "poodmund",
+            href: "https://docs.google.com/spreadsheets/d/1qIgFB8OXnlgpPCGsxv7JYUYQq5O671IcZXpumVaStek/htmlview",
+          },
+          {
+            title: "Comnet Planner",
+            author: "blaarkies",
+            href: "https://ksp-visual-calculator.blaarkies.com/commnet-planner",
+          },
+          {
+            title: "KSP Signal Strength Calculator",
+            author: "Westbrooke117",
+            href: "https://westbrooke117.github.io/KSPSSC/",
+          },
+        ]}
+      />
       <Divider className="my-2" />
-      <footer className="text-sm">
-        <div>Feedbacks are welcome!</div>
-        <br />
-        <a className="flex gap-1 items-center hover:underline cursor-pointer" target="_blank" href="https://github.com/alfonsusac/ksp-helper">
-          Source (github) <MdiGithub /><LucideArrowUpRight />
-        </a>
-        <a className="flex gap-1 items-center hover:underline cursor-pointer" target="_blank" href="https://discord.gg/Br2bf4ar">
-          My discord <IcBaselineDiscord /><LucideArrowUpRight />
-        </a>
-        <a className="flex gap-1 items-center hover:underline cursor-pointer" target="_blank" href="https://discord.gg/B9Ns6rCYm">
-          r/KerbalSpaceProgram discord <IcBaselineDiscord /><LucideArrowUpRight />
-        </a>
-      </footer>
-
-
+      <Footer />
     </div>
   )
 }

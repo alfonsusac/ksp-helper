@@ -39,7 +39,7 @@ export const cns = {
   },
 
   page: (...c: any[]) => cn(
-    "p-8 flex flex-col gap-4 max-w-200 w-screen",
+    "p-8 flex flex-col gap-4 max-w-200 w-screen min-h-screen",
     cns.text.base(),
     c,
   ),
