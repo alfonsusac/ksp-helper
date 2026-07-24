@@ -18,4 +18,4 @@ Features:
 
 I use `pnpm`. So just type `pnpm i` then `pnpm dev` and open `localhost:3000` to preview development build while you change the code.
 
-Contributions are welcome!
+Contributions and feedbacks are welcome!
