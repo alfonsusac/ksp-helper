@@ -277,7 +277,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
             return `${ c / props.planetRadius * 50 }%`
           })()
         }}
-        className="absolute w-1/2 h-px bg-green-500 transition-transform"
+        className="absolute w-1/2 h-px bg-green-500 transition-transform duration-75"
       >
       </div>
       <div
@@ -299,7 +299,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
             return `${ c / props.planetRadius * 50 }%`
           })()
         }}
-        className="absolute w-1/2 h-px bg-green-500 transition-transform"
+        className="absolute w-1/2 h-px bg-green-500 transition-transform duration-75"
       >
       </div>
     </Circle>

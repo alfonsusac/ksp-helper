@@ -1,5 +1,5 @@
 import { groupToList } from "@/lib/object"
-import { packages, type PlanetData } from "@/lib/packages"
+import { packages, type PlanetData, type PlanetItemData } from "@/lib/packages"
 import { Menu } from "@base-ui/react"
 import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { LucideChevronDown } from "./icons"
@@ -10,9 +10,14 @@ export function PlanetSelectMenu(props: {
   value: string,
   onValueChange: (planet: string) => void,
   planetData: PlanetData,
+  filter?: (planet: PlanetItemData) => boolean,
 }) {
 
-  const groupedPlanet = groupToList(props.planetData.list, e => e.package)
+  const filter = props.filter ?? (() => true)
+
+  const groupedPlanet = groupToList(
+    props.planetData.list.filter(filter), e => e.package
+  )
 
   return (
     <Menu.Root>

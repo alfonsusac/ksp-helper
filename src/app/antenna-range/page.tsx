@@ -1,22 +1,20 @@
 "use client"
 
 import { Fragment, useEffect, useState } from "react"
-import { Slider, CheckboxRow, SelectRow, TabSelectRow, MenuPopup, MenuHelperText, MenuItem } from "../../ui/input"
+import { Slider, CheckboxRow, SelectRow, TabSelectRow } from "../../ui/input"
 import { ShareURLButton } from "../../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../../lib/antenna"
 import { prettyNum } from "../../lib/prettier"
-import { EmojioneMonotoneSatelliteAntenna, EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowRight, LucideArrowUpRight, LucideBadgeQuestionMark, LucideCheck, LucideChevronDown, LucideHouse, LucideMinus, LucidePlus, LucideRotateCcw, LucideShare2, LucideX, MdiGithub, StreamlineWifiAntennaRemix } from "../../ui/icons"
+import { EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowRight, LucideArrowUpRight, LucideBadgeQuestionMark, LucideCheck, LucideRotateCcw, LucideShare2, MdiGithub } from "../../ui/icons"
 import { cn } from "../../ui/cn"
 import { CitationList } from "../../ui/list"
 import { getSignalStrengthDistanceMap } from "../../lib/distance"
 import { formatCss, interpolate } from "culori"
 import { Divider, HomeButton, SignalSymbol } from "../../ui/common"
-import { Menu } from '@base-ui/react/menu'
-import { getData, getPackageName, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../../lib/packages"
-import { groupToList } from "@/lib/object"
+import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../../lib/packages"
 import { initialData, parseAppData, type AntennaCalculatorData } from "@/lib/antenna-range/app-state"
 import { generateShareURL, loadFromLocalStorage, saveToLocalStorage } from "@/lib/antenna-range/persistence"
-import { cns, menuTrigger } from "@/design-system"
+import { cns } from "@/design-system"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 
@@ -607,6 +605,15 @@ function PlanetDistanceTableView(props: {
               value={from}
               onValueChange={setFrom}
               planetData={props.planetData}
+              filter={(planet) => {
+                if (Object
+                  .entries(planet.to ?? {})
+                  .filter(e => e[ 1 ] !== null)
+                  .length === 1) {
+                  return false
+                }
+                return true
+              }}
             />
           </div>
         </>}
@@ -630,6 +637,10 @@ function PlanetDistanceTableView(props: {
               Strength at Furthest Distance
             </div>
             {result.map((row, i) => {
+              if (row.minDistance === null && row.maxDistance === null)
+                return null
+
+              console.log(row)
               return <Fragment key={i}>
                 <div className={cns.text.muted("h-6")}>{row.label}</div>
                 <PlanetDistanceStrengthCell strength={row.minStrength} />

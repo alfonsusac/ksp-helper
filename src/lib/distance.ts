@@ -35,8 +35,8 @@ export function getSignalStrengthDistanceMap(
       label: planetName,
       minDistance: distanceToPlanet?.min ?? null,
       maxDistance: distanceToPlanet?.max ?? null,
-      minStrength: minDistance ? getStrength(maxRange, minDistance) : null,
-      maxStrength: maxDistance ? getStrength(maxRange, maxDistance) : null,
+      minStrength: minDistance !== null ? getStrength(maxRange, minDistance) : null,
+      maxStrength: maxDistance !== null ? getStrength(maxRange, maxDistance) : null,
     })
   }
 
@@ -79,6 +79,7 @@ export function symmetrizePlanetDistanceMap(
     planets.forEach(toPlanet => {
       if (toPlanet === fromPlanet) {
         tempLookup[ toPlanet ] = { min: 0, max: 0 }
+        // tempLookup[ toPlanet ] = null
       } else {
         const sortedPair = getSortedPair(fromPlanet, toPlanet)
         const data = mappedRawDistanceData.get(sortedPair)
