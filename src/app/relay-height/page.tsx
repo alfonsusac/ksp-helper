@@ -240,6 +240,14 @@ function getResult(
   const scienceBonusOfTargetStrength = getScienceBonusfromSignalStrength(data.strength)
 
   const planetRadius = planet.radius ?? 0
+  const effectivePlanetRadius = (() => {
+    if (planet.atmHeight === 0) {
+      return settings.occlusionModifierVac * planetRadius
+    } else {
+      return settings.occlusionModifierAtm * planetRadius
+    }
+  })()
+
   const atmHeight = planet.atmHeight ?? 0
   const soiRadius = planet.soi ?? 0
   const relayCount = data.relayCount
@@ -260,12 +268,13 @@ function getResult(
       relayCount,
       soiRadius,
       atmHeight,
+      effectivePlanetRadius,
       planetRadius,
     }
   }
 
-  const minRadiusBasedOnPlanet = getMinimumRelayHeight(planetRadius, relayCount) + planetRadius
-  const maxRadiusFromRelays = getMaximumRelayHeightRelativeToEachOther(data.relayCount, getDistance(maxRelayRange, data.strength), planetRadius) + planetRadius
+  const minRadiusBasedOnPlanet = getMinimumRelayHeight(effectivePlanetRadius, relayCount) + effectivePlanetRadius
+  const maxRadiusFromRelays = getMaximumRelayHeightRelativeToEachOther(data.relayCount, getDistance(maxRelayRange, data.strength), effectivePlanetRadius) + effectivePlanetRadius
 
   const antennaRangeToVessel = getMaximumRange({
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
@@ -274,7 +283,7 @@ function getResult(
     dsnModifier: settings.dsnModifier,
     rangeModifier: settings.rangeModifier,
   }).value
-  const maxRadiusFromVessel = getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), planetRadius) + planetRadius
+  const maxRadiusFromVessel = getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), effectivePlanetRadius) + effectivePlanetRadius
 
 
   // Get min, max, mid, status, and reason
@@ -286,7 +295,7 @@ function getResult(
     reason,
   } = (() => {
     if (maxRadiusFromRelays < minRadiusBasedOnPlanet) {
-      const midRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, planetRadius + atmHeight)
+      const midRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, effectivePlanetRadius + atmHeight)
       return {
         status: "impossible" as const,
         reason: "no inter-relay connection" as const,
@@ -294,14 +303,14 @@ function getResult(
       }
     }
     if (Number.isNaN(maxRadiusFromVessel)) {
-      const midRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
+      const midRadius = Math.max(minRadiusBasedOnPlanet, effectivePlanetRadius + atmHeight)
       return {
         status: "impossible" as const,
         reason: "no vessel connection" as const,
         midRadius
       }
     }
-    const minRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
+    const minRadius = Math.max(minRadiusBasedOnPlanet, effectivePlanetRadius + atmHeight)
     const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel), minRadius)
     const midRadius = mid(minRadius, maxRadius)
 
@@ -311,14 +320,14 @@ function getResult(
     }
   })()
 
-  const maxHeightFromRelays = maxRadiusFromRelays + planetRadius
-  const minHeightBasedOnPlanet = minRadiusBasedOnPlanet + planetRadius
+  const maxHeightFromRelays = maxRadiusFromRelays + effectivePlanetRadius
+  const minHeightBasedOnPlanet = minRadiusBasedOnPlanet + effectivePlanetRadius
   const distanceBetweenRelays = (midRadius) * Math.sin(Math.PI / relayCount) * 2
   const relayStrength = getStrength(maxRelayRange, distanceBetweenRelays)
 
   const distanceFromVesselToRelay = (() => {
     const a = (midRadius) * Math.sin(Math.PI / relayCount)
-    const b = (midRadius) * Math.cos(Math.PI / relayCount) - planetRadius
+    const b = (midRadius) * Math.cos(Math.PI / relayCount) - effectivePlanetRadius
     const c = Math.sqrt(a * a + b * b)
     return c
   })()
@@ -349,7 +358,7 @@ function getResult(
     maxHeightFromRelays,
     minRadiusBasedOnPlanet,
     minHeightBasedOnPlanet,
-    planetRadius,
+    effectivePlanetRadius,
     soiRadius,
     maxRadius,
     minRadius,
@@ -368,6 +377,7 @@ function getResult(
     relayLinkColor,
 
     scienceBonusOfTargetStrength,
+    planetRadius,
   }
 }
 
