@@ -7,21 +7,20 @@ export type RelayHeightData = {
   relayCount: number,
   planet: string,
   strength: number,
+  orbitRatio: number,
 }
 
-export const initialData = (): RelayHeightData => {
-
-  const temp = {
+export const initialData = () => {
+  const temp: RelayHeightData = {
     vessel: new Map<string, number>,
     relay: new Map<string, number>,
     relayCount: 3,
     planet: "Kerbin",
     strength: 0.95,
+    orbitRatio: 0.5,
   }
-
   temp.relay.set("hg5", 1)
   temp.vessel.set("c16", 1)
-
   return temp
 }
 
@@ -33,6 +32,7 @@ export function useRelayHeightAppState() {
     if ('relayCount' in s === false) return false
     if ('planet' in s === false) return false
     if ('strength' in s === false) return false
+    if ('orbitRatio' in s === false) return false
     return true
   })
 }

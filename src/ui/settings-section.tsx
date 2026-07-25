@@ -3,6 +3,7 @@ import { packageNames, packages, type PackageNames } from "@/lib/packages"
 import { CheckboxRow, NumberInput } from "./input"
 import { LucideRotateCcw } from "./icons"
 import { useAppState } from "@/lib/use-app-state"
+import type { ComponentProps } from "react"
 
 export type GlobalSettings = {
   rangeModifier: number,
@@ -26,6 +27,14 @@ export function getInitialGlobalSettings(): GlobalSettings {
     occlusionModifierAtm: 0.75,
     occlusionModifierVac: 0.9,
   }
+}
+
+export function ResetSettingsIconButton(props: ComponentProps<"button">) {
+  return (
+    <button {...props} className={cns.button.iconGhost(props.className)}>
+      <LucideRotateCcw />
+    </button>
+  )
 }
 
 export function useGlobalSettings() {
@@ -135,9 +144,9 @@ export function SettingsSection(props: {
             value={props.settings.rangeModifier}
             onValueChange={n => changeModifier("rangeModifier", n)}
           />
-          <button className={cns.button.iconGhost()} onClick={() => changeModifier("rangeModifier", getInitialGlobalSettings().rangeModifier)}>
+          <ResetSettingsIconButton onClick={() => changeModifier("rangeModifier", getInitialGlobalSettings().rangeModifier)}>
             <LucideRotateCcw />
-          </button>
+          </ResetSettingsIconButton>
         </div>
       </div>
 
@@ -153,9 +162,9 @@ export function SettingsSection(props: {
             onValueChange={n => changeModifier("dsnModifier", n)}
           />
 
-          <button className={cns.button.iconGhost()} onClick={() => changeModifier("dsnModifier", getInitialGlobalSettings().dsnModifier)}>
+          <ResetSettingsIconButton onClick={() => changeModifier("dsnModifier", getInitialGlobalSettings().dsnModifier)}>
             <LucideRotateCcw />
-          </button>
+          </ResetSettingsIconButton>
         </div>
       </div>
 
@@ -163,15 +172,14 @@ export function SettingsSection(props: {
         <label className="text-sm">Occlusion Modifier, Atm</label>
         {/* The value of this slider is a multiplier value that is applied to the effective size of atmosphereless bodies that can block signals between antennas. */}
         <div className="flex gap-2 items-center">
-
           <NumberInput className={cns.input.box("max-w-60")} type="number"
             value={props.settings.occlusionModifierVac}
             onValueChange={n => changeModifier("occlusionModifierVac", n)}
           />
 
-          <button className={cns.button.iconGhost()} onClick={() => changeModifier("occlusionModifierVac", getInitialGlobalSettings().occlusionModifierVac)}>
+          <ResetSettingsIconButton onClick={() => changeModifier("occlusionModifierVac", getInitialGlobalSettings().occlusionModifierVac)}>
             <LucideRotateCcw />
-          </button>
+          </ResetSettingsIconButton>
         </div>
       </div>
 
@@ -179,15 +187,14 @@ export function SettingsSection(props: {
         <label className="text-sm">Occlusion Modifier, Vac</label>
         {/* The value of this slider is a multiplier value that is applied to the effective size of bodies with atmospheres that can block signals between antennas. */}
         <div className="flex gap-2 items-center">
-
           <NumberInput className={cns.input.box("max-w-60")} type="number"
             value={props.settings.occlusionModifierAtm}
             onValueChange={n => changeModifier("occlusionModifierAtm", n)}
           />
 
-          <button className={cns.button.iconGhost()} onClick={() => changeModifier("occlusionModifierAtm", getInitialGlobalSettings().occlusionModifierAtm)}>
+          <ResetSettingsIconButton onClick={() => changeModifier("occlusionModifierAtm", getInitialGlobalSettings().occlusionModifierAtm)}>
             <LucideRotateCcw />
-          </button>
+          </ResetSettingsIconButton>
         </div>
       </div>
 

@@ -15,7 +15,7 @@ import { EmojioneSatellite, FluentEmojiRocket, LucideTriangleAlert } from "@/ui/
 import { Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
-import { SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
+import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import SignalStrengthItems from "@/ui/signal-strength"
 import { formatCss, interpolate } from "culori"
 import { Fragment, type ReactNode } from "react"
@@ -30,22 +30,33 @@ export default function RelayHeight() {
 
   const changePlanet = (planet: string) => {
     data.planet = planet
+    data.orbitRatio = 0.5
     setData({ ...data })
   }
   const changeVesselAntenna = (a: AntennaPayload) => {
     data.vessel = a
+    data.orbitRatio = 0.5
     setData({ ...data })
   }
   const changeRelayAntenna = (a: AntennaPayload) => {
     data.relay = a
+    data.orbitRatio = 0.5
     setData({ ...data })
   }
   const changeRelayCount = (n: number) => {
     data.relayCount = n
+    data.orbitRatio = 0.5
     setData({ ...data })
   }
   const changeTargetStrength = (str: number) => {
     data.strength = str
+    data.orbitRatio = 0.5
+    setData({ ...data })
+  }
+  const changeResultOrbitRatio = (r: number) => {
+    if (r < 0) r = 0
+    if (r > 1) r = 1
+    data.orbitRatio = r
     setData({ ...data })
   }
 
@@ -152,7 +163,9 @@ export default function RelayHeight() {
 
         <div className="flex flex-col gap-4">
           <Visualization {...result} />
-          <ResultInfo {...result} />
+          <ResultInfo {...result}
+            onOrbitRatioChange={changeResultOrbitRatio}
+          />
         </div>
 
       </section>
@@ -236,6 +249,7 @@ function getResult(
     status: "no planet data" as const
   }
   const planetimg = planet.image
+  const orbitRatio = data.orbitRatio
 
   const scienceBonusOfTargetStrength = getScienceBonusfromSignalStrength(data.strength)
 
@@ -289,45 +303,47 @@ function getResult(
   // Get min, max, mid, status, and reason
   const {
     maxRadius,
-    midRadius,
+    orbitRadius,
     minRadius,
     status,
     reason,
   } = (() => {
     if (maxRadiusFromRelays < minRadiusBasedOnPlanet) {
-      const midRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, effectivePlanetRadius + atmHeight)
+      const orbitRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, planetRadius + atmHeight)
       return {
         status: "impossible" as const,
         reason: "no inter-relay connection" as const,
-        midRadius
+        orbitRadius
       }
     }
     if (Number.isNaN(maxRadiusFromVessel)) {
-      const midRadius = Math.max(minRadiusBasedOnPlanet, effectivePlanetRadius + atmHeight)
+      const orbitRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
       return {
         status: "impossible" as const,
         reason: "no vessel connection" as const,
-        midRadius
+        orbitRadius
       }
     }
-    const minRadius = Math.max(minRadiusBasedOnPlanet, effectivePlanetRadius + atmHeight)
+    const minRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
     const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel), minRadius)
-    const midRadius = mid(minRadius, maxRadius)
+
+    // const orbitRadius = mid(minRadius, maxRadius)
+    const orbitRadius = ((maxRadius - minRadius) * orbitRatio) + minRadius
 
     return {
       status: "ok" as const,
-      midRadius, minRadius, maxRadius
+      orbitRadius, minRadius, maxRadius
     }
   })()
 
   const maxHeightFromRelays = maxRadiusFromRelays + effectivePlanetRadius
   const minHeightBasedOnPlanet = minRadiusBasedOnPlanet + effectivePlanetRadius
-  const distanceBetweenRelays = (midRadius) * Math.sin(Math.PI / relayCount) * 2
+  const distanceBetweenRelays = (orbitRadius) * Math.sin(Math.PI / relayCount) * 2
   const relayStrength = getStrength(maxRelayRange, distanceBetweenRelays)
 
   const distanceFromVesselToRelay = (() => {
-    const a = (midRadius) * Math.sin(Math.PI / relayCount)
-    const b = (midRadius) * Math.cos(Math.PI / relayCount) - effectivePlanetRadius
+    const a = (orbitRadius) * Math.sin(Math.PI / relayCount)
+    const b = (orbitRadius) * Math.cos(Math.PI / relayCount) - effectivePlanetRadius
     const c = Math.sqrt(a * a + b * b)
     return c
   })()
@@ -363,7 +379,7 @@ function getResult(
     maxRadius,
     minRadius,
     atmHeight,
-    midRadius,
+    orbitRadius,
     relayCount,
     maxRadiusFromVessel,
 
@@ -378,10 +394,14 @@ function getResult(
 
     scienceBonusOfTargetStrength,
     planetRadius,
+
+    orbitRatio,
   }
 }
 
-function ResultInfo(props: ReturnType<typeof getResult>) {
+function ResultInfo(props: ReturnType<typeof getResult> & {
+  onOrbitRatioChange: (n: number) => void
+}) {
 
   if (props.status === "no planet data") return <></>
 
@@ -398,22 +418,39 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
       </div>
     </>}
 
-    <div className="grid grid-cols-3 col-span-2 text-base">
-      <div>
-        <p className={cns.text.muted()}>Max</p>
-        <p className="">{prettyNum(props.maxRadius ?? NaN)}</p>
+    <div className="grid grid-cols-3 col-span-2 text-base items-center">
+      <div className="text-sm">
+        <p className={cns.text.muted()}>Min Height</p>
+        <p className="">{prettyNum((props.minRadius ?? NaN) - props.planetRadius)}</p>
       </div>
 
-      <div>
-        <p className={cns.text.muted()}>Mid</p>
-        <p className="">{prettyNum(props.midRadius ?? NaN)}</p>
+      <div className="text-center">
+        <p className={cns.text.muted()}>Orbit Height</p>
+        <p className="">{prettyNum((props.orbitRadius ?? NaN) - props.planetRadius)}</p>
       </div>
 
-      <div>
-        <p className={cns.text.muted()}>Min</p>
-        <p className="">{prettyNum(props.minRadius ?? NaN)}</p>
+      <div className="text-sm text-end">
+        <p className={cns.text.muted()}>Max Height</p>
+        <p className="">{prettyNum((props.maxRadius ?? NaN) - props.planetRadius)}</p>
       </div>
     </div>
+    {props.minRadius && props.maxRadius &&
+      <div className="col-span-2 flex gap-2 items-center">
+        <Slider
+          min={0}
+          max={1}
+          step={0.01}
+          className="grow"
+          onValueChange={props.onOrbitRatioChange}
+          value={props.orbitRatio}
+        />
+        <ResetSettingsIconButton
+          onClick={() => {
+            props.onOrbitRatioChange(0.5)
+          }}
+        />
+      </div>
+    }
 
     <Divider className="col-span-2" />
 
@@ -466,7 +503,7 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
 
     <div className="col-span-2">
       <p className={cns.text.muted()}>Ideal / Midpoint orbits raw value</p>
-      <p className={cns.text.muted()}>{props.midRadius ?? NaN}m</p>
+      <p className={cns.text.muted()}>{props.orbitRadius ?? NaN}m</p>
     </div>
 
   </div>
@@ -476,7 +513,7 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
 function Visualization(props: ReturnType<typeof getResult>) {
   if (props.status === "no planet data") return <></>
 
-  const maxViewportScale = Math.max(props.maxRadius ?? 0, props.planetRadius, props.midRadius ?? 0)
+  const maxViewportScale = Math.max(props.maxRadius ?? 0, props.planetRadius, props.orbitRadius ?? 0)
 
   const rocketPos = getSatellitePosition(props.relayCount, 0.5)
 
@@ -535,14 +572,14 @@ function Visualization(props: ReturnType<typeof getResult>) {
             top: `${ 50 + (rocketPos.y * 50) }%`,
             transformOrigin: '0 0',
             rotate: (() => {
-              const a = (props.midRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.midRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const a = (props.orbitRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.orbitRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
               const c = Math.atan(b / a)
               return `${ (Math.PI / props.relayCount) - c }rad`
             })(),
             width: (() => {
-              const a = (props.midRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.midRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const a = (props.orbitRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.orbitRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
               const c = Math.sqrt(a * a + b * b)
               return `${ c / props.planetRadius * 50 }%`
             })(),
@@ -557,14 +594,14 @@ function Visualization(props: ReturnType<typeof getResult>) {
             top: `${ 50 + (rocketPos.y * 50) }%`,
             transformOrigin: '0 0',
             rotate: (() => {
-              const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const a = (props.orbitRadius) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.orbitRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
               const c = Math.atan(b / a)
               return `${ (Math.PI / props.relayCount) + c - Math.PI }rad`
             })(),
             width: (() => {
-              const a = (props.midRadius) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.midRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+              const a = (props.orbitRadius) * Math.sin(Math.PI / props.relayCount)
+              const b = (props.orbitRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
               const c = Math.sqrt(a * a + b * b)
               return `${ c / props.planetRadius * 50 }%`
             })(),
@@ -579,7 +616,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
     </Circle>
     <Circle
       maxHeight={maxViewportScale}
-      height={props.midRadius}
+      height={props.orbitRadius}
       className={cn(
         "border border-px border-emerald-400/50",
       )}
@@ -615,7 +652,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
             <EmojioneSatellite className="absolute" />
             {i === 1 &&
               <div className="absolute text-nowrap text-white bottom-2 left-2 text-xs">
-                Midpoint Alt: {prettyNum((props.midRadius ?? 0) - props.planetRadius)}
+                Midpoint Alt: {prettyNum((props.orbitRadius ?? 0) - props.planetRadius)}
               </div>
             }
           </div>
