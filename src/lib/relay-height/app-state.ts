@@ -1,5 +1,5 @@
 import type { AntennaPayload } from "../antenna"
-import type { PackageNames } from "../packages"
+import { useAppState } from "../use-app-state"
 
 export type RelayHeightData = {
   vessel: AntennaPayload,
@@ -7,22 +7,32 @@ export type RelayHeightData = {
   relayCount: number,
   planet: string,
   strength: number,
-  settings: {
-    rangeModifier: string,
-    dsnModifier: string,
-    contents: Record<PackageNames, boolean>
-  }
 }
 
-export const initialData: RelayHeightData = {
-  vessel: new Map<string, number>,
-  relay: new Map<string, number>,
-  relayCount: 3,
-  planet: "Kerbin",
-  strength: 0.95,
-  settings: {
-    rangeModifier: "1",
-    dsnModifier: "1",
-    contents: { stock: true, outerplanets: false, commnetAntennasExtension: false, restockplus: false, dmagic: false, jsx2antenna: false, probesplus: false, venssr: false, nearfutureexpansion: false, }
+export const initialData = (): RelayHeightData => {
+
+  const temp = {
+    vessel: new Map<string, number>,
+    relay: new Map<string, number>,
+    relayCount: 3,
+    planet: "Kerbin",
+    strength: 0.95,
   }
+
+  temp.relay.set("hg5", 1)
+  temp.vessel.set("c16", 1)
+
+  return temp
+}
+
+export function useRelayHeightAppState() {
+  return useAppState<RelayHeightData>("relay-height", initialData, (s) => {
+    if (typeof s !== 'object' || s === null) return false
+    if ('vessel' in s === false) return false
+    if ('relay' in s === false) return false
+    if ('relayCount' in s === false) return false
+    if ('planet' in s === false) return false
+    if ('strength' in s === false) return false
+    return true
+  })
 }

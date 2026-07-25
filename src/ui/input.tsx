@@ -138,7 +138,7 @@ export function Slider(props: {
 }) {
   return (
     <BSlider.Root className={props.className} value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge" >
-      <BSlider.Control className="flex w-full touch-none items-center py-3 select-none">
+      <BSlider.Control className="flex w-full touch-none items-center py-0 select-none">
         <BSlider.Track className={cns.slider.track(
           "h-1 w-full select-none rounded-lg"
         )}>

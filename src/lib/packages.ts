@@ -49,6 +49,9 @@ function getAntennaData(option: Record<PackageNames, boolean>) {
     package: string,
   }>()
 
+  console.log("option!!!!")
+  console.log(option)
+
   Object.entries(packages).forEach(([ packName, pack ]) => {
     if (!option[ packName as PackageNames ]) return
     Object.entries(pack.antennas ?? {}).forEach(([ satName, sat ]) => {

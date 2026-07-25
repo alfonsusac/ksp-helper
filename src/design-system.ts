@@ -98,8 +98,13 @@ export const cns = {
         ...c
       ),
     ),
-    ghost: (...c: any) => cns.button.base("bg-transparent dark:bg-transparent opacity-65 hover:opacity-100", ...c),
-    iconGhost: (...c: any) => cns.button.ghost("p-1.5 size-7", ...c),
+    ghost: (...c: any) => cns.button.base("bg-transparent dark:bg-transparent opacity-65 hover:opacity-100", c),
+    subtle: (...c: any) => cns.button.base(
+      "opacity-65 hover:opacity-100",
+      "bg-slate-50 dark:bg-zinc-800",
+      c
+    ),
+    iconGhost: (...c: any) => cns.button.ghost("p-1.5 size-7", c),
   },
 
   popover: {

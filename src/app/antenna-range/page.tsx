@@ -2,37 +2,48 @@
 
 import { Fragment, useEffect, useState } from "react"
 import { Slider, CheckboxRow, SelectRow, TabSelectRow } from "../../ui/input"
-import { ShareURLButton } from "../../ui/button"
+import { ShareAppURLButton } from "../../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../../lib/antenna"
 import { prettyNum } from "../../lib/prettier"
-import { EosIconsPod, IcBaselineDiscord, IcRoundSatelliteAlt, LucideArrowRight, LucideArrowUpRight, LucideBadgeQuestionMark, LucideCheck, LucideRotateCcw, LucideShare2, MdiGithub } from "../../ui/icons"
+import { EosIconsPod, IcRoundSatelliteAlt, LucideArrowRight, LucideArrowUpRight, LucideBadgeQuestionMark, LucideCheck, LucideRotateCcw, LucideShare2 } from "../../ui/icons"
 import { cn } from "../../ui/cn"
-import { CitationList } from "../../ui/list"
 import { getSignalStrengthDistanceMap } from "../../lib/distance"
 import { formatCss, interpolate } from "culori"
 import { Divider, HomeButton, SignalSymbol } from "../../ui/common"
 import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../../lib/packages"
-import { initialData, type AntennaCalculatorData } from "@/lib/antenna-range/app-state"
-import { generateShareURL } from "@/lib/antenna-range/persistence"
+import { initialData, useAntennaRangeAppStateData, type AntennaCalculatorData } from "@/lib/antenna-range/app-state"
+// import { generateShareURL } from "@/lib/antenna-range/persistence"
 import { cns } from "@/design-system"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 import { useAppState } from "@/lib/use-app-state"
 import { Footer } from "@/ui/footer"
 import { WhatIsThisSection } from "@/ui/prose"
+import SignalStrengthItems from "@/ui/signal-strength"
+import { SettingsSection, useGlobalSettings } from "@/ui/settings-section"
 
 
 
 export default function Home() {
 
-  const [ data, setData ] = useAppState("antenna-range", () => initialData)
-  if (!data) return null
+  const [ settings, setSettings ] = useGlobalSettings()
+  // const [ data, setData ] = useAppState("antenna-range", () => initialData, (s) => {
+  //   // if (typeof s !== 'object' || s === null) return false
+  //   // if ('rangeModifier' in s === false) return false
+  //   // if ('dsnModifier' in s === false) return false
+  //   // if ('contents' in s === false) return false
+  //   return true
+  // })
+  const [ data, setData ] = useAntennaRangeAppStateData()
+  if (!data || !settings) return null
+
+  console.log(settings)
 
   const mode = data[ 0 ].type === "ksc" ? "direct" : "relay"
-  const rangeModifier = parseInt(data.settings.rangeModifier) || 1
-  const dsnModifier = parseInt(data.settings.dsnModifier) || 1
+  const rangeModifier = parseInt(settings.rangeModifier) || 1
+  const dsnModifier = parseInt(settings.dsnModifier) || 1
 
-  const { antennas, planets } = getData(data.settings.contents)
+  const { antennas, planets } = getData(settings.contents)
   const { value: maximumRange, zeroReason } = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
   const changeBodyType = (which: 0 | 1, type: "ksc" | "ship") => {
@@ -44,12 +55,12 @@ export default function Home() {
     setData({ ...data })
   }
   const changeModifier = (setting: "rangeModifier" | "dsnModifier", value: string) => {
-    data.settings[ setting ] = value
-    setData({ ...data })
+    settings[ setting ] = value
+    setSettings({ ...settings })
   }
   const changeContentToggle = (which: PackageNames, value: boolean) => {
-    data.settings.contents[ which ] = value
-    setData({ ...data })
+    settings.contents[ which ] = value
+    setSettings({ ...settings })
   }
 
   return (
@@ -137,73 +148,8 @@ export default function Home() {
       <h2 className="text-lg">
         Settings
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-0.5">
-          <label className={cns.text.base("text-sm")}>Additional Contents</label>
-          <div className="flex flex-col gap-0 mt-2">
-            {packageNames.map(pack => {
-              if (pack === "stock") return
-              const pkg = packages[ pack as PackageNames ]
-              const antennaCount = Object.keys(pkg.antennas).length
-              const planetCount = Object.keys(pkg.planets).length
-              return (
-                <CheckboxRow
-                  key={pack}
-                  className="w-full justify-start"
-                  label={<div className="flex flex-col leading-4">
-                    <div>{pkg.name}</div>
-                    <div className={cns.text.muted("text-sm leading-5")}>
-                      {[
-                        !!antennaCount && `${ antennaCount } antennas`,
-                        !!planetCount && `${ planetCount } planets`
-                      ].filter(Boolean).join(' + ')}
-                    </div>
-                  </div>}
-                  onValueChange={(val) => changeContentToggle(pack as PackageNames, val)}
-                  value={data.settings.contents[ pack as PackageNames ]}
-                />
-              )
-            })}
-          </div>
-        </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-0.5">
-            <label className="text-sm">Range Modifier</label>
-            <div className="flex gap-2 items-center">
-              <input className={cns.input.box("max-w-60")} type="number"
-                value={data.settings.rangeModifier}
-                onChange={(e) => {
-                  changeModifier("rangeModifier", e.target.value)
-                }} />
-              <button className={cns.button.iconGhost()} onClick={() => changeModifier("dsnModifier", "1")}>
-                <LucideRotateCcw />
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <label className="text-sm">DSN Modifier</label>
-            <div className="flex gap-2 items-center">
-              <input className={cns.input.box("max-w-60")} type="number"
-                value={data.settings.dsnModifier}
-                onChange={(e) => changeModifier("dsnModifier", e.currentTarget.value)} />
-              <button className={cns.button.iconGhost()} onClick={() => changeModifier("dsnModifier", "1")}>
-                <LucideRotateCcw />
-              </button>
-            </div>
-          </div>
-          <button
-            className={cns.button.base("mt-4 text-sm")}
-            onClick={() => setData(initialData)}
-          >
-            <LucideRotateCcw />
-            Reset All Data
-          </button>
-        </div>
-
-
-
-      </div>
+      <SettingsSection settings={settings} onSettingsChange={setSettings} />
 
       <Divider className="my-2" />
 
@@ -211,7 +157,7 @@ export default function Home() {
         descs={[
           `This calculator helps determine the Maximum Antenna Range in the game Kerbal Space Program which can be used to determine how high your relay orbit should
           be if you want to constraint to one type of antenna (as opposed to spamming 88-88 in every ship).`,
-          
+
           `It can also be used to calculate the strength of the rating to calculate how many
           percent of science can be transmitted from a vessel.`
         ]}
@@ -340,17 +286,7 @@ function ResultSection(props: {
           </div>
         </div>
 
-        <ShareURLButton
-          value={generateShareURL(data)}
-          className={cns.button.base("mt-4 w-full")}
-          label={<>
-            <LucideShare2 />
-            Share URL</>}
-          copied={<>
-            <LucideCheck />
-            Link Copied
-          </>}
-        />
+        <ShareAppURLButton data={data} className="mt-4 w-full" />
       </div>
 
       <Divider className="hidden sm:block" />
@@ -514,28 +450,18 @@ function DistanceStrengthCalculator(props: {
       <div className="flex  gap-4 items-center">
         <div className="place-items-end min-w-34">Distance: {prettyNum(distance, "k", "m")}</div>
         <Divider className={cns.dividerStrong("h-6")} />
-        <div className="flex gap-2 grow max-w-20">
-          <SignalSymbol strength={signalStrength} />
-          <div className="grow max-w-13">
-            {(signalStrength * 100).toFixed(2)}%
-          </div>
-        </div>
-        <Divider className={cns.dividerStrong("h-6")} />
-        <div className="flex gap-2 items-center">
-          <SignalSymbol barClassname={cns.bgScience()} />
-          <div className={cns.textScience("text-[0.9em]")}>
-            +{scienceBonus.bonus}%
-          </div>
-        </div>
+        <SignalStrengthItems
+          strength={signalStrength}
+        />
       </div>
 
       <div className="flex gap-2 text-sm items-center">
-        <div className={cns.text.muted("text-xs font-normal pt-13 pr-2 capitalize")}>
+        <div className={cns.text.muted("text-xs font-normal pt-20 pr-2 capitalize")}>
           {props.mode}
         </div>
 
         <div className="h-20 flex flex-col grow">
-          <div className="grow relative flex items-end -mb-3.5">
+          <div className="grow relative flex items-end ">
             {bins.map((str, i) => {
               return (
                 <div key={i} className="h-full relative" style={{ width: `calc(1 / ${ binCount } * 100%)` }}>
@@ -559,7 +485,7 @@ function DistanceStrengthCalculator(props: {
             onValueChange={(e) => setDistance(e)}
           />
         </div>
-        <div className={cns.text.muted("text-xs font-normal pt-13 pl-2")}>Max</div>
+        <div className={cns.text.muted("text-xs font-normal pt-20 pl-2")}>Max</div>
       </div >
     </div>
 

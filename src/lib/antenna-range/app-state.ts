@@ -1,14 +1,10 @@
 import type { BodyPayload } from "../antenna"
 import type { PackageNames } from "../packages"
+import { useAppState } from "../use-app-state"
 
 export type AntennaCalculatorData = {
   0: BodyPayload
   1: BodyPayload
-  settings: {
-    rangeModifier: string,
-    dsnModifier: string,
-    contents: Record<PackageNames, boolean>
-  }
 }
 
 const defaultProp = () => ({
@@ -21,11 +17,15 @@ const defaultProp = () => ({
 export const initialData: AntennaCalculatorData = {
   '0': { ...defaultProp(), type: "ksc" },
   '1': { ...defaultProp(), type: "ship" },
-  settings: {
-    rangeModifier: "1",
-    dsnModifier: "1",
-    contents: { stock: true, outerplanets: false, commnetAntennasExtension: false, restockplus: false, dmagic: false, jsx2antenna: false, probesplus: false, venssr: false, nearfutureexpansion: false, }
-  },
+}
+
+export function useAntennaRangeAppStateData() {
+  return useAppState("antenna-range", () => initialData, (s) => {
+    if (typeof s !== 'object' || s === null) return false
+    if ('0' in s === false) return false
+    if ('1' in s === false) return false
+    return true
+  })
 }
 
 

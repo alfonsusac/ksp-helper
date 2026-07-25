@@ -1,6 +1,9 @@
+import { cns } from "@/design-system"
 import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react"
+import { LucideCheck, LucideShare2 } from "./icons"
+import { generateShareURL } from "@/lib/use-app-state"
 
-export function ShareURLButton(props: {
+export function CopyButton(props: {
   value: string,
   className: string,
   label: ReactNode,
@@ -37,5 +40,25 @@ export function ShareURLButton(props: {
         {props.copied}
       </>}
     </button >
+  )
+}
+
+
+export function ShareAppURLButton<T>(props: {
+  data: T,
+  className?: string
+}) {
+  return (
+    <CopyButton
+      value={generateShareURL(props.data)}
+      className={cns.button.base(props.className)}
+      label={<>
+        <LucideShare2 />
+        Share URL</>}
+      copied={<>
+        <LucideCheck />
+        Link Copied
+      </>}
+    />
   )
 }

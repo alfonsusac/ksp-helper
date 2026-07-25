@@ -1,13 +1,13 @@
 "use client"
 
 import { cns } from "@/design-system"
-import { getDistance, getMaximumRange, getStrength, type AntennaPayload } from "@/lib/antenna"
-import { getData, type AntennaData, type PlanetData, type PlanetItemData } from "@/lib/packages"
+import { getDistance, getMaximumRange, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload } from "@/lib/antenna"
+import { getData, type AntennaData, type PlanetData } from "@/lib/packages"
 import { prettyNum } from "@/lib/prettier"
-import { initialData, type RelayHeightData } from "@/lib/relay-height/app-state"
+import { useRelayHeightAppState, type RelayHeightData } from "@/lib/relay-height/app-state"
 import { getMaximumRelayHeightRelativeToEachOther, getMaximumRelayHeightRelativeToVessel, getMinimumRelayHeight, lawOfCosineFindAngle, lawOfCosineFindSide, mid } from "@/lib/relay-height/math"
-import { useAppState } from "@/lib/use-app-state"
 import { AntennaInput } from "@/ui/antenna-select-menu"
+import { ShareAppURLButton } from "@/ui/button"
 import { cn } from "@/ui/cn"
 import { Divider, HomeButton } from "@/ui/common"
 import { Footer } from "@/ui/footer"
@@ -15,15 +15,18 @@ import { EmojioneSatellite, FluentEmojiRocket, LucideTriangleAlert } from "@/ui/
 import { Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
+import { SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
+import SignalStrengthItems from "@/ui/signal-strength"
 import { formatCss, interpolate } from "culori"
 import { Fragment, type ReactNode } from "react"
 
 export default function RelayHeight() {
 
-  const [ data, setData ] = useAppState<RelayHeightData>("relay-height", () => initialData)
-  if (!data) return null
+  const [ settings, setSettings ] = useGlobalSettings()
+  const [ data, setData ] = useRelayHeightAppState()
+  if (!data || !settings) return null
 
-  const { antennas, planets } = getData(data.settings.contents)
+  const { antennas, planets } = getData(settings.contents)
 
   const changePlanet = (planet: string) => {
     data.planet = planet
@@ -46,7 +49,7 @@ export default function RelayHeight() {
     setData({ ...data })
   }
 
-  const result = getResult(data, antennas, planets)
+  const result = getResult(data, settings, antennas, planets)
 
   return (
     <div className={cns.page("max-w-240")}>
@@ -64,7 +67,7 @@ export default function RelayHeight() {
 
       <section className="grid grid-cols-1 sm:grid-cols-[10rem_auto] md:grid-cols-[16rem_auto] gap-8 pt-8 ">
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
 
           <div className="flex flex-col gap-1">
             <label className={"text-sm"}>Celestial Body</label>
@@ -86,7 +89,7 @@ export default function RelayHeight() {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-0">
             <label className={"text-sm"}>Relay Count</label>
             <div className="flex gap-2 items-center w-full gap-4">
               <Slider
@@ -99,8 +102,16 @@ export default function RelayHeight() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             <label className={"text-sm"}>Target Signal Strength</label>
+
+            <div className={"text-sm flex gap-4 items-center mt-1.5"}>
+              <SignalStrengthItems
+                strength={data.strength}
+                size="sm"
+              />
+            </div>
+
             <div className="flex gap-2 items-center w-full gap-4">
               <Slider
                 className="max-w-60 w-full"
@@ -112,6 +123,17 @@ export default function RelayHeight() {
                 {Math.round(data.strength * 100) + '%'}
               </div>
             </div>
+            <div className="flex gap-px">
+              {[ 0.5, 0.75, 0.9, 0.95 ].map(e => {
+                return <button key={e}
+                  className={cns.button.subtle("text-xs p-1 px-1.5 rounded-xs first:rounded-l-xl last:rounded-r-xl w-10 shrink-0")}
+                  onClick={() => changeTargetStrength(e)}
+                >
+                  {e * 100}%
+                </button>
+              })}
+            </div>
+
           </div>
 
           <div className="flex flex-col gap-1">
@@ -120,8 +142,11 @@ export default function RelayHeight() {
               value={data.vessel}
               onChange={changeVesselAntenna}
               antennas={antennas}
+              className="flex flex-col"
             />
           </div>
+
+          <ShareAppURLButton data={data} />
 
         </div>
 
@@ -131,6 +156,15 @@ export default function RelayHeight() {
         </div>
 
       </section>
+
+      <Divider />
+
+      <h2 className="text-lg">
+        Settings
+      </h2>
+
+      <SettingsSection settings={settings} onSettingsChange={setSettings} />
+
 
       <Divider />
 
@@ -193,6 +227,7 @@ export default function RelayHeight() {
 
 function getResult(
   data: RelayHeightData,
+  settings: GlobalSettings,
   antennas: AntennaData,
   planets: PlanetData,
 ) {
@@ -202,6 +237,8 @@ function getResult(
   }
   const planetimg = planet.image
 
+  const scienceBonusOfTargetStrength = getScienceBonusfromSignalStrength(data.strength)
+
   const planetRadius = planet.radius ?? 0
   const atmHeight = planet.atmHeight ?? 0
   const soiRadius = planet.soi ?? 0
@@ -210,8 +247,8 @@ function getResult(
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
     body2: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
     antennaData: antennas,
-    dsnModifier: parseInt(data.settings.dsnModifier),
-    rangeModifier: parseInt(data.settings.rangeModifier),
+    dsnModifier: parseInt(settings.dsnModifier),
+    rangeModifier: parseInt(settings.rangeModifier),
   }).value
 
   if (maxRelayRange === 0) {
@@ -234,8 +271,8 @@ function getResult(
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
     body2: { type: "ship", isRelay: false, hasCommandModule: true, antennas: data.vessel, },
     antennaData: antennas,
-    dsnModifier: parseInt(data.settings.dsnModifier),
-    rangeModifier: parseInt(data.settings.rangeModifier),
+    dsnModifier: parseInt(settings.dsnModifier),
+    rangeModifier: parseInt(settings.rangeModifier),
   }).value
   const maxRadiusFromVessel = getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), planetRadius) + planetRadius
 
@@ -328,7 +365,9 @@ function getResult(
     vesselStrength,
 
     vesselLinkColor,
-    relayLinkColor
+    relayLinkColor,
+
+    scienceBonusOfTargetStrength,
   }
 }
 
@@ -336,7 +375,7 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
 
   if (props.status === "no planet data") return <></>
 
-  return <div className="grid grid-cols-[auto_6rem] gap-2 text-sm leading-4 px-4">
+  return <div className="grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 px-4">
     {props.status === "impossible" && <>
       <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
         <div className={cns.text.muted("text-xs flex items-center gap-1")}>
@@ -374,7 +413,13 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
     <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN)}</p>
 
     <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
-    <p className="">{Math.round((props.relayStrength ?? NaN) * 100) + '%'}</p>
+    <div className={"text-sm flex gap-4 items-center"}>
+      <SignalStrengthItems
+        strength={props.relayStrength ?? NaN}
+        size="sm"
+      />
+    </div>
+    {/* <p className="">{Math.round((props.relayStrength ?? NaN) * 100) + '%'}</p> */}
 
     <Divider className="col-span-2" />
 
@@ -384,7 +429,13 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
     <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN)}</p>
 
     <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
-    <p className="">{Math.round((props.vesselStrength ?? NaN) * 100) + '%'}</p>
+    <div className={"text-sm flex gap-4 items-center"}>
+      <SignalStrengthItems
+        strength={props.vesselStrength ?? NaN}
+        size="sm"
+      />
+    </div>
+    {/* <p className="">{Math.round((props.vesselStrength ?? NaN) * 100) + '%'}</p> */}
 
     <Divider className="col-span-2" />
 
