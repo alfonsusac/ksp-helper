@@ -194,12 +194,12 @@ export default function RelayHeight() {
           },
           {
             title: "Ranges and Signal Strength | KSP Let's Do The Math",
-            author: "Mike Ruben",
+            author: "Mike Aben",
             href: "https://www.youtube.com/watch?v=hVd-WhL4tZ8",
           },
           {
             title: "The Best Relay Orbit | KSP Let's Do The Math",
-            author: "Mike Ruben",
+            author: "Mike Aben",
             href: "https://www.youtube.com/watch?v=gpQmvwU1x8c&t=3s",
           },
           {

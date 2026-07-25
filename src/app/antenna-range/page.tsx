@@ -151,7 +151,7 @@ export default function Home() {
           },
           {
             title: "Ranges and Signal Strength | KSP Let's Do The Math",
-            author: "Mike Ruben",
+            author: "Mike Aben",
             href: "https://www.youtube.com/watch?v=hVd-WhL4tZ8",
           },
           {
