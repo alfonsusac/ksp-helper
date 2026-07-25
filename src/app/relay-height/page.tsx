@@ -11,7 +11,7 @@ import { AntennaInput } from "@/ui/antenna-select-menu"
 import { cn } from "@/ui/cn"
 import { Divider, HomeButton } from "@/ui/common"
 import { Footer } from "@/ui/footer"
-import { EmojioneSatellite, FluentEmojiRocket } from "@/ui/icons"
+import { EmojioneSatellite, FluentEmojiRocket, LucideTriangleAlert } from "@/ui/icons"
 import { Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
@@ -82,6 +82,7 @@ export default function RelayHeight() {
               onChange={changeRelayAntenna}
               antennas={antennas}
               className="flex flex-col"
+              filter={a => a.type === "relay"}
             />
           </div>
 
@@ -337,8 +338,11 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
 
   return <div className="grid grid-cols-[auto_6rem] gap-2 text-sm leading-4 px-4">
     {props.status === "impossible" && <>
-      <div className={cns.card("text-sm text-pretty col-span-2 mb-1")}>
-        <div className={cns.text.muted("text-xs")}>warning: {props.reason}</div>
+      <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
+        <div className={cns.text.muted("text-xs flex items-center gap-1")}>
+          <LucideTriangleAlert className={cns.error.text.base()} />
+          warning: {props.reason}
+        </div>
         {props.reason === "no relay satellite" && "Please add a relay antenna to your relay satellite."}
         {props.reason === "no inter-relay connection" && "Relay Antenna can't reach target strength."}
         {props.reason === "no vessel connection" && "Vessel Antenna can't reach target strength."}

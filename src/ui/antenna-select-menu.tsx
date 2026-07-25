@@ -34,7 +34,8 @@ export function AntennaInput(props: {
     props.onChange(props.value)
   }
 
-  const groupedAntennas = groupToList(props.antennas, e => e.package)
+  const filter = props.filter ?? (() => true)
+  const groupedAntennas = groupToList(props.antennas.filter(filter), e => e.package)
   const hasAntenna = props.antennas.some(a => (props.value.get(a.id) ?? 0) > 0)
 
   return (
@@ -136,7 +137,7 @@ export function AntennaInput(props: {
                                 {antenna.combinabilityExponent === 0 ?
                                   <span className="opacity-50">non-combinable</span> :
                                   antenna.combinabilityExponent > 0.75 ?
-                                  "very combinable" : "combinable"
+                                    "very combinable" : "combinable"
                                 }
                               </span>
                             </div>
