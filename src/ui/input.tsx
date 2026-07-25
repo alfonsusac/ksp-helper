@@ -216,3 +216,30 @@ export function IntegerInput(props: ComponentProps<"input"> & {
     />
   )
 }
+
+export function NumberInput(props: ComponentProps<"input"> & {
+  onValueChange: (num: number) => void
+}) {
+  const { onValueChange, ...rest } = props
+
+  const [ val, setVal ] = useState(props.value)
+  useEffect(() => {
+    setVal(props.value)
+  }, [ props.value ])
+
+  return (
+    <input {...rest}
+      value={val}
+      onChange={(e) => {
+        props.onChange?.(e)
+        const v = e.currentTarget.value
+        setVal(v)
+        if (v === "") return
+        console.log(v)
+        const num = Number(v)
+        if (Number.isNaN(num)) return
+        props.onValueChange(num)
+      }}
+    />
+  )
+}

@@ -104,6 +104,10 @@ export const cns = {
       "bg-slate-50 dark:bg-zinc-800",
       c
     ),
+    presetGroup: (...c: any) => cns.button.subtle(
+      "text-xs p-1 px-1.5 rounded-xs first:rounded-l-2xl last:rounded-r-2xl w-10 shrink-0",
+      c
+    ),
     iconGhost: (...c: any) => cns.button.ghost("p-1.5 size-7", c),
   },
 

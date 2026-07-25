@@ -5,18 +5,16 @@ import { Slider, CheckboxRow, SelectRow, TabSelectRow } from "../../ui/input"
 import { ShareAppURLButton } from "../../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../../lib/antenna"
 import { prettyNum } from "../../lib/prettier"
-import { EosIconsPod, IcRoundSatelliteAlt, LucideArrowRight, LucideArrowUpRight, LucideBadgeQuestionMark, LucideCheck, LucideRotateCcw, LucideShare2 } from "../../ui/icons"
+import { EosIconsPod, IcRoundSatelliteAlt, LucideArrowRight, LucideBadgeQuestionMark } from "../../ui/icons"
 import { cn } from "../../ui/cn"
 import { getSignalStrengthDistanceMap } from "../../lib/distance"
 import { formatCss, interpolate } from "culori"
 import { Divider, HomeButton, SignalSymbol } from "../../ui/common"
-import { getData, packageNames, packages, type AntennaData, type PackageNames, type PlanetData } from "../../lib/packages"
-import { initialData, useAntennaRangeAppStateData, type AntennaCalculatorData } from "@/lib/antenna-range/app-state"
-// import { generateShareURL } from "@/lib/antenna-range/persistence"
+import { getData, type AntennaData, type PlanetData } from "../../lib/packages"
+import { useAntennaRangeAppStateData, type AntennaCalculatorData } from "@/lib/antenna-range/app-state"
 import { cns } from "@/design-system"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { AntennaInput } from "@/ui/antenna-select-menu"
-import { useAppState } from "@/lib/use-app-state"
 import { Footer } from "@/ui/footer"
 import { WhatIsThisSection } from "@/ui/prose"
 import SignalStrengthItems from "@/ui/signal-strength"
@@ -27,21 +25,14 @@ import { SettingsSection, useGlobalSettings } from "@/ui/settings-section"
 export default function Home() {
 
   const [ settings, setSettings ] = useGlobalSettings()
-  // const [ data, setData ] = useAppState("antenna-range", () => initialData, (s) => {
-  //   // if (typeof s !== 'object' || s === null) return false
-  //   // if ('rangeModifier' in s === false) return false
-  //   // if ('dsnModifier' in s === false) return false
-  //   // if ('contents' in s === false) return false
-  //   return true
-  // })
   const [ data, setData ] = useAntennaRangeAppStateData()
   if (!data || !settings) return null
 
   console.log(settings)
 
   const mode = data[ 0 ].type === "ksc" ? "direct" : "relay"
-  const rangeModifier = parseInt(settings.rangeModifier) || 1
-  const dsnModifier = parseInt(settings.dsnModifier) || 1
+  const rangeModifier = settings.rangeModifier || 1
+  const dsnModifier = settings.dsnModifier || 1
 
   const { antennas, planets } = getData(settings.contents)
   const { value: maximumRange, zeroReason } = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
@@ -53,14 +44,6 @@ export default function Home() {
   const changeData = (which: 0 | 1, input: BodyPayload) => {
     data[ which ] = input
     setData({ ...data })
-  }
-  const changeModifier = (setting: "rangeModifier" | "dsnModifier", value: string) => {
-    settings[ setting ] = value
-    setSettings({ ...settings })
-  }
-  const changeContentToggle = (which: PackageNames, value: boolean) => {
-    settings.contents[ which ] = value
-    setSettings({ ...settings })
   }
 
   return (

@@ -126,7 +126,7 @@ export default function RelayHeight() {
             <div className="flex gap-px">
               {[ 0.5, 0.75, 0.9, 0.95 ].map(e => {
                 return <button key={e}
-                  className={cns.button.subtle("text-xs p-1 px-1.5 rounded-xs first:rounded-l-xl last:rounded-r-xl w-10 shrink-0")}
+                  className={cns.button.presetGroup()}
                   onClick={() => changeTargetStrength(e)}
                 >
                   {e * 100}%
@@ -247,8 +247,8 @@ function getResult(
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
     body2: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
     antennaData: antennas,
-    dsnModifier: parseInt(settings.dsnModifier),
-    rangeModifier: parseInt(settings.rangeModifier),
+    dsnModifier: settings.dsnModifier,
+    rangeModifier: settings.rangeModifier,
   }).value
 
   if (maxRelayRange === 0) {
@@ -271,8 +271,8 @@ function getResult(
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
     body2: { type: "ship", isRelay: false, hasCommandModule: true, antennas: data.vessel, },
     antennaData: antennas,
-    dsnModifier: parseInt(settings.dsnModifier),
-    rangeModifier: parseInt(settings.rangeModifier),
+    dsnModifier: settings.dsnModifier,
+    rangeModifier: settings.rangeModifier,
   }).value
   const maxRadiusFromVessel = getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), planetRadius) + planetRadius
 
@@ -419,7 +419,6 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
         size="sm"
       />
     </div>
-    {/* <p className="">{Math.round((props.relayStrength ?? NaN) * 100) + '%'}</p> */}
 
     <Divider className="col-span-2" />
 
@@ -435,7 +434,6 @@ function ResultInfo(props: ReturnType<typeof getResult>) {
         size="sm"
       />
     </div>
-    {/* <p className="">{Math.round((props.vesselStrength ?? NaN) * 100) + '%'}</p> */}
 
     <Divider className="col-span-2" />
 
