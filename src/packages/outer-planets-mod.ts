@@ -49,6 +49,7 @@ export const outerplanets: Package = {
     },
 
     Plock: {
+      highestPoint: 3_383,
       distanceToPlanets: {
         Moho: { min: 390_654_083_493, max: 681_013_388_049 },
         Eve: { min: 386_792_768_271, max: 684_877_156_293 },

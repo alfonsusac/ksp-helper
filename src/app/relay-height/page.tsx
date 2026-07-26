@@ -249,11 +249,17 @@ function getResult(
     status: "no planet data" as const
   }
   const planetimg = planet.image
+  const planetimgscale = planet.imageScale
   const orbitRatio = data.orbitRatio
 
   const scienceBonusOfTargetStrength = getScienceBonusfromSignalStrength(data.strength)
 
   const planetRadius = planet.radius ?? 0
+  const highestPoint = planet.highestPoint ?? 0
+  const atmHeight = planet.atmHeight ?? 0
+  const soiRadius = planet.soi ?? 0
+  const minimumOrbitableHeight = Math.max(planetRadius + atmHeight, planetRadius + highestPoint)
+
   const effectivePlanetRadius = (() => {
     if (planet.atmHeight === 0) {
       return settings.occlusionModifierVac * planetRadius
@@ -262,8 +268,6 @@ function getResult(
     }
   })()
 
-  const atmHeight = planet.atmHeight ?? 0
-  const soiRadius = planet.soi ?? 0
   const relayCount = data.relayCount
   const maxRelayRange = getMaximumRange({
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
@@ -309,7 +313,7 @@ function getResult(
     reason,
   } = (() => {
     if (maxRadiusFromRelays < minRadiusBasedOnPlanet) {
-      const orbitRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, planetRadius + atmHeight)
+      const orbitRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, minimumOrbitableHeight)
       return {
         status: "impossible" as const,
         reason: "no inter-relay connection" as const,
@@ -317,14 +321,14 @@ function getResult(
       }
     }
     if (Number.isNaN(maxRadiusFromVessel)) {
-      const orbitRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
+      const orbitRadius = Math.max(minRadiusBasedOnPlanet, minimumOrbitableHeight)
       return {
         status: "impossible" as const,
         reason: "no vessel connection" as const,
         orbitRadius
       }
     }
-    const minRadius = Math.max(minRadiusBasedOnPlanet, planetRadius + atmHeight)
+    const minRadius = Math.max(minRadiusBasedOnPlanet, minimumOrbitableHeight)
     const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel), minRadius)
 
     // const orbitRadius = mid(minRadius, maxRadius)
@@ -396,6 +400,9 @@ function getResult(
     planetRadius,
 
     orbitRatio,
+    planetimgscale,
+    highestPoint,
+    minimumOrbitableHeight,
   }
 }
 
@@ -557,7 +564,11 @@ function Visualization(props: ReturnType<typeof getResult>) {
     >
       <img
         src={props.planetimg}
-        className="absolute w-full h-full rounded-full overflow-hidden" />
+        className="absolute w-full h-full rounded-full overflow-hidden"
+        style={props.planetimgscale ? {
+          scale: props.planetimgscale
+        } : undefined}
+      />
       <FluentEmojiRocket
         style={{
           left: `${ 50 + (-rocketPos.x * 50) }%`,

@@ -76,6 +76,8 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
     radius?: number,
     soi?: number,
     atmHeight?: number,
+    highestPoint?: number,
+    imageScale?: number,
   }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
@@ -87,7 +89,9 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
         image: planet.image,
         atmHeight: planet.atmHeight,
         radius: planet.radius,
-        soi: planet.soi
+        soi: planet.soi,
+        highestPoint: planet.highestPoint,
+        imageScale: planet.imageScale,
       })
     })
 

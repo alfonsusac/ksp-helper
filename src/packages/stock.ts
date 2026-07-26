@@ -11,7 +11,8 @@ export const stock: Package = {
       combinabilityExponent: 1,
       // packetSizeInMits: 2,
       // bandwidthInMitsPerSec: 3.3333,
-      image: "https://wiki.kerbalspaceprogram.com/images/4/49/Communotron_16.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/4/49/Communotron_16.png",
+      image: "/stock/antennas/c16-hd.png",
     },
     'c16s': {
       label: "Communotron 16-S",
@@ -20,7 +21,8 @@ export const stock: Package = {
       combinabilityExponent: 0,
       // packetSizeInMits: 2,
       // bandwidthInMitsPerSec: 3.3333,
-      image: "https://wiki.kerbalspaceprogram.com/images/d/da/Communotron_16-S.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/d/da/Communotron_16-S.png",
+      image: "/stock/antennas/c16s-hd.png",
     },
     'cdtsm1': {
       label: "Communotron DTS-M1",
@@ -29,7 +31,8 @@ export const stock: Package = {
       combinabilityExponent: 0.75,
       // packetSizeInMits: 2,
       // bandwidthInMitsPerSec: 5.7143,
-      image: "https://wiki.kerbalspaceprogram.com/images/a/aa/Comms_DTS-M1_02.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/a/aa/Comms_DTS-M1_02.png",
+      image: "/stock/antennas/dts-m1-hd.png",
     },
     'chg55': {
       label: "Communotron HG-55",
@@ -38,7 +41,8 @@ export const stock: Package = {
       combinabilityExponent: 0.75,
       // packetSizeInMits: 3,
       // bandwidthInMitsPerSec: 20,
-      image: "https://wiki.kerbalspaceprogram.com/images/3/30/Commutron_HG-55.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/3/30/Commutron_HG-55.png",
+      image: "/stock/antennas/hg55-hd.png",
     },
     'c88': {
       label: "Communotron 88-88",
@@ -47,7 +51,8 @@ export const stock: Package = {
       combinabilityExponent: 0.75,
       // packetSizeInMits: 2,
       // bandwidthInMitsPerSec: 20,
-      image: "https://wiki.kerbalspaceprogram.com/images/c/cd/Communotron_88-88.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/c/cd/Communotron_88-88.png",
+      image: "/stock/antennas/c8888-hd.png",
     },
     'hg5': {
       label: "HG-5 High Gain Antenna",
@@ -56,7 +61,8 @@ export const stock: Package = {
       combinabilityExponent: 0.75,
       // packetSizeInMits: 2,
       // bandwidthInMitsPerSec: 5.713,
-      image: "https://wiki.kerbalspaceprogram.com/images/7/75/HG-5_High_Gain_Antenna_%28%2Bopen%29.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/7/75/HG-5_High_Gain_Antenna_%28%2Bopen%29.png",
+      image: "/stock/antennas/hg5-hd.png",
     },
     'ra2': {
       label: "RA-2 Relay Antenna",
@@ -65,7 +71,8 @@ export const stock: Package = {
       combinabilityExponent: 0.75,
       // packetSizeInMits: 1,
       // bandwidthInMitsPerSec: 2.8571,
-      image: "https://wiki.kerbalspaceprogram.com/images/e/e6/RA-2_Relay_Antenna.png"
+      // image: "https://wiki.kerbalspaceprogram.com/images/e/e6/RA-2_Relay_Antenna.png",
+      image: "/stock/antennas/ra2-hd.png",
     },
     'ra15': {
       label: "RA-15 Relay Antenna",
@@ -74,7 +81,8 @@ export const stock: Package = {
       combinabilityExponent: 0.75,
       // packetSizeInMits: 2,
       // bandwidthInMitsPerSec: 5.7143,
-      image: "https://wiki.kerbalspaceprogram.com/images/7/7b/RA-15_Relay_Antenna.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/7/7b/RA-15_Relay_Antenna.png",
+      image: "/stock/antennas/ra15-hd.png",
     },
     'ra100': {
       label: "RA-100 Relay Antenna",
@@ -83,7 +91,8 @@ export const stock: Package = {
       combinabilityExponent: 0.75,
       // packetSizeInMits: 4,
       // bandwidthInMitsPerSec: 11.4286,
-      image: "https://wiki.kerbalspaceprogram.com/images/2/28/RA-100_Relay_Antenna.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/2/28/RA-100_Relay_Antenna.png",
+      image: "/stock/antennas/ra100-hd.png",
     },
   },
   planets: {
@@ -94,10 +103,12 @@ export const stock: Package = {
       soi: Number.POSITIVE_INFINITY,
     },
     Moho: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/3/31/TinyMoho.png/100px-TinyMoho.png",
+      image: "/stock/planets/moho-hd.png",
       radius: 250_000,
       atmHeight: 0,
       soi: 9_646_663,
+      highestPoint: 6_818,
+      imageScale: 1.02,
       distanceToPlanets: {
         Eve: { min: 3_546_908_249, max: 16_117_620_965 },
         Kerbin: { min: 7_289_385_437, max: 19_913_538_689 },
@@ -112,10 +123,11 @@ export const stock: Package = {
       },
     },
     Eve: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/0/03/TinyEve.png/100px-TinyEve.png",
+      image: "/stock/planets/eve-hd.png",
       radius: 700_000,
       atmHeight: 90_000,
       soi: 85_109_365,
+      highestPoint: 7_541,
       distanceToPlanets: {
         Kerbin: { min: 3_668_828_971, max: 23_530_851_543 },
         Duna: { min: 9_792_173_567, max: 31_665_478_335 },
@@ -129,16 +141,19 @@ export const stock: Package = {
       },
     },
     Gilly: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/6/62/TinyGilly.png/75px-TinyGilly.png",
+      image: "/stock/planets/gilly-hd.png",
+      imageScale: 1.45,
       radius: 13_000,
       atmHeight: 0,
-      soi: 126_123.27
+      soi: 126_123.27,
+      highestPoint: 6_401,
     },
     Kerbin: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/5/5d/TinyKerbin.png/100px-TinyKerbin.png",
+      image: "/stock/planets/kerbin-hd.png",
       radius: 600_000,
       atmHeight: 70_000,
       soi: 84_159_286,
+      highestPoint: 6_768,
       distanceToPlanets: {
         Duna: { min: 6_069_283_350, max: 35_383_028_257 },
         Dres: { min: 21_402_401_940, max: 60_320_789_167 },
@@ -151,22 +166,27 @@ export const stock: Package = {
       },
     },
     Mun: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/1/15/TinyMun.png/75px-TinyMun.png",
+      image: "/stock/planets/mun-hd.png",
       radius: 200_000,
       atmHeight: 0,
       soi: 2_429_559.1,
+      highestPoint: 7_061,
+      imageScale: 1.023,
     },
     Minmus: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/6/65/TinyMinmus.png/75px-TinyMinmus.png",
+      image: "/stock/planets/minmus-hd.png",
       radius: 60_000,
       atmHeight: 0,
-      soi: 2_247_428.4
+      soi: 2_247_428.4,
+      highestPoint: 5_724,
+      imageScale: 1.06,
     },
     Duna: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/1/17/TinyDuna.png/100px-TinyDuna.png",
+      image: "/stock/planets/duna-hd.png",
       radius: 320_000,
       soi: 47_921_949,
       atmHeight: 50_000,
+      highestPoint: 8_268,
       distanceToPlanets: {
         Dres: { min: 13_732_281_489, max: 68_080_257_426 },
         Jool: { min: 44_584_549_836, max: 92_947_048_984 },
@@ -178,16 +198,20 @@ export const stock: Package = {
       },
     },
     Ike: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/b/b3/TinyIke.png/75px-TinyIke.png",
+      image: "/stock/planets/ike-hd.png",
+      imageScale: 1.07,
       radius: 130_000,
       atmHeight: 0,
       soi: 1_049_598.9,
+      highestPoint: 12_738,
     },
     Dres: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/d/dd/TinyDres.png/100px-TinyDres.png",
+      image: "/stock/planets/dres-hd.png",
       radius: 138_000,
       atmHeight: 0,
       soi: 32_832_840,
+      highestPoint: 5_670,
+      imageScale: 1.025,
       distanceToPlanets: {
         Jool: { min: 24_526_513_238, max: 113_360_806_852 },
         Eeloo: { min: 28_689_105_419, max: 151_339_309_036 },
@@ -198,7 +222,7 @@ export const stock: Package = {
       },
     },
     Jool: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/3/35/TinyJool.png/100px-TinyJool.png",
+      image: "/stock/planets/jool-hd.png",
       radius: 6_000_000,
       atmHeight: 200_000,
       soi: 2.4559852e9,
@@ -211,40 +235,56 @@ export const stock: Package = {
       },
     },
     Laythe: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/9/94/TinyLaythe.png/75px-TinyLaythe.png",
+      image: "/stock/planets/laythe-hd.png",
       radius: 500_000,
       atmHeight: 50_000,
-      soi: 3_723_645.8
+      soi: 3_723_645.8,
+      highestPoint: 6_079,
     },
     Vall: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/b/b8/TinyVall.png/75px-TinyVall.png",
+      image: "/stock/planets/vall-hd.png",
+      imageScale: 1.023,
+      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/b/b8/TinyVall.png/75px-TinyVall.png",
       radius: 300_000,
       atmHeight: 0,
-      soi: 2_406_401.4
+      soi: 2_406_401.4,
+      highestPoint: 7_985,
     },
     Tylo: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/6/61/TinyTylo.png/75px-TinyTylo.png",
+      image: "/stock/planets/tylo-hd.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/6/61/TinyTylo.png/75px-TinyTylo.png",
       radius: 600_000,
       atmHeight: 0,
-      soi: 10_856_518
+      soi: 10_856_518,
+      highestPoint: 12_904,
+      imageScale: 1.015,
     },
     Bop: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/f/fe/TinyBop.png/75px-TinyBop.png",
+      image: "/stock/planets/bop-hd.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/f/fe/TinyBop.png/75px-TinyBop.png",
       radius: 65_000,
       atmHeight: 0,
-      soi: 1_221_060.9
+      soi: 1_221_060.9,
+      highestPoint: 21_757,
+      imageScale: 1.28,
     },
     Pol: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/f/fd/TinyPol.png/75px-TinyPol.png",
+      image: "/stock/planets/pol-hd.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/f/fd/TinyPol.png/75px-TinyPol.png",
       radius: 44_000,
       atmHeight: 0,
-      soi: 1_042_138.9
+      soi: 1_042_138.9,
+      highestPoint: 4_891,
+      imageScale: 1.07,
     },
     Eeloo: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/e/e0/TinyEeloo.png/100px-TinyEeloo.png",
+      image: "/stock/planets/eeloo-hd.png",
+      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/e/e0/TinyEeloo.png/100px-TinyEeloo.png",
       radius: 210_000,
       atmHeight: 0,
       soi: 1.1908294e8,
+      highestPoint: 3_797,
+      imageScale: 1.01,
       distanceToPlanets: {
         Sarnus: { min: 16_988_828_162, max: 243_123_109_571 },
         Urlum: { min: 135_614_910_615, max: 373_212_339_800 },
