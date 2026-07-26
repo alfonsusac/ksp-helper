@@ -97,10 +97,13 @@ export const stock: Package = {
   },
   planets: {
     Kerbol: {
-      image: "https://wiki.kerbalspaceprogram.com/images/thumb/9/96/TinyKerbol.png/125px-TinyKerbol.png",
+      image: "/stock/planets/kerbol3-hd.png",
+      imageScale: 3,
+      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/9/96/TinyKerbol.png/125px-TinyKerbol.png",
       radius: 261_600_000,
       atmHeight: 600_000,
       soi: Number.POSITIVE_INFINITY,
+      highestPoint: 1_000_000_000
     },
     Moho: {
       image: "/stock/planets/moho-hd.png",
@@ -141,6 +144,7 @@ export const stock: Package = {
       },
     },
     Gilly: {
+      // image: "https://wiki.kerbalspaceprogram.com/images/f/fb/Gilly_tracking.png",
       image: "/stock/planets/gilly-hd.png",
       imageScale: 1.45,
       radius: 13_000,

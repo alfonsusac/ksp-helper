@@ -552,6 +552,9 @@ function Visualization(props: ReturnType<typeof getResult>) {
     >
       <div className="absolute text-xs left-1/2 -translate-y-full text-teal-500/50">MIN</div>
     </Circle>
+    <div className="absolute inset-0 bg-[url(/skybox.jpeg)] bg-cover mix-blend-lighten">
+
+    </div>
     <Circle
       maxHeight={maxViewportScale}
       height={props.planetRadius + props.atmHeight}

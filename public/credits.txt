@@ -1,0 +1,12 @@
+Skybox by Poodmund
+https://spacedock.info/mod/925/Poodxxxs
+
+Satellite Antenna Icon by Apple
+Satellite Icon by Google (Google Noto Icon Pack)
+
+UI Icon attributes in src/ui/icons.txt
+
+Assets in /stock/planets are screenshots captured from Kerbal Space Program. 
+They contain copyrighted game assets and are subject to the Kerbal Space Program 
+EULA. Copyright in the underlying game assets belongs to their respective 
+copyright holder.
