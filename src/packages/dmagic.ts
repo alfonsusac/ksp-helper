@@ -4,15 +4,15 @@ export const dmagic: Package = {
   name: "DMagic",
   antennas: {
     "dm-usis": {
-      label: "Undersize Signals Intelligence Satellite",
-      image: "",
+      label: "Signal Intelligence Satellite 01T \"UnderSZ\"",
+      image: "/dmagic/antenna/undersz.png",
       type: "direct",
       combinabilityExponent: 0,
       rating: 10_000_000_000
     },
     "dm-osis": {
-      label: "Oversize Signals Intelligence Satellite",
-      image: "",
+      label: "Signal Intelligence Satellite 10T \"OverSZ\"",
+      image: "/dmagic/antenna/oversz.png",
       type: "direct",
       combinabilityExponent: 0,
       rating: 1_000_000_000_000
