@@ -1,10 +1,17 @@
 import type { Package } from "./types"
 
+// https://forum.kerbalspaceprogram.com/topic/173446-lowest-highest-points-of-celestial-bodies/
+
 export const outerplanets: Package = {
   name: "Outer Planet Mod",
   dsnLevels: {},
   planets: {
-    Sarnus: {
+    "Sarnus": {
+      radius: 5_300_000,
+      atmHeight: 580_000,
+      soi: 2_740_127_000,
+      image: "/opm/planets/sarnus-hd.png",
+      imageScale: 1,
       distanceToPlanets: {
         Urlum: { min: 112_410_337_108, max: 396_177_918_875 },
         Neidon: { min: 276_249_933_876, max: 542_407_146_909 },
@@ -19,7 +26,53 @@ export const outerplanets: Package = {
       },
     },
 
+    // TODO: add soi with radius below this point.
+
+    // Sarnus Moons
+    "Hale": {
+      radius: 6_000,
+      highestPoint: 5_918,
+      soi: 41_000 + 6_000,
+      image: "/opm/planets/hale-hd.png",
+      imageScale: 1.85,
+    },
+    "Ovok": {
+      radius: 26_000,
+      highestPoint: 14_000,
+      soi: 94_000 + 26_000,
+      image: "/opm/planets/ovok-hd.png",
+      imageScale: 1,
+    },
+    "Eeloo OPM": {
+      radius: 210_000,
+      highestPoint: 3_797,
+      soi: 1_159_000,
+      image: "/opm/planets/eeloo-opm-hd.png",
+      imageScale: 1,
+    },
+    "Slate": {
+      radius: 540_000,
+      highestPoint: 16_559,
+      soi: 9_598_000 + 540_000,
+      image: "/opm/planets/slate-hd.png",
+      imageScale: 1.003,
+    },
+    "Tekto": {
+      radius: 280_000,
+      atmHeight: 95_000,
+      soi: 8_637_000 + 280_000,
+      image: "/opm/planets/tekto-hd.png",
+      imageScale: 1,
+    },
+
+
+
     Urlum: {
+      radius: 2_177_000,
+      atmHeight: 325_000,
+      soi: 2_562_261 + 2_177_000,
+      image: "/opm/planets/urlum-hd.png",
+      imageScale: 1,
       distanceToPlanets: {
         Neidon: { min: 138_500_522_528, max: 680_197_580_053 },
         Plock: { min: 140_799_540_807, max: 932_918_586_457 },
@@ -34,7 +87,42 @@ export const outerplanets: Package = {
       },
     },
 
+    // Urlum Moons
+    Polta: {
+      radius: 220_000,
+      highestPoint: 8_835,
+      soi: 1_661_000 + 220_000,
+      image: "/opm/planets/polta-hd.png",
+      imageScale: 1.029,
+    },
+    Priax: {
+      radius: 74_000,
+      highestPoint: 30_485,
+      soi: 447_000 + 74_000,
+      image: "/opm/planets/priax-hd.png",
+      imageScale: 1.38,
+    },
+    Wal: {
+      radius: 370_000,
+      highestPoint: 20_650,
+      soi: 18_934_000 + 370_000,
+      image: "/opm/planets/wal-hd.png",
+      imageScale: 1.045,
+    },
+    Tal: {
+      radius: 22_000,
+      highestPoint: 11_904,
+      soi: 140_000 + 22_000,
+      image: "/opm/planets/tal-hd.png",
+      imageScale: 1.45,
+    },
+
     Neidon: {
+      radius: 2_145_000,
+      atmHeight: 260_000,
+      soi: 4_415_724_000 + 2_145_000,
+      image: "/opm/planets/neidon-hd.png",
+      imageScale: 1,
       distanceToPlanets: {
         Plock: { min: 227_326_990_695, max: 1_079_565_277_068 },
 
@@ -47,9 +135,30 @@ export const outerplanets: Package = {
         Eeloo: { min: 299_993_717_226, max: 519_198_233_466 },
       },
     },
+    // Meidon Moons
+    Thatmo: {
+      radius: 286_000,
+      atmHeight: 35_000,
+      soi: 5_709_000 + 286_000,
+      highestPoint: 4_981,
+      image: "/opm/planets/thatmo-hd.png",
+      imageScale: 1,
+    },
+    Nissee: {
+      radius: 30_000,
+      highestPoint: 9_113,
+      soi: 7_366 + 30_000,
+      image: "/opm/planets/nissee-hd.png",
+      imageScale: 1.26,
+    },
+
 
     Plock: {
+      radius: 189_000,
       highestPoint: 3_383,
+      soi: 612_762_000 + 189_000,
+      image: "/opm/planets/plock-hd.png",
+      imageScale: 1.005,
       distanceToPlanets: {
         Moho: { min: 390_654_083_493, max: 681_013_388_049 },
         Eve: { min: 386_792_768_271, max: 684_877_156_293 },
@@ -60,6 +169,14 @@ export const outerplanets: Package = {
         Eeloo: { min: 331_236_639_445, max: 740_539_149_543 },
       },
     },
+    // Plock Moon
+    Karen: {
+      radius: 85_000,
+      highestPoint: 4_655,
+      soi: 939_000 + 85_000,
+      image: "/opm/planets/karen-hd.png",
+      imageScale: 1.038,
+    }
   },
   antennas: {}
 }
