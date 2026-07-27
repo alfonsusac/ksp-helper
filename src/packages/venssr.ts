@@ -12,11 +12,8 @@ export const venssr: Package = {
     //   image: "",
     // },
     "vsr-88-88-v": {
-      label: "Communotron 88-88-V",
-      combinabilityExponent: 0.75,
-      rating: 100_000_000_000,
-      image: "/venssr/antenna/c88-88v.png",
-      type: "direct",
+      label: "Communotron 88-88-V", image: "/venssr/antenna/c88-88v.png",
+      type: "direct", rating: 100_000_000_000, combinabilityExponent: 0.75,
     }
   },
   dsnLevels: {}

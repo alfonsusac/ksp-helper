@@ -7,11 +7,7 @@ export const outerplanets: Package = {
   dsnLevels: {},
   planets: {
     "Sarnus": {
-      radius: 5_300_000,
-      atmHeight: 580_000,
-      soi: 2_740_127_000,
-      image: "/opm/planets/sarnus-hd.png",
-      imageScale: 1,
+      radius: 5_300_000, soi: 2_740_127_000, atmHeight: 580_000, image: "/opm/planets/sarnus-hd.png", imageScale: 1,
       distanceToPlanets: {
         Urlum: { min: 112_410_337_108, max: 396_177_918_875 },
         Neidon: { min: 276_249_933_876, max: 542_407_146_909 },
@@ -29,50 +25,16 @@ export const outerplanets: Package = {
     // TODO: add soi with radius below this point.
 
     // Sarnus Moons
-    "Hale": {
-      radius: 6_000,
-      highestPoint: 5_918,
-      soi: 41_000 + 6_000,
-      image: "/opm/planets/hale-hd.png",
-      imageScale: 1.85,
-    },
-    "Ovok": {
-      radius: 26_000,
-      highestPoint: 14_000,
-      soi: 94_000 + 26_000,
-      image: "/opm/planets/ovok-hd.png",
-      imageScale: 1,
-    },
-    "Eeloo OPM": {
-      radius: 210_000,
-      highestPoint: 3_797,
-      soi: 1_159_000,
-      image: "/opm/planets/eeloo-opm-hd.png",
-      imageScale: 1,
-    },
-    "Slate": {
-      radius: 540_000,
-      highestPoint: 16_559,
-      soi: 9_598_000 + 540_000,
-      image: "/opm/planets/slate-hd.png",
-      imageScale: 1.003,
-    },
-    "Tekto": {
-      radius: 280_000,
-      atmHeight: 95_000,
-      soi: 8_637_000 + 280_000,
-      image: "/opm/planets/tekto-hd.png",
-      imageScale: 1,
-    },
+    "Hale": { radius: 6_000, soi: 41_000 + 6_000, highestPoint: 5_918, image: "/opm/planets/hale-hd.png", imageScale: 1.85, },
+    "Ovok": { radius: 26_000, soi: 94_000 + 26_000, highestPoint: 14_000, image: "/opm/planets/ovok-hd.png", imageScale: 1, },
+    "Eeloo OPM": { radius: 210_000, soi: 1_159_000, highestPoint: 3_797, image: "/opm/planets/eeloo-opm-hd.png", imageScale: 1, },
+    "Slate": { radius: 540_000, soi: 9_598_000 + 540_000, highestPoint: 16_559, image: "/opm/planets/slate-hd.png", imageScale: 1.003, },
+    "Tekto": { radius: 280_000, soi: 8_637_000 + 280_000, atmHeight: 95_000, image: "/opm/planets/tekto-hd.png", imageScale: 1, },
 
 
 
     Urlum: {
-      radius: 2_177_000,
-      atmHeight: 325_000,
-      soi: 2_562_261 + 2_177_000,
-      image: "/opm/planets/urlum-hd.png",
-      imageScale: 1,
+      radius: 2_177_000, soi: 2_562_261 + 2_177_000, atmHeight: 325_000, image: "/opm/planets/urlum-hd.png", imageScale: 1,
       distanceToPlanets: {
         Neidon: { min: 138_500_522_528, max: 680_197_580_053 },
         Plock: { min: 140_799_540_807, max: 932_918_586_457 },
@@ -88,41 +50,13 @@ export const outerplanets: Package = {
     },
 
     // Urlum Moons
-    Polta: {
-      radius: 220_000,
-      highestPoint: 8_835,
-      soi: 1_661_000 + 220_000,
-      image: "/opm/planets/polta-hd.png",
-      imageScale: 1.029,
-    },
-    Priax: {
-      radius: 74_000,
-      highestPoint: 30_485,
-      soi: 447_000 + 74_000,
-      image: "/opm/planets/priax-hd.png",
-      imageScale: 1.38,
-    },
-    Wal: {
-      radius: 370_000,
-      highestPoint: 20_650,
-      soi: 18_934_000 + 370_000,
-      image: "/opm/planets/wal-hd.png",
-      imageScale: 1.045,
-    },
-    Tal: {
-      radius: 22_000,
-      highestPoint: 11_904,
-      soi: 140_000 + 22_000,
-      image: "/opm/planets/tal-hd.png",
-      imageScale: 1.45,
-    },
+    Polta: { radius: 220_000, soi: 1_661_000 + 220_000, highestPoint: 8_835, image: "/opm/planets/polta-hd.png", imageScale: 1.029, },
+    Priax: { radius: 74_000, soi: 447_000 + 74_000, highestPoint: 30_485, image: "/opm/planets/priax-hd.png", imageScale: 1.38, },
+    Wal: { radius: 370_000, soi: 18_934_000 + 370_000, highestPoint: 20_650, image: "/opm/planets/wal-hd.png", imageScale: 1.045, },
+    Tal: { radius: 22_000, soi: 140_000 + 22_000, highestPoint: 11_904, image: "/opm/planets/tal-hd.png", imageScale: 1.45, },
 
     Neidon: {
-      radius: 2_145_000,
-      atmHeight: 260_000,
-      soi: 4_415_724_000 + 2_145_000,
-      image: "/opm/planets/neidon-hd.png",
-      imageScale: 1,
+      radius: 2_145_000, soi: 4_415_724_000 + 2_145_000, atmHeight: 260_000, image: "/opm/planets/neidon-hd.png", imageScale: 1,
       distanceToPlanets: {
         Plock: { min: 227_326_990_695, max: 1_079_565_277_068 },
 
@@ -136,27 +70,13 @@ export const outerplanets: Package = {
       },
     },
     // Meidon Moons
-    Thatmo: {
-      radius: 286_000,
-      atmHeight: 35_000,
-      soi: 5_709_000 + 286_000,
-      highestPoint: 4_981,
-      image: "/opm/planets/thatmo-hd.png",
-      imageScale: 1,
-    },
-    Nissee: {
-      radius: 30_000,
-      highestPoint: 9_113,
-      soi: 7_366 + 30_000,
-      image: "/opm/planets/nissee-hd.png",
-      imageScale: 1.26,
-    },
-
+    Thatmo: { radius: 286_000, soi: 5_709_000 + 286_000, atmHeight: 35_000, highestPoint: 4_981, image: "/opm/planets/thatmo-hd.png", imageScale: 1, },
+    Nissee: { radius: 30_000, soi: 7_366 + 30_000, highestPoint: 9_113, image: "/opm/planets/nissee-hd.png", imageScale: 1.26, },
 
     Plock: {
       radius: 189_000,
-      highestPoint: 3_383,
       soi: 612_762_000 + 189_000,
+      highestPoint: 3_383,
       image: "/opm/planets/plock-hd.png",
       imageScale: 1.005,
       distanceToPlanets: {
@@ -170,13 +90,7 @@ export const outerplanets: Package = {
       },
     },
     // Plock Moon
-    Karen: {
-      radius: 85_000,
-      highestPoint: 4_655,
-      soi: 939_000 + 85_000,
-      image: "/opm/planets/karen-hd.png",
-      imageScale: 1.038,
-    }
+    Karen: { radius: 85_000, soi: 939_000 + 85_000, highestPoint: 4_655, image: "/opm/planets/karen-hd.png", imageScale: 1.038, }
   },
   antennas: {}
 }

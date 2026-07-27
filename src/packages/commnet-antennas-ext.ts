@@ -7,46 +7,28 @@ export const commnetAntennasExtension: Package = {
   planets: {},
   antennas: {
     "cae-expvr2t": {
-      label: "C2 Communotron EXP-VR-2T",
-      type: "direct",
-      rating: 5_000_000,
-      combinabilityExponent: 1,
-      image: "/commnet-antennas-ext/antenna/exp-vr-2t-hd.png"
+      label: "C2 Communotron EXP-VR-2T", image: "/commnet-antennas-ext/antenna/exp-vr-2t-hd.png",
+      type: "direct", rating: 5_000_000, combinabilityExponent: 1,
     },
     "cae-hg32": {
-      label: "C2+ High Gain Antenna HG-32",
-      type: "relay",
-      rating: 32_000_000,
-      combinabilityExponent: 0.75,
-      image: "/commnet-antennas-ext/antenna/hg-32-hd.png"
+      label: "C2+ High Gain Antenna HG-32", image: "/commnet-antennas-ext/antenna/hg-32-hd.png",
+      type: "relay", rating: 32_000_000, combinabilityExponent: 0.75,
     },
     "cae-ra7": {
-      label: "C3+ Relay Antenna RA-7",
-      type: "relay",
-      rating: 7_000_000_000,
-      combinabilityExponent: 0.75,
-      image: "/commnet-antennas-ext/antenna/ra-7-hd.png"
+      label: "C3+ Relay Antenna RA-7", image: "/commnet-antennas-ext/antenna/ra-7-hd.png",
+      type: "relay", rating: 7_000_000_000, combinabilityExponent: 0.75,
     },
     "cae-ra25": {
-      label: "C4+ Relay Antenna RA-25",
-      type: "relay",
-      rating: 25_000_000_000,
-      combinabilityExponent: 0.75,
-      image: "/commnet-antennas-ext/antenna/ra-25-hd.png"
+      label: "C4+ Relay Antenna RA-25", image: "/commnet-antennas-ext/antenna/ra-25-hd.png",
+      type: "relay", rating: 25_000_000_000, combinabilityExponent: 0.75,
     },
     "cae-tigger": {
-      label: "C5+ Communotron \"Tigger\"",
-      type: "direct",
-      rating: 500_000_000_000,
-      combinabilityExponent: 1,
-      image: "/commnet-antennas-ext/antenna/trigger-hd.png"
+      label: "C5+ Communotron \"Tigger\"", image: "/commnet-antennas-ext/antenna/trigger-hd.png",
+      type: "direct", rating: 500_000_000_000, combinabilityExponent: 1,
     },
     "cae-rt1": {
-      label: "C5+ RelayTech One",
-      type: "relay",
-      rating: 500_000_000_000,
-      combinabilityExponent: 1,
-      image: "/commnet-antennas-ext/antenna/rt1-hd.png"
+      label: "C5+ RelayTech One", image: "/commnet-antennas-ext/antenna/rt1-hd.png",
+      type: "relay", rating: 500_000_000_000, combinabilityExponent: 1,
     },
   }
 }
