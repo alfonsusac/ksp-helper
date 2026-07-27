@@ -44,18 +44,17 @@ export function getData(option: Record<PackageNames, boolean>) {
   return { antennas, planets }
 }
 
+// Process Antenna
 function getAntennaData(option: Record<PackageNames, boolean>) {
   const map = new Map<string, AntennaDefinition & {
     package: string,
   }>()
 
-  console.log("option!!!!")
-  console.log(option)
-
   Object.entries(packages).forEach(([ packName, pack ]) => {
     if (!option[ packName as PackageNames ]) return
     Object.entries(pack.antennas ?? {}).forEach(([ satName, sat ]) => {
-      map.set(satName, {
+      const id = pack.prefix + '.' + satName
+      map.set(id, {
         ...sat,
         package: packName
       })
@@ -67,6 +66,7 @@ function getAntennaData(option: Record<PackageNames, boolean>) {
   return list
 }
 
+// Process Planet Data
 function getPlanetData(option: Record<PackageNames, boolean>) {
 
   const map: Map<string, {

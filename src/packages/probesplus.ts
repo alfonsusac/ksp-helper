@@ -2,6 +2,7 @@ import type { Package } from "./types"
 
 export const probesplus: Package = {
   name: "ProbesPlus",
+  prefix: "pp",
   dsnLevels: {},
   planets: {},
   antennas: {

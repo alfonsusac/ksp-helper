@@ -2,6 +2,7 @@ import type { Package } from "./types"
 
 export const stock: Package = {
   name: "Stock KSP",
+  prefix: 's',
   dsnLevels: {},
   antennas: {
     "c16": {

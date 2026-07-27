@@ -1,7 +1,8 @@
 
 
 export type Package = {
-  name: string
+  name: string,
+  prefix: string,
   planets: Record<string, PlanetDefinition>,
   antennas: Record<string, AntennaDefinition>,
   dsnLevels: Record<string, { rating: number }>
