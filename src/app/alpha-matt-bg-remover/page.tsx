@@ -2,13 +2,13 @@
 
 import { cns } from "@/design-system"
 import { useEffect, useState } from "react"
-import { convert } from "./convert"
+// import { convert } from "./convert"
 
 // thanks chatgpt
 
 export default function AlphaMatteBGRemover() {
 
-  if (process.env.NODE_ENV === "production") return null
+  // if (process.env.NODE_ENV === "production") return null
 
 
   const [ blackImage, setBlackImage ] = useState<File>()
@@ -62,6 +62,81 @@ export default function AlphaMatteBGRemover() {
     }
   }, [ result ])
 
+
+
+
+
+  const convert = async () => {
+
+    async function imageToImageData(file: File) {
+      const bitmap = await createImageBitmap(file)
+
+      const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
+      const ctx = canvas.getContext("2d")!
+
+      ctx.drawImage(bitmap, 0, 0)
+
+      return ctx.getImageData(0, 0, bitmap.width, bitmap.height)
+    }
+
+    if (!blackImage || !whiteImage) return
+
+    const black = await imageToImageData(blackImage)
+    const white = await imageToImageData(whiteImage)
+
+    const out = new ImageData(black.width, black.height)
+
+    const blackData = black.data
+    const whiteData = white.data
+    const outData = out.data
+
+    for (let i = 0; i < blackData.length; i += 4) {
+      const br = blackData[ i ] / 255
+      const bg = blackData[ i + 1 ] / 255
+      const bb = blackData[ i + 2 ] / 255
+
+      const wr = whiteData[ i ] / 255
+      const wg = whiteData[ i + 1 ] / 255
+      const wb = whiteData[ i + 2 ] / 255
+
+      const ar = 1 - (wr - br)
+      const ag = 1 - (wg - bg)
+      const ab = 1 - (wb - bb)
+
+      const alpha = Math.max(0, Math.min(1, (ar + ag + ab) / 3))
+
+      let r = 0
+      let g = 0
+      let b = 0
+
+      if (alpha > 0.0001) {
+        r = br / alpha
+        g = bg / alpha
+        b = bb / alpha
+      }
+
+      outData[ i ] = Math.round(Math.min(1, r) * 255)
+      outData[ i + 1 ] = Math.round(Math.min(1, g) * 255)
+      outData[ i + 2 ] = Math.round(Math.min(1, b) * 255)
+      outData[ i + 3 ] = Math.round(alpha * 255)
+    }
+
+    const canvas = document.createElement("canvas")
+    canvas.width = out.width
+    canvas.height = out.height
+
+    canvas.getContext("2d")!.putImageData(out, 0, 0)
+
+    const blob = await new Promise<Blob>((resolve) =>
+      canvas.toBlob((blob) => resolve(blob!), "image/png")
+    )
+
+    const url = URL.createObjectURL(blob)
+
+    setResult(url)
+  }
+
+
   return (
     <div className={cns.page("")}>
       <div className="grid grid-cols-2 gap-4">
@@ -88,16 +163,20 @@ export default function AlphaMatteBGRemover() {
       </div>
       <div className="grid grid-cols-3 gap-4">
         <button className={cns.button.base("")} onClick={async () => {
-          if (blackImage && whiteImage) {
-            const resultBuffer = await convert(
-              blackImage,
-              whiteImage,
-            )
+          await convert()
 
-            const blob = new Blob([ resultBuffer ], { type: "image/png" })
-            const url = URL.createObjectURL(blob)
-            setResult(url)
-          }
+          // if (blackImage && whiteImage) {
+
+
+            // const resultBuffer = await convert(
+            //   blackImage,
+            //   whiteImage,
+            // )
+
+            // const blob = new Blob([ resultBuffer ], { type: "image/png" })
+            // const url = URL.createObjectURL(blob)
+            // setResult(url)
+          // }
         }}>Convert</button>
       </div>
 
