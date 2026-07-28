@@ -103,18 +103,27 @@ export default function AlphaMatteBGRemover() {
       const ar = 1 - (wr - br) / (matte2.r - matte1.r)
       const ag = 1 - (wg - bg) / (matte2.g - matte1.g)
       const ab = 1 - (wb - bb) / (matte2.b - matte1.b)
+      // const desaturatedAlpha = Math.max(ar, ag, ab)
+      const desaturatedAlpha = (ar + ag + ab)/3
+      // const desaturatedAlpha = (ar + ag + ab)
 
-      // const alpha = Math.max(0, Math.min(1, (ar + ag + ab) / 3))
-      const alpha = Math.max(0, Math.min(1, Math.max(ar, ag, ab)))
+
+      const alpha = Math.max(0, Math.min(1, desaturatedAlpha))
 
       let r = 0
       let g = 0
       let b = 0
 
+      const lerp = (a: number, b: number, t: number) => a * (1 - t) + b * t
+
       if (alpha > 0.0001) {
-        r = (br - (1 - alpha) * matte1.r)
-        g = (bg - (1 - alpha) * matte1.g)
-        b = (bb - (1 - alpha) * matte1.b)
+        r = (br - (1 - alpha) * matte1.r) / alpha
+        g = (bg - (1 - alpha) * matte1.g) / alpha
+        b = (bb - (1 - alpha) * matte1.b) / alpha
+        
+        r = lerp(br, r, alpha)
+        g = lerp(br, g, alpha)
+        b = lerp(br, b, alpha)
       }
 
       outData[ i ] = Math.round(Math.min(1, r) * 255)

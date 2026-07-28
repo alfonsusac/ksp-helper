@@ -256,8 +256,10 @@ function getResult(
   }
   const planetimg = planet.image
   const planetimgscale = planet.imageScale
+  const planetimgx = planet.imageX
+  const planetimgy = planet.imageY
   const orbitRatio = data.orbitRatio
-
+  const notlandable = planet.notlandable
   const scienceBonusOfTargetStrength = getScienceBonusfromSignalStrength(data.strength)
 
   const planetRadius = planet.radius ?? 0
@@ -292,6 +294,9 @@ function getResult(
       planetimg,
       planetRadius,
       planetimgscale,
+      planetimgx,
+      planetimgy,
+      notlandable,
       maxRelayRange,
       relayCount,
       soiRadius,
@@ -410,6 +415,9 @@ function getResult(
     planetimg,
     planetRadius,
     planetimgscale,
+    planetimgx,
+    planetimgy,
+    notlandable,
     maxRelayRange,
     relayCount,
     soiRadius,
@@ -581,81 +589,87 @@ function Visualization(props: ReturnType<typeof getResult>) {
         className="bg-blue-400/25"
       />
     }
-    {props.atmHeight === 0 &&
+    {/* {props.atmHeight === 0 &&
       // For Testing / Measuring the right image scale
       <Circle
         maxHeight={maxViewportScale}
         height={props.planetRadius + props.atmHeight}
         className="bg-white"
       />
-    }
+    } */}
 
     <Circle
       maxHeight={maxViewportScale}
       height={props.planetRadius}
       className=""
     >
-      <img
+      {props.planetimg && <img
         src={props.planetimg}
         className="absolute w-full h-full object-contain rounded-full overflow-hidden"
-        style={props.planetimgscale ? {
-          scale: props.planetimgscale
-        } : undefined}
-      />
-      <FluentEmojiRocket
         style={{
-          left: `${ 50 + (-rocketPos.x * 50) }%`,
-          top: `${ 50 + (rocketPos.y * 50) }%`
+          scale: props.planetimgscale || undefined,
+          translate: `${ (props.planetimgx ?? 0) }% ${ (props.planetimgy ?? 0) }%`
         }}
-        className="-translate-1/2 absolute"
-      />
-      {props.reason !== "no relay satellite" && <>
-        <div
-          style={{
-            left: `${ 50 + (-rocketPos.x * 50) }%`,
-            top: `${ 50 + (rocketPos.y * 50) }%`,
-            transformOrigin: '0 0',
-            rotate: (() => {
-              const a = (props.orbitRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.orbitRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-              const c = Math.atan(b / a)
-              return `${ (Math.PI / props.relayCount) - c }rad`
-            })(),
-            width: (() => {
-              const a = (props.orbitRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.orbitRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-              const c = Math.sqrt(a * a + b * b)
-              return `${ c / props.planetRadius * 50 }%`
-            })(),
-            background: props.vesselLinkColor
-          }}
-          className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
-        >
-        </div>
-        <div
-          style={{
-            left: `${ 50 + (-rocketPos.x * 50) }%`,
-            top: `${ 50 + (rocketPos.y * 50) }%`,
-            transformOrigin: '0 0',
-            rotate: (() => {
-              const a = (props.orbitRadius) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.orbitRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-              const c = Math.atan(b / a)
-              return `${ (Math.PI / props.relayCount) + c - Math.PI }rad`
-            })(),
-            width: (() => {
-              const a = (props.orbitRadius) * Math.sin(Math.PI / props.relayCount)
-              const b = (props.orbitRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
-              const c = Math.sqrt(a * a + b * b)
-              return `${ c / props.planetRadius * 50 }%`
-            })(),
-            background: props.vesselLinkColor
+      />}
+      {
+        props.notlandable === true ? <></> :
+          <>
+            <FluentEmojiRocket
+              style={{
+                left: `${ 50 + (-rocketPos.x * 50) }%`,
+                top: `${ 50 + (rocketPos.y * 50) }%`
+              }}
+              className="-translate-1/2 absolute"
+            />
+            {props.reason !== "no relay satellite" && <>
+              <div
+                style={{
+                  left: `${ 50 + (-rocketPos.x * 50) }%`,
+                  top: `${ 50 + (rocketPos.y * 50) }%`,
+                  transformOrigin: '0 0',
+                  rotate: (() => {
+                    const a = (props.orbitRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
+                    const b = (props.orbitRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+                    const c = Math.atan(b / a)
+                    return `${ (Math.PI / props.relayCount) - c }rad`
+                  })(),
+                  width: (() => {
+                    const a = (props.orbitRadius ?? 0) * Math.sin(Math.PI / props.relayCount)
+                    const b = (props.orbitRadius ?? 0) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+                    const c = Math.sqrt(a * a + b * b)
+                    return `${ c / props.planetRadius * 50 }%`
+                  })(),
+                  background: props.vesselLinkColor
+                }}
+                className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
+              >
+              </div>
+              <div
+                style={{
+                  left: `${ 50 + (-rocketPos.x * 50) }%`,
+                  top: `${ 50 + (rocketPos.y * 50) }%`,
+                  transformOrigin: '0 0',
+                  rotate: (() => {
+                    const a = (props.orbitRadius) * Math.sin(Math.PI / props.relayCount)
+                    const b = (props.orbitRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+                    const c = Math.atan(b / a)
+                    return `${ (Math.PI / props.relayCount) + c - Math.PI }rad`
+                  })(),
+                  width: (() => {
+                    const a = (props.orbitRadius) * Math.sin(Math.PI / props.relayCount)
+                    const b = (props.orbitRadius) * Math.cos(Math.PI / props.relayCount) - props.planetRadius
+                    const c = Math.sqrt(a * a + b * b)
+                    return `${ c / props.planetRadius * 50 }%`
+                  })(),
+                  background: props.vesselLinkColor
 
-          }}
-          className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
-        >
-        </div>
-      </>
+                }}
+                className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
+              >
+              </div>
+            </>
+            }
+          </>
       }
     </Circle>
     <Circle

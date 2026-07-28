@@ -45,7 +45,13 @@ export function PlanetSelectMenu(props: {
                           {planet.image === undefined ? <>
                             <div className={cns.planet()}></div>
                           </> : <>
-                            <img src={planet.image} />
+                              <img
+                                className="w-full h-full object-cover"
+                                src={planet.image}
+                                style={{
+
+                                }}
+                              />
                           </>}
                         </div>
                         <div className="flex flex-col">

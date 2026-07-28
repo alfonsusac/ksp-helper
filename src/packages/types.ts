@@ -29,4 +29,7 @@ export type PlanetDefinition = {
   atmHeight?: number,
   highestPoint?: number, // Thanks Poodmund (again!). https://forum.kerbalspaceprogram.com/topic/173446-lowest-highest-points-of-celestial-bodies/
   imageScale?: number,
+  imageX?: number,
+  imageY?: number,
+  notlandable?: boolean,
 }

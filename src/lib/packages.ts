@@ -11,6 +11,7 @@ import { jsx2antenna } from "@/packages/jx2antenna"
 import { venssr } from "@/packages/venssr"
 import { nearfutureexpansion } from "@/packages/near-future-exploration"
 import { realSolarSystem } from "@/packages/rss"
+import { kcalbeloh } from "@/packages/kcalbeloh"
 
 export const packages = {
   stock,
@@ -23,6 +24,7 @@ export const packages = {
   probesplus,
   nearfutureexpansion,
   realSolarSystem,
+  kcalbeloh,
 } as const
 
 export const packageNames = Object.keys(packages)
@@ -80,6 +82,9 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
     atmHeight?: number,
     highestPoint?: number,
     imageScale?: number,
+    imageX?: number,
+    imageY?: number,
+    notlandable?: boolean,
   }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
@@ -101,6 +106,9 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
         soi,
         highestPoint: planet.highestPoint,
         imageScale: planet.imageScale,
+        imageX: planet.imageX,
+        imageY: planet.imageY,
+        notlandable: planet.notlandable,
       })
     })
 
