@@ -3,9 +3,9 @@
 export type Package = {
   name: string,
   prefix: string,
-  planets: Record<string, PlanetDefinition>,
-  antennas: Record<string, AntennaDefinition>,
-  dsnLevels: Record<string, { rating: number }>
+  planets?: Record<string, PlanetDefinition>,
+  antennas?: Record<string, AntennaDefinition>,
+  dsnLevels?: Record<string, { rating: number }>
 }
 
 export type AntennaDefinition = {
@@ -24,7 +24,8 @@ export type PlanetDefinition = {
   image?: string,
   distanceToPlanets?: Record<string, DistanceRange | null>,
   radius?: number,
-  soi?: number,
+  soiRadius?: number,
+  soiHeight?: number,
   atmHeight?: number,
   highestPoint?: number, // Thanks Poodmund (again!). https://forum.kerbalspaceprogram.com/topic/173446-lowest-highest-points-of-celestial-bodies/
   imageScale?: number,

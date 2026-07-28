@@ -62,6 +62,8 @@ export default function RelayHeight() {
 
   const result = getResult(data, settings, antennas, planets)
 
+  console.log(result.planetimgscale)
+
   return (
     <div className={cns.page("max-w-240")}>
 
@@ -262,6 +264,7 @@ function getResult(
   const highestPoint = planet.highestPoint ?? 0
   const atmHeight = planet.atmHeight ?? 0
   const soiRadius = planet.soi ?? 0
+  const lowestLKO = planetRadius + atmHeight
   const minimumOrbitableHeight = Math.max(planetRadius + atmHeight, planetRadius + highestPoint)
 
   const effectivePlanetRadius = (() => {
@@ -285,13 +288,20 @@ function getResult(
     return {
       status: "impossible" as const,
       reason: "no relay satellite" as const,
+      // commons
       planetimg,
+      planetRadius,
+      planetimgscale,
       maxRelayRange,
       relayCount,
       soiRadius,
       atmHeight,
       effectivePlanetRadius,
-      planetRadius,
+      scienceBonusOfTargetStrength,
+      orbitRatio,
+      highestPoint,
+      minimumOrbitableHeight,
+      lowestLKO
     }
   }
 
@@ -373,22 +383,18 @@ function getResult(
   const vesselLinkColor = getLinkColor(vesselStrength)
   const relayLinkColor = getLinkColor(relayStrength)
 
+
+
   return {
     status,
     reason,
-    planetimg,
-    maxRelayRange,
     maxRadiusFromRelays,
     maxHeightFromRelays,
     minRadiusBasedOnPlanet,
     minHeightBasedOnPlanet,
-    effectivePlanetRadius,
-    soiRadius,
     maxRadius,
     minRadius,
-    atmHeight,
     orbitRadius,
-    relayCount,
     maxRadiusFromVessel,
 
     relayStrength,
@@ -400,13 +406,20 @@ function getResult(
     vesselLinkColor,
     relayLinkColor,
 
-    scienceBonusOfTargetStrength,
+    // commons
+    planetimg,
     planetRadius,
-
-    orbitRatio,
     planetimgscale,
+    maxRelayRange,
+    relayCount,
+    soiRadius,
+    atmHeight,
+    effectivePlanetRadius,
+    scienceBonusOfTargetStrength,
+    orbitRatio,
     highestPoint,
     minimumOrbitableHeight,
+    lowestLKO
   }
 }
 
@@ -512,6 +525,9 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
     <p className={cns.text.muted()}>Maximum Radius based on Relay to Vessel</p>
     <p className="">{prettyNum(props.maxRadiusFromVessel ?? NaN)}</p>
 
+    <p className={cns.text.muted()}>Lowest Low Orbit Radius</p>
+    <p className="">{(props.lowestLKO ?? NaN)}m</p>
+
     <div className="col-span-2">
       <p className={cns.text.muted()}>Ideal / Midpoint orbits raw value</p>
       <p className={cns.text.muted()}>{props.orbitRadius ?? NaN}m</p>
@@ -558,11 +574,22 @@ function Visualization(props: ReturnType<typeof getResult>) {
     </Circle>
     <div className="absolute inset-0 bg-[url(/skybox.jpeg)] bg-cover mix-blend-lighten">
     </div>
-    <Circle
-      maxHeight={maxViewportScale}
-      height={props.planetRadius + props.atmHeight}
-      className="bg-blue-400/25"
-    />
+    {props.atmHeight > 0 &&
+      <Circle
+        maxHeight={maxViewportScale}
+        height={props.planetRadius + props.atmHeight}
+        className="bg-blue-400/25"
+      />
+    }
+    {props.atmHeight === 0 &&
+      // For Testing / Measuring the right image scale
+      <Circle
+        maxHeight={maxViewportScale}
+        height={props.planetRadius + props.atmHeight}
+        className="bg-white"
+      />
+    }
+
     <Circle
       maxHeight={maxViewportScale}
       height={props.planetRadius}
@@ -570,7 +597,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
     >
       <img
         src={props.planetimg}
-        className="absolute w-full h-full rounded-full overflow-hidden"
+        className="absolute w-full h-full object-contain rounded-full overflow-hidden"
         style={props.planetimgscale ? {
           scale: props.planetimgscale
         } : undefined}
@@ -703,4 +730,6 @@ function Circle(props: {
     </div>
   )
 }
+
+
 

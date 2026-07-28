@@ -10,6 +10,7 @@ import { probesplus } from "@/packages/probesplus"
 import { jsx2antenna } from "@/packages/jx2antenna"
 import { venssr } from "@/packages/venssr"
 import { nearfutureexpansion } from "@/packages/near-future-exploration"
+import { realSolarSystem } from "@/packages/rss"
 
 export const packages = {
   stock,
@@ -21,6 +22,7 @@ export const packages = {
   jsx2antenna,
   probesplus,
   nearfutureexpansion,
+  realSolarSystem,
 } as const
 
 export const packageNames = Object.keys(packages)
@@ -83,13 +85,20 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
   Object.entries(packages).forEach(([ pkName, pack ]) => {
     if (!option[ pkName as PackageNames ]) return
     Object.entries(pack.planets ?? {}).forEach(([ planetName, planet ]) => {
+      
+      const soi = (() => {
+        if (planet.soiRadius) return planet.soiRadius
+        if (planet.soiHeight && planet.radius) return planet.soiHeight + planet.radius
+        return undefined
+      })()
+      
       map.set(planetName, {
         package: pkName,
         to: planet.distanceToPlanets,
         image: planet.image,
         atmHeight: planet.atmHeight,
         radius: planet.radius,
-        soi: planet.soi,
+        soi,
         highestPoint: planet.highestPoint,
         imageScale: planet.imageScale,
       })

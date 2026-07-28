@@ -68,8 +68,8 @@ export function SettingsSection(props: {
         {packageNames.map(pack => {
           if (pack === "stock") return
           const pkg = packages[ pack as PackageNames ]
-          const antennaCount = Object.keys(pkg.antennas).length
-          const planetCount = Object.keys(pkg.planets).length
+          const antennaCount = Object.keys(pkg.antennas ?? {}).length
+          const planetCount = Object.keys(pkg.planets ?? {}).length
           return (
             <CheckboxRow
               key={pack}
