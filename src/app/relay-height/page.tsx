@@ -453,17 +453,17 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
     <div className="grid grid-cols-3 col-span-2 text-base items-center">
       <div className="text-sm">
         <p className={cns.text.muted()}>Min Height</p>
-        <p className="">{prettyNum((props.minRadius ?? NaN) - props.planetRadius)}</p>
+        <p className="">{prettyNum((props.minRadius ?? NaN) - props.planetRadius, "k", "m")}</p>
       </div>
 
       <div className="text-center">
         <p className={cns.text.muted()}>Orbit Height</p>
-        <p className="">{prettyNum((props.orbitRadius ?? NaN) - props.planetRadius)}</p>
+        <p className="">{prettyNum((props.orbitRadius ?? NaN) - props.planetRadius, "k", "m")}</p>
       </div>
 
       <div className="text-sm text-end">
         <p className={cns.text.muted()}>Max Height</p>
-        <p className="">{prettyNum((props.maxRadius ?? NaN) - props.planetRadius)}</p>
+        <p className="">{prettyNum((props.maxRadius ?? NaN) - props.planetRadius, "k", "m")}</p>
       </div>
     </div>
     {props.minRadius && props.maxRadius &&
@@ -489,7 +489,7 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
     <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Between Each Relays</p>
 
     <p className={cns.text.muted()}>Distance</p>
-    <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN)}</p>
+    <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN, "k", "m")}</p>
 
     <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
     <div className={"text-sm flex gap-4 items-center"}>
@@ -504,7 +504,7 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
     <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Vessel to Relay</p>
 
     <p className={cns.text.muted()}>Distance to Vessel</p>
-    <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN)}</p>
+    <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN, "k", "m")}</p>
 
     <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
     <div className={"text-sm flex gap-4 items-center"}>
@@ -519,19 +519,19 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
     <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>More Informations</p>
 
     <p className={cns.text.muted()}>Planet Radius</p>
-    <p className="">{props.planetRadius ? prettyNum(props.planetRadius) : "-"}</p>
+    <p className="">{props.planetRadius ? prettyNum(props.planetRadius, "k", "m") : "-"}</p>
 
     <p className={cns.text.muted()}>Minimum Radius Based of Planet Radius</p>
-    <p className="">{prettyNum(props.minRadiusBasedOnPlanet ?? NaN)}</p>
+    <p className="">{prettyNum(props.minRadiusBasedOnPlanet ?? NaN, "k", "m")}</p>
 
     <p className={cns.text.muted()}>Maximum Relay Range</p>
-    <p className="">{prettyNum(props.maxRelayRange)}</p>
+    <p className="">{prettyNum(props.maxRelayRange, "k", "m")}</p>
 
     <p className={cns.text.muted()}>Maximum Radius based on Relay to Relay</p>
-    <p className="">{prettyNum(props.maxRadiusFromRelays ?? NaN)}</p>
+    <p className="">{prettyNum(props.maxRadiusFromRelays ?? NaN, "k", "m")}</p>
 
     <p className={cns.text.muted()}>Maximum Radius based on Relay to Vessel</p>
-    <p className="">{prettyNum(props.maxRadiusFromVessel ?? NaN)}</p>
+    <p className="">{prettyNum(props.maxRadiusFromVessel ?? NaN, "k", "m")}</p>
 
     <p className={cns.text.muted()}>Lowest Low Orbit Radius</p>
     <p className="">{(props.lowestLKO ?? NaN)}m</p>
@@ -710,7 +710,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
             <EmojioneSatellite className="absolute" />
             {i === 1 &&
               <div className="absolute text-nowrap text-white bottom-2 left-2 text-xs">
-                Midpoint Alt: {prettyNum((props.orbitRadius ?? 0) - props.planetRadius)}
+                Midpoint Alt: {prettyNum((props.orbitRadius ?? 0) - props.planetRadius, "k", "m")}
               </div>
             }
           </div>

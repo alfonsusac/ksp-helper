@@ -9,6 +9,7 @@ export const outerplanets: Package = {
   planets: {
     "Sarnus": {
       radius: 5_300_000, soiRadius: 2_740_127_000, atmHeight: 580_000, image: "/opm/planets/sarnus-hd.png", imageScale: 1,
+      notlandable: true,
       distanceToPlanets: {
         Urlum: { min: 112_410_337_108, max: 396_177_918_875 },
         Neidon: { min: 276_249_933_876, max: 542_407_146_909 },
@@ -27,7 +28,7 @@ export const outerplanets: Package = {
 
     // Sarnus Moons
     "Hale": { radius: 6_000, soiRadius: 41_000 + 6_000, highestPoint: 5_918, image: "/opm/planets/hale-hd.png", imageScale: 1.85, },
-    "Ovok": { radius: 26_000, soiRadius: 94_000 + 26_000, highestPoint: 14_000, image: "/opm/planets/ovok-hd.png", imageScale: 1, },
+    "Ovok": { radius: 26_000, soiRadius: 94_000 + 26_000, highestPoint: 14_000, image: "/opm/planets/ovok-hd.png", imageScale: 1.06, },
     "Eeloo OPM": { radius: 210_000, soiRadius: 1_159_000, highestPoint: 3_797, image: "/opm/planets/eeloo-opm-hd.png", imageScale: 1, },
     "Slate": { radius: 540_000, soiRadius: 9_598_000 + 540_000, highestPoint: 16_559, image: "/opm/planets/slate-hd.png", imageScale: 1.003, },
     "Tekto": { radius: 280_000, soiRadius: 8_637_000 + 280_000, atmHeight: 95_000, image: "/opm/planets/tekto-hd.png", imageScale: 1, },
@@ -35,7 +36,7 @@ export const outerplanets: Package = {
 
 
     Urlum: {
-      radius: 2_177_000, soiRadius: 2_562_261 + 2_177_000, atmHeight: 325_000, image: "/opm/planets/urlum-hd.png", imageScale: 1,
+      radius: 2_177_000, soiRadius: 2_562_261 + 2_177_000, atmHeight: 325_000, image: "/opm/planets/urlum-hd.png", imageScale: 1, notlandable: true,
       distanceToPlanets: {
         Neidon: { min: 138_500_522_528, max: 680_197_580_053 },
         Plock: { min: 140_799_540_807, max: 932_918_586_457 },
@@ -57,7 +58,7 @@ export const outerplanets: Package = {
     Tal: { radius: 22_000, soiRadius: 140_000 + 22_000, highestPoint: 11_904, image: "/opm/planets/tal-hd.png", imageScale: 1.45, },
 
     Neidon: {
-      radius: 2_145_000, soiRadius: 4_415_724_000 + 2_145_000, atmHeight: 260_000, image: "/opm/planets/neidon-hd.png", imageScale: 1,
+      radius: 2_145_000, soiRadius: 4_415_724_000 + 2_145_000, atmHeight: 260_000, image: "/opm/planets/neidon-hd.png", imageScale: 1, notlandable: true,
       distanceToPlanets: {
         Plock: { min: 227_326_990_695, max: 1_079_565_277_068 },
 

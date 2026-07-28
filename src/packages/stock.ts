@@ -64,7 +64,7 @@ export const stock: Package = {
     Kerbol: {
       image: "/stock/planets/kerbol3-hd.png", imageScale: 3,
       radius: 261_600_000, atmHeight: 600_000, soiRadius: Number.POSITIVE_INFINITY,
-      highestPoint: 1_000_000_000
+      highestPoint: 1_000_000_000, notlandable: true,
     },
     Moho: {
       image: "/stock/planets/moho-hd.png", imageScale: 1.02,
@@ -158,7 +158,7 @@ export const stock: Package = {
     },
     Jool: {
       image: "/stock/planets/jool-hd.png",
-      radius: 6_000_000, atmHeight: 200_000, soiRadius: 2.4559852e9,
+      radius: 6_000_000, atmHeight: 200_000, soiRadius: 2.4559852e9, notlandable: true,
       distanceToPlanets: {
         Eeloo: { min: 11_420_136_316, max: 169_943_755_910 },
         Sarnus: { min: 47_661_436_751, max: 203_907_220_758 },

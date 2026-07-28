@@ -6,7 +6,7 @@ export const realSolarSystem: Package = {
   planets: {
     // TODO: add soi with planet radius
     "Sun": {
-      radius: 696_342_000, atmHeight: 600_000, soiHeight: Number.POSITIVE_INFINITY,
+      radius: 696_342_000, atmHeight: 600_000, soiHeight: Number.POSITIVE_INFINITY, notlandable: true,
       image: "/rss/sun.png", imageScale: 1,
     },
     "Mercury": {
@@ -47,7 +47,7 @@ export const realSolarSystem: Package = {
     },
     // End of inner planets
     "Jupiter": {
-      radius: 70_942_000, atmHeight: 1_550_000, soiHeight: 48_196_176_000,
+      radius: 70_942_000, atmHeight: 1_550_000, soiHeight: 48_196_176_000, notlandable: true,
       image: "/rss/jupiter.png", imageScale: 1,
     },
     "Io": {
@@ -68,7 +68,7 @@ export const realSolarSystem: Package = {
     },
     // end of jupiter moon
     "Saturn": {
-      radius: 59_216_000, atmHeight: 2_000_000, soiHeight: 54_475_313_000,
+      radius: 59_216_000, atmHeight: 2_000_000, soiHeight: 54_475_313_000, notlandable: true,
       image: "/rss/saturn.png", imageScale: 2.5,
     },
     "Mimas": {
@@ -101,7 +101,7 @@ export const realSolarSystem: Package = {
     },
     // end of saturn moon
     "Uranus": {
-      radius: 24_894_000, atmHeight: 1_400_000, soiHeight: 51_692_514_000,
+      radius: 24_894_000, atmHeight: 1_400_000, soiHeight: 51_692_514_000, notlandable: true,
       image: "/rss/uranus.png", imageScale: 1,
     },
     "Miranda": {
@@ -126,7 +126,7 @@ export const realSolarSystem: Package = {
     },
     // End of uranus moon
     "Neptune": {
-      radius: 24_224_000, atmHeight: 1_250_000, soiHeight: 86_636_359_000, 
+      radius: 24_224_000, atmHeight: 1_250_000, soiHeight: 86_636_359_000, notlandable: true,
       image: '/rss/neptune.png', imageScale: 1.01,
     },
     "Triton": {

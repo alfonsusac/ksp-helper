@@ -4,6 +4,12 @@ export const kcalbeloh: Package = {
   name: "Kcalbeloh",
   prefix: "kb",
   planets: {
+
+    "WH-3141-A": { // Jool's moon | wormhole
+      image: undefined, imageScale: 1,
+      radius: 10_000, atmHeight: 0, soiHeight: 4_983_000, highestPoint: 45_001, notlandable: true
+    },
+
     "Kcalbeloh": {
       image: "/kcalbeloh/kcalbeloh.png", imageScale: 15.5, imageX: 11, imageY: -7, // raw atm_height: 600_000
       radius: 2_400_000_000, atmHeight: 6100000000, soiHeight: 20_000_000_000_000, highestPoint: 8_500_000_000, notlandable: true
@@ -64,7 +70,7 @@ export const kcalbeloh: Package = {
     },
     "WH-3141-B": { // Sera's moon | wormhole
       image: undefined, imageScale: 1,
-      radius: 10_000, atmHeight: 0, soiHeight: 1_819_000, highestPoint: 45_000, notlandable: true
+      radius: 10_000, atmHeight: 0, soiHeight: 1_819_000, highestPoint: 45_001, notlandable: true
     },
 
     "Simetra": {
