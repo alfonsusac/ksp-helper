@@ -91,28 +91,16 @@ export function TabSelectRow<const T extends SelectPayload>(props: {
   items: T,
   value: T[ number ][ 'value' ],
   onValueChange: (value: T[ number ][ 'value' ]) => void,
+  itemClassName?: string,
 }) {
   return (
-    <div className={cn(
-      cns.tab.containerBg(),
-      cns.tab.containerBorder(),
-      "p-1 flex self-start gap-1 border rounded-xl"
-    )}>
+    <div className={cns.tab.base()}>
       {props.items.map((e, i) => {
         const selected = props.value === e.value
         return (
           <div key={i}
             onClick={() => props.onValueChange(e.value)}
-            className={cn(
-              "p-2 rounded-md px-3 w-40 border border-transparent",
-              "flex items-center gap-2",
-              "select-none cursor-pointer",
-              selected ? [
-                cns.tab.selectedBg(),
-                cns.tab.selectedBorder(),
-                cns.tab.selectedShadow(),
-              ] : cns.tab.itemHoverBg()
-            )}>
+            className={cns.tab.itemBase(selected, props.itemClassName)}>
             <div className={cn(
               "size-4 grid place-items-center p-0.5 shrink-0",
               selected ? "opacity-100" : "opacity-0"

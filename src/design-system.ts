@@ -78,8 +78,25 @@ export const cns = {
   ),
 
   tab: {
+    base: (...c: any[]) => cn(
+      cns.tab.containerBg(),
+      cns.tab.containerBorder(),
+      "p-1 flex self-start gap-1 border rounded-xl",
+      c
+    ),
     containerBg: cnr("             bg-slate-100          dark:bg-zinc-950/50"),
     containerBorder: cnr("         border-slate-200/50   dark:border-zinc-800"),
+    itemBase: (selected: boolean, ...c: any[]) => cn(
+      "p-2 rounded-md px-3 w-40 border border-transparent",
+      "flex items-center gap-2",
+      "select-none cursor-pointer",
+      selected ? [
+        cns.tab.selectedBg(),
+        cns.tab.selectedBorder(),
+        cns.tab.selectedShadow(),
+      ] : cns.tab.itemHoverBg(),
+      c,
+    ),
     selectedBg: cnr("              bg-white              dark:bg-zinc-800"),
     selectedBorder: cnr("border    border-slate-200      dark:border-zinc-700/50"),
     selectedShadow: cnr("shadow-sm shadow-slate-200      dark:shadow-zinc-950"),

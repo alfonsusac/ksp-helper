@@ -12,6 +12,7 @@ import { venssr } from "@/packages/venssr"
 import { nearfutureexpansion } from "@/packages/near-future-exploration"
 import { realSolarSystem } from "@/packages/rss"
 import { kcalbeloh } from "@/packages/kcalbeloh"
+import { gpp } from "@/packages/gpp"
 
 export const packages = {
   stock,
@@ -25,6 +26,7 @@ export const packages = {
   nearfutureexpansion,
   realSolarSystem,
   kcalbeloh,
+  gpp,
 } as const
 
 export const packageNames = Object.keys(packages)

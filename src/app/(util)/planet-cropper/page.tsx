@@ -2,45 +2,22 @@
 
 import { cns } from "@/design-system"
 import { Slider } from "@/ui/input"
-import { useEffect, useState } from "react"
-import { getImageDimensions, type FileData } from "../common"
+import { useState } from "react"
+import { CopyImageButton, StatusText, useAction, useImageClipboard, useImageFileURL, type FileData } from "../common"
 
 // thanks chatgpt
 export default function PlanetCropper() {
 
-  const [ image, setImage ] = useState<FileData>()
-  const [ result, setResult ] = useState<string>()
+  const [ image, setImage ] = useImageFileURL<FileData>()
+  const [ result, setResult ] = useImageFileURL()
   const [ threshold, setThreshold ] = useState<number>(1)
 
+  useImageClipboard((result) => {
+    setImage(result)
+    convert(threshold, result.file)
+  })
 
-  useEffect(() => {
-    const onPaste = async (e: ClipboardEvent) => {
-      const items = e.clipboardData?.items
-      if (!items) return
-      for (const item of items) {
-        if (!item.type.startsWith("image/")) continue
-        const file = item.getAsFile()
-        if (!file) continue
-        const url = URL.createObjectURL(file)
-        const dimension = await getImageDimensions(file)
-        setImage({ file, url, dimension })
-        convert(threshold, file)
-        break
-      }
-    }
-    window.addEventListener("paste", onPaste)
-    return () => window.removeEventListener("paste", onPaste)
-  }, [ image ])
-
-  useEffect(() => {
-    return () => {
-      if (image) URL.revokeObjectURL(image.url)
-      if (result) URL.revokeObjectURL(result)
-    }
-  }, [ image, result ])
-
-
-  const convert = async (threshold: number, file: File | undefined) => {
+  const [ loading, convert ] = useAction(async (threshold: number, file: File | undefined) => {
     if (!file) return
     async function imageToImageData(file: File) {
       const bitmap = await createImageBitmap(file)
@@ -52,8 +29,6 @@ export default function PlanetCropper() {
 
       return ctx.getImageData(0, 0, bitmap.width, bitmap.height)
     }
-
-    if (!image) return
 
     const imgData = await imageToImageData(file)
 
@@ -95,25 +70,19 @@ export default function PlanetCropper() {
 
     const crop = new OffscreenCanvas(bounds.width, bounds.height)
     const cropCtx = crop.getContext("2d")!
-
     cropCtx.putImageData(
       imgData,
       -bounds.x,
       -bounds.y,
     )
-
-    const blob = await crop.convertToBlob({
-      type: "image/png",
-    })
-
+    const blob = await crop.convertToBlob({ type: "image/png", })
     const url = URL.createObjectURL(blob)
-
-    setResult(url)
-  }
+    setResult({ url })
+  })
 
 
   return (
-    <div className={cns.page("")}>
+    <>
       <div className="grid grid-cols-2 gap-4">
         <div className="w-full h-full flex flex-col gap-1">
           {image ? <>
@@ -143,11 +112,13 @@ export default function PlanetCropper() {
         <button className={cns.button.base("")} onClick={async () => {
           await convert(threshold, image?.file)
         }}>Convert</button>
+        <CopyImageButton url={result?.url} />
       </div>
 
+      <StatusText loading={loading} />
       <div className="hover:bg-blue-500 transition-all duration-200">
-        <img src={result} />
+        <img src={result?.url} />
       </div>
-    </div>
+    </>
   )
 }

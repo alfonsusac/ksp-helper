@@ -41,17 +41,17 @@ export function PlanetSelectMenu(props: {
                       <MenuItem key={planet.id}
                         onClick={() => props.onValueChange(planet.id)}
                       >
-                        <div className="size-10 rounded-full shrink-0">
+                        <div className="size-10 rounded-full shrink-0 overflow-hidden">
                           {planet.image === undefined ? <>
                             <div className={cns.planet()}></div>
                           </> : <>
-                              <img
-                                className="w-full h-full object-cover"
-                                src={planet.image}
-                                style={{
-
-                                }}
-                              />
+                            <img
+                              className="w-full h-full object-cover "
+                              src={planet.image}
+                              style={{
+                                scale: planet.imageScale ? `${ planet.imageScale }` : undefined
+                              }}
+                            />
                           </>}
                         </div>
                         <div className="flex flex-col">

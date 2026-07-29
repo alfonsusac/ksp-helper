@@ -31,5 +31,6 @@ export type PlanetDefinition = {
   imageScale?: number,
   imageX?: number,
   imageY?: number,
+  imageRotate?: number,
   notlandable?: boolean,
 }
