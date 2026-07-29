@@ -3,7 +3,7 @@
 import { cns } from "@/design-system"
 import { Slider } from "@/ui/input"
 import { useEffect, useState } from "react"
-import type { FileData } from "../alpha-matt-bg-remover/page"
+import { getImageDimensions, type FileData } from "../common"
 
 // thanks chatgpt
 export default function PlanetCropper() {
@@ -22,7 +22,8 @@ export default function PlanetCropper() {
         const file = item.getAsFile()
         if (!file) continue
         const url = URL.createObjectURL(file)
-        setImage({ file, url })
+        const dimension = await getImageDimensions(file)
+        setImage({ file, url, dimension })
         convert(threshold, file)
         break
       }
@@ -129,6 +130,7 @@ export default function PlanetCropper() {
               {threshold}
             </div>
             <img src={image.url} />
+            <div>width: {image.dimension.w} | height: {image.dimension.h}</div>
             <button className={cns.button.base()} onClick={() => { setImage(undefined) }}>
               Remove Black Image
             </button>
