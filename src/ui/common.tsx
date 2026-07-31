@@ -2,7 +2,7 @@ import type { ComponentProps } from "react"
 import { cn } from "./cn"
 import { cns } from "@/design-system"
 import Link from "next/link"
-import { LucideHouse } from "./icons"
+import { LucideArrowLeft, LucideHouse } from "./icons"
 
 export function SignalSymbol(props: {
   strength?: number,
@@ -52,13 +52,26 @@ export function Divider(props: ComponentProps<"div">) {
   )
 }
 
-export function HomeButton(props: {
-
-}) {
+export function HomeButton() {
   return (
     <Link className={cns.button.ghost("w-fit -mx-3 -mt-3")} href="/">
       <LucideHouse />
       Home
     </Link>
+  )
+}
+export function BackButton(props: { href: string }) {
+  return (
+    <Link className={cns.button.ghost("w-fit -mx-3 -mt-3")} href={props.href}>
+      <LucideArrowLeft />
+      Back
+    </Link>
+  )
+}
+
+
+export function Muted(props: ComponentProps<"span">) {
+  return (
+    <span {...props} className={cns.text.muted(props.className)} />
   )
 }

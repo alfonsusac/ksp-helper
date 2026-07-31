@@ -34,7 +34,7 @@ export default function Home() {
   const rangeModifier = settings.rangeModifier || 1
   const dsnModifier = settings.dsnModifier || 1
 
-  const { antennas, planets } = getData(settings.contents)
+  const { antennas, planets } = getData(settings.contents, settings)
   const { value: maximumRange, zeroReason } = getMaximumRange({ body1: data[ 0 ], body2: data[ 1 ], dsnModifier, rangeModifier, antennaData: antennas })
 
   const changeBodyType = (which: 0 | 1, type: "ksc" | "ship") => {

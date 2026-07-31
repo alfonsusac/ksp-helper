@@ -27,7 +27,10 @@ export const cns = {
       "px-3 p-2 px-3",
       "focus:outline-none",
       "flex items-center text-start gap-2 min-w-30",
-    )
+    ),
+    errorBox: cnr(
+      "border border-red-400 dark:border-red-500/50",
+    ),
   },
   error: {
     border: cnr(" border-red-300 dark:border-red-500/20"),
@@ -106,6 +109,7 @@ export const cns = {
   button: {
     base: (...c: any) => cns.clickableUI(
       cn(
+        "text-sm",
         "flex items-center justify-center rounded-md gap-2",
         "px-3 py-2",
         "focus:outline-none",

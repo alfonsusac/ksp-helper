@@ -26,7 +26,7 @@ export default function RelayHeight() {
   const [ data, setData ] = useRelayHeightAppState()
   if (!data || !settings) return null
 
-  const { antennas, planets } = getData(settings.contents)
+  const { antennas, planets } = getData(settings.contents, settings)
 
   const changePlanet = (planet: string) => {
     data.planet = planet
@@ -61,8 +61,6 @@ export default function RelayHeight() {
   }
 
   const result = getResult(data, settings, antennas, planets)
-
-  console.log(result.planetimgscale)
 
   return (
     <div className={cns.page("max-w-240")}>
@@ -559,13 +557,15 @@ function Visualization(props: ReturnType<typeof getResult>) {
     "grid place-items-center relative",
     "overflow-hidden",
   )}>
-    <Circle
-      maxHeight={maxViewportScale}
-      height={props.soiRadius}
-      className="bg-black"
-    >
-      <div className="absolute text-xs left-1/2 -translate-y-full opacity-50">SOI</div>
-    </Circle>
+    {props.soiRadius !== Infinity &&
+      <Circle
+        maxHeight={maxViewportScale}
+        height={props.soiRadius}
+        className="bg-black"
+      >
+        <div className="absolute text-xs left-1/2 -translate-y-full opacity-50">SOI</div>
+      </Circle>
+    }
     <Circle
       maxHeight={maxViewportScale}
       height={props.maxRadius}
@@ -589,26 +589,22 @@ function Visualization(props: ReturnType<typeof getResult>) {
         className="bg-blue-400/25"
       />
     }
-    {/* {props.atmHeight === 0 &&
-      // For Testing / Measuring the right image scale
-      <Circle
-        maxHeight={maxViewportScale}
-        height={props.planetRadius + props.atmHeight}
-        className="bg-white"
-      />
-    } */}
-
     <Circle
       maxHeight={maxViewportScale}
       height={props.planetRadius}
       className=""
     >
-      {props.planetimg && <img
+      {props.planetimg ? <img
         src={props.planetimg}
         className="absolute w-full h-full object-contain rounded-full overflow-hidden"
         style={{
           scale: props.planetimgscale || undefined,
           translate: `${ (props.planetimgx ?? 0) }% ${ (props.planetimgy ?? 0) }%`
+        }}
+      /> : <div
+        className={cns.planet("absolute w-full h-full rounded-full overflow-hidden")}
+        style={{
+          scale: props.planetimgscale || undefined,
         }}
       />}
       {

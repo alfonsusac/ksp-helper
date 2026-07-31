@@ -1,24 +1,72 @@
 import { cns } from "@/design-system"
 import { packageNames, packages, type PackageNames } from "@/lib/packages"
-import { CheckboxRow, NumberInput } from "./input"
-import { LucideRotateCcw } from "./icons"
+import { CheckboxRow, NumberInputBlock } from "./input"
+import { IcRoundSatelliteAlt, LucideEarth, LucideRotateCcw } from "./icons"
 import { useAppState } from "@/lib/use-app-state"
 import type { ComponentProps } from "react"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
+
+
+// function constructGlobalSettings(v: unknown) {
+//   const res = getInitialGlobalSettings()
+//   if (typeof v !== "object" || v === null) return res
+//   if ('rangeModifier' in v && typeof v.rangeModifier === "number") res.rangeModifier = v.rangeModifier
+//   if ('dsnModifier' in v && typeof v.dsnModifier === "number") res.dsnModifier = v.dsnModifier
+//   if ('occlusionModifierAtm' in v && typeof v.occlusionModifierAtm === "number") res.occlusionModifierAtm = v.occlusionModifierAtm
+//   if ('occlusionModifierVac' in v && typeof v.occlusionModifierVac === "number") res.occlusionModifierVac = v.occlusionModifierVac
+//   if ('contents' in v && typeof v.contents === 'object' && v.contents !== null) {
+//     Object.entries(v.contents).map(([ key, value ]) => {
+//       if (value === true) res.contents[ key as PackageNames ] = true
+//     })
+//   }
+//   if ('customPlanets' in v && Array.isArray(v.customPlanets)) {
+//     v.customPlanets.map((p: unknown) => {
+//       if (typeof p !== "object" || p === null) return
+//       if ('label' in p === false || typeof p.label !== 'string') return
+//       if ('radius' in p === false || typeof p.radius !== 'number') return
+//       if ('atmHeight' in p === false || typeof p.atmHeight !== 'number') return
+//       if ('soiHeight' in p === false || typeof p.soiHeight !== 'number') return
+//       if ('image' in p === true && typeof p.image !== 'string') return
+//     })
+//   }
+//   return res
+// }
 
 export type GlobalSettings = {
   rangeModifier: number,
   dsnModifier: number,
-  contents: Record<PackageNames, boolean>,
   occlusionModifierAtm: number,
   occlusionModifierVac: number,
+  contents: Record<PackageNames, true | undefined>,
+  customPlanets: {
+    label: string,
+    radius: number,
+    atmHeight: number,
+    soiHeight: number,
+    image?: string,
+    imageScale?: number,
+    imageX?: number,
+    imageY?: number,
+    highestPoint?: number,
+    notLandable?: boolean
+  }[],
+  customAntennas: {
+    label: string,
+    rating: number,
+    type: "direct" | "relay",
+    combinabilityExponent: number,
+    image?: string
+  }[],
 }
 
 export function getInitialGlobalSettings(): GlobalSettings {
 
   const contentToggles = Object.fromEntries(Object.keys(packages).map(p => {
     if (p === "stock") return [ "stock" as const, true ]
-    return [ p as PackageNames, false ]
-  })) as Record<PackageNames, boolean>
+    return []
+    // return [ p as PackageNames, false ]
+  })) as Record<PackageNames, true | undefined>
 
   return {
     rangeModifier: 1,
@@ -26,6 +74,8 @@ export function getInitialGlobalSettings(): GlobalSettings {
     contents: contentToggles,
     occlusionModifierAtm: 0.75,
     occlusionModifierVac: 0.9,
+    customAntennas: [],
+    customPlanets: [],
   }
 }
 
@@ -43,8 +93,24 @@ export function useGlobalSettings() {
     if ('rangeModifier' in s === false) return false
     if ('dsnModifier' in s === false) return false
     if ('contents' in s === false) return false
+    if ('customAntennas' in s === false) { (s as any).customAntennas = [] }
+    if ('customPlanets' in s === false) { (s as any).customPlanets = [] }
     return true
   })
+
+  // const changeSettings = (fn: (prev: GlobalSettings) => GlobalSettings) => {
+  //   setSettings(prev => prev === undefined ? prev : fn(prev))
+  // }
+  // const changeModifier = (setting: "rangeModifier" | "dsnModifier" | "occlusionModifierAtm" | "occlusionModifierVac", value: number) => {
+  //   changeSettings(prev => ({ ...prev, [ setting ]: value }))
+  // }
+  // const changeContentToggle = (which: PackageNames, value: boolean) => {
+  //   changeSettings(prev => ({ ...prev, contents: { ...prev.contents, [ which ]: value } }))
+  // }
+  // return {
+  //   value: settings,
+  // }
+
   return [ settings, setSettings ] as const
 }
 
@@ -53,6 +119,7 @@ export function SettingsSection(props: {
   settings: GlobalSettings,
   onSettingsChange: (n: GlobalSettings) => void,
 }) {
+  const path = usePathname()
 
   const changeModifier = (setting: "rangeModifier" | "dsnModifier" | "occlusionModifierAtm" | "occlusionModifierVac", value: number) => {
     props.onSettingsChange({ ...props.settings, [ setting ]: value })
@@ -61,9 +128,19 @@ export function SettingsSection(props: {
     props.onSettingsChange({ ...props.settings, contents: { ...props.settings.contents, [ which ]: value } })
   }
 
-  return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  return <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
     <div className="flex flex-col gap-0.5">
-      <label className={cns.text.base("text-sm")}>Additional Contents</label>
+
+      <Link href={`/custom-body?back=${ path }`} className={cns.button.base()}>
+        <LucideEarth />
+        Manage Celestial Bodies
+      </Link>
+
+      <Link href={`/custom-antenna?back=${ path }`} className={cns.button.base()}>
+        <IcRoundSatelliteAlt />
+        Manage Antennas
+      </Link>
+
       <div className="flex flex-col gap-0 mt-2">
         {packageNames.map(pack => {
           if (pack === "stock") return
@@ -84,7 +161,7 @@ export function SettingsSection(props: {
                 </div>
               </div>}
               onValueChange={(val) => changeContentToggle(pack as PackageNames, val)}
-              value={props.settings.contents[ pack as PackageNames ]}
+              value={props.settings.contents[ pack as PackageNames ] ?? false}
             />
           )
         })}
@@ -136,56 +213,44 @@ export function SettingsSection(props: {
       </div>
 
 
-      <div className="flex flex-col gap-0.5">
-        <label className="text-sm">Range Modifier</label>
-        {/* The value of this slider is a multiplier value that is applied to the power levels of all antennae */}
-        <div className="flex gap-2 items-center">
-          <NumberInput className={cns.input.box("max-w-60")} type="number"
-            value={props.settings.rangeModifier}
-            onValueChange={n => changeModifier("rangeModifier", n)}
-          />
-          <ResetSettingsIconButton onClick={() => changeModifier("rangeModifier", getInitialGlobalSettings().rangeModifier)}>
-            <LucideRotateCcw />
-          </ResetSettingsIconButton>
-        </div>
-      </div>
+      {/* The value of this slider is a multiplier value that is applied to the power levels of all antennae */}
+      <NumberInputBlock
+        label="Range Modifier"
+        value={props.settings.rangeModifier}
+        onChange={n => changeModifier("rangeModifier", n)}
+        resetValue={getInitialGlobalSettings().rangeModifier}
+        step="0.01"
+      />
 
-      <div className="flex flex-col gap-0.5">
+      {/* The value of this slider is a multiplier value that is applied to the power level of the DSN Network */}
+      <NumberInputBlock
+        label="DSN Modifier"
+        value={props.settings.dsnModifier}
+        onChange={n => changeModifier("dsnModifier", n)}
+        resetValue={getInitialGlobalSettings().dsnModifier}
+        step="0.01"
+      />
 
+      {/* The value of this slider is a multiplier value that is applied to the effective size of atmosphereless bodies that can block signals between antennas. */}
+      <NumberInputBlock
+        label="Occlusion Modifier, Atm"
+        value={props.settings.occlusionModifierAtm}
+        onChange={n => changeModifier("occlusionModifierAtm", n)}
+        resetValue={getInitialGlobalSettings().occlusionModifierAtm}
+        step="0.01"
+      />
 
+      {/* The value of this slider is a multiplier value that is applied to the effective size of bodies with atmospheres that can block signals between antennas. */}
+      <NumberInputBlock
+        label="Occlusion Modifier, Vac"
+        value={props.settings.occlusionModifierVac}
+        onChange={n => changeModifier("occlusionModifierVac", n)}
+        resetValue={getInitialGlobalSettings().occlusionModifierVac}
+        step="0.01"
+      />
 
-        <label className="text-sm">DSN Modifier</label>
-        {/* The value of this slider is a multiplier value that is applied to the power level of the DSN Network */}
-        <div className="flex gap-2 items-center">
-          <NumberInput className={cns.input.box("max-w-60")} type="number"
-            value={props.settings.dsnModifier}
-            onValueChange={n => changeModifier("dsnModifier", n)}
-          />
-
-          <ResetSettingsIconButton onClick={() => changeModifier("dsnModifier", getInitialGlobalSettings().dsnModifier)}>
-            <LucideRotateCcw />
-          </ResetSettingsIconButton>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-0.5">
-        <label className="text-sm">Occlusion Modifier, Atm</label>
-        {/* The value of this slider is a multiplier value that is applied to the effective size of atmosphereless bodies that can block signals between antennas. */}
-        <div className="flex gap-2 items-center">
-          <NumberInput className={cns.input.box("max-w-60")} type="number"
-            value={props.settings.occlusionModifierVac}
-            onValueChange={n => changeModifier("occlusionModifierVac", n)}
-          />
-
-          <ResetSettingsIconButton onClick={() => changeModifier("occlusionModifierVac", getInitialGlobalSettings().occlusionModifierVac)}>
-            <LucideRotateCcw />
-          </ResetSettingsIconButton>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-0.5">
+      {/* <div className="flex flex-col gap-0.5">
         <label className="text-sm">Occlusion Modifier, Vac</label>
-        {/* The value of this slider is a multiplier value that is applied to the effective size of bodies with atmospheres that can block signals between antennas. */}
         <div className="flex gap-2 items-center">
           <NumberInput className={cns.input.box("max-w-60")} type="number"
             value={props.settings.occlusionModifierAtm}
@@ -196,10 +261,10 @@ export function SettingsSection(props: {
             <LucideRotateCcw />
           </ResetSettingsIconButton>
         </div>
-      </div>
+      </div> */}
 
       <button
-        className={cns.button.base("mt-4 text-sm")}
+        className={cns.button.base("mt-4")}
         onClick={() => props.onSettingsChange(getInitialGlobalSettings())}
       >
         <LucideRotateCcw />

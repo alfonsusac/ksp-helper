@@ -1,10 +1,11 @@
 import { useEffect, useId, useState, type ComponentProps, type ReactNode } from "react"
 import { Select as BSelect } from '@base-ui/react/select'
 import { cn } from "./cn"
-import { LucideCheck, LucideChevronDown } from "./icons"
+import { LucideCheck, LucideChevronDown, LucideRotateCcw } from "./icons"
 import { Slider as BSlider } from '@base-ui/react/slider'
 import { Menu } from '@base-ui/react/menu'
 import { cns } from "@/design-system"
+import { ResetSettingsIconButton } from "./settings-section"
 
 export type SelectPayload = {
   value: string,
@@ -205,29 +206,199 @@ export function IntegerInput(props: ComponentProps<"input"> & {
   )
 }
 
-export function NumberInput(props: ComponentProps<"input"> & {
-  onValueChange: (num: number) => void
-}) {
-  const { onValueChange, ...rest } = props
-
-  const [ val, setVal ] = useState(props.value)
-  useEffect(() => {
-    setVal(props.value)
-  }, [ props.value ])
+export function GenericInput(props: ComponentProps<"input"> & InputComponentProps<string>) {
+  const { onValueChange, validate, error, onRawValueChange, initialValue, preprocessRaw, onEmpty, ...rest } = props
+  const [ val, setVal ] = useState(props.initialValue)
+  const [ err, setErr ] = useState<string | undefined>(undefined)
+  // useEffect(() => {
+  //   setVal(props.initialValue)
+  // }, [ props.initialValue ])
 
   return (
-    <input {...rest}
-      value={val}
-      onChange={(e) => {
-        props.onChange?.(e)
-        const v = e.currentTarget.value
-        setVal(v)
+    <div className="flex flex-col">
+      <input {...rest}
+        className={cns.input.box(
+          "max-w-60",
+          (err || error) && cns.input.errorBox(),
+          rest.className
+        )}
+        value={val}
+        onChange={(e) => {
+          props.onChange?.(e)
+          const v = e.currentTarget.value
+          onRawValueChange?.(v)
+          setVal(v)
+          if (v === "" && onEmpty) {
+            const emptyError = onEmpty() 
+            if (emptyError) 
+              setErr(emptyError)
+            return
+          }
+          const p = preprocessRaw ? preprocessRaw(v) : v
+          const validateResult = validate(p, v)
+          if (!validateResult) {
+            setErr(undefined)
+            onValueChange(p)
+          }
+          else setErr(validateResult)
+        }}
+      />
+      {err && <div className={cns.error.text.muted("text-xs")}>
+        {err}
+      </div>}
+      {props.error && <div className={cns.error.text.muted("text-xs")}>
+        {props.error}
+      </div>}
+    </div>
+  )
+}
+
+const isValidNumberInput = (v: string): boolean => {
+  const num = Number(v)
+  if (Number.isNaN(num)) return false
+  return true
+}
+
+type InputComponentProps<T> = Omit<ComponentProps<"input">, "value"> & {
+  initialValue: T,
+  onValueChange: (val: T) => void,
+  validate: (val: T, raw: string) => string | undefined,
+  onRawValueChange?: (val: string) => void,
+  onEmpty?: () => string | void,
+  preprocessRaw?: (val: string) => string,
+  error?: string,
+  inputClassname?: string,
+}
+
+export function NumberInput(props: InputComponentProps<number>) {
+  const { onValueChange, ...rest } = props
+  return (
+    <GenericInput {...rest}
+      initialValue={String(props.initialValue)}
+      onValueChange={(v) => {
         if (v === "") return
-        console.log(v)
-        const num = Number(v)
-        if (Number.isNaN(num)) return
-        props.onValueChange(num)
+        if (isValidNumberInput(v)) props.onValueChange(Number(v))
+      }}
+      preprocessRaw={(raw) => {
+        const normalised = raw.replaceAll(',', '').replaceAll('_', '').replaceAll(' ', '')
+        return props.preprocessRaw ? props.preprocessRaw(normalised) : normalised
+      }}
+      validate={(val) => {
+        if (Number.isNaN(Number(val))) return "Invalid number"
+        return props.validate(Number(val), val)
       }}
     />
+  )
+}
+
+export function TextInput(props: InputComponentProps<string>) {
+  const { onValueChange, ...rest } = props
+  return (
+    <GenericInput {...rest}
+      initialValue={props.initialValue}
+      onValueChange={(v) => props.onValueChange(v)}
+      validate={(val) => {
+        return props.validate(val, val)
+      }}
+    />
+  )
+}
+
+
+export function InputWrapper(props: {
+  label: ReactNode,
+  children: ReactNode,
+  error?: string | null
+}) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <label className="text-sm">{props.label}</label>
+      <div className="flex gap-2 items-center">
+        {props.children}
+      </div>
+      {props.error && <p className={cns.error.text.base("text-xs mt-1")}>
+        {props.error}
+      </p>}
+    </div>
+  )
+}
+
+export function NumberInputBlock(props: {
+  label: string,
+  onChange: (n: number) => void,
+  value: number,
+  resetValue?: number,
+  step: string,
+  error?: string,
+}) {
+  return (
+    <InputWrapper label={props.label}>
+      <NumberInput
+        error={props.error}
+        initialValue={props.value}
+        validate={() => undefined}
+        step={props.step}
+        onValueChange={props.onChange}
+      // validate={}
+      // filterInput={(next, prev) => {
+      //   const chars = next.split('')
+      //   // split digit into 3 part, [sign, beforeDecimal, decimal, e, exponentSign, exponentValue]
+      //   // assume decimal separator is `.` for now.
+      //   let part = "beforeDecimal" as "beforeDecimal" | "decimal" | "exponent"
+      //   let eIndex = null
+      //   for (let i = 0; i < chars.length; i++) {
+      //     const char = chars[ i ]
+      //     if (part === "beforeDecimal") {
+      //       if (i === 0 && [ '+', '-' ].includes(char)) { continue }
+      //       if (char === '.') { part = 'decimal'; continue }
+      //       if (char === 'e') { part = 'exponent'; continue }
+      //       if (!char.match(/^[\d_,]+$/)) return prev
+      //     } else if (part === "decimal") {
+      //       if (char === 'e') { part = 'exponent'; eIndex = i; continue }
+      //       if (!char.match(/^[\d]+$/)) return prev
+      //     } else if (part === "exponent") {
+      //       if (eIndex && i === eIndex + 1 && [ '+', '-' ].includes(char)) { continue }
+      //       if (!char.match(/^[\d]+$/)) return prev
+      //     }
+      //   }
+      //   return next
+      // }}
+      // onValueChange={(v) => {
+      // if (v === "") return
+      // if (isValidNumberInput(v)) props.onChange(v)
+      // }}
+      />
+      {props.resetValue &&
+        <ResetSettingsIconButton onClick={() => props.resetValue && props.onChange(props.resetValue)}>
+          <LucideRotateCcw />
+        </ResetSettingsIconButton>
+      }
+    </InputWrapper>
+  )
+}
+
+export function TextInputBlock(props: {
+  label: ReactNode,
+  onChange: (n: string) => void,
+  value: string,
+  resetValue?: string,
+  error?: string | undefined,
+}) {
+  return (
+    <InputWrapper label={props.label} error={props.error}>
+      <GenericInput
+        validate={() => undefined}
+        className={cn(
+          props.error && cns.input.errorBox()
+        )}
+        initialValue={props.value}
+        onValueChange={props.onChange}
+      />
+      {props.resetValue &&
+        <ResetSettingsIconButton onClick={() => props.resetValue && props.onChange(props.resetValue)}>
+          <LucideRotateCcw />
+        </ResetSettingsIconButton>
+      }
+    </InputWrapper>
   )
 }

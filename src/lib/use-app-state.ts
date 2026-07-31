@@ -7,9 +7,11 @@ import { useEffect, useState } from "react"
 export function serializeAppData<T>(data: T) {
   return JSON.stringify(data, (_, value) => {
     // Add more features here
-    if (value instanceof Map) {
+    if (value === Number.POSITIVE_INFINITY) 
+      return { __type: "Positive Infinity" }
+    if (value instanceof Map) 
       return { __type: "Map", value: [ ...value ] }
-    }
+    
     return value
   })
 }
@@ -20,8 +22,11 @@ export function parseAppData<T>(str: string, onErrorReturn: T, validate: (t: unk
       // Add more features here
       if (value?.__type === "Map")
         return new Map(value.value)
+      if (value?.__type === "Positive Infinity")
+        return Number.POSITIVE_INFINITY
       return value
     })
+    console.log(res)
     const isValid = validate(res)
     if (!isValid) throw new Error("Failed App Data Parsing Validation")
     return res as T

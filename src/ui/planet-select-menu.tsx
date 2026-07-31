@@ -5,6 +5,7 @@ import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { LucideChevronDown } from "./icons"
 import { cns, menuTrigger } from "@/design-system"
 import { Fragment } from "react/jsx-runtime"
+import { useGlobalSettings } from "./settings-section"
 
 export function PlanetSelectMenu(props: {
   value: string,
@@ -12,13 +13,11 @@ export function PlanetSelectMenu(props: {
   planetData: PlanetData,
   filter?: (planet: PlanetItemData) => boolean,
 }) {
-
   const filter = props.filter ?? (() => true)
 
   const groupedPlanet = groupToList(
     props.planetData.list.filter(filter), e => e.package
   )
-
   return (
     <Menu.Root>
       <Menu.Trigger className={menuTrigger()}>
@@ -32,7 +31,7 @@ export function PlanetSelectMenu(props: {
         <Menu.Positioner side="top" sideOffset={4}>
           <MenuPopup>
             {groupedPlanet.map((pkg) => {
-              const packageLabel = packages[ pkg.key as keyof typeof packages ].name
+              const packageLabel = pkg.key === "Custom" ? "Custom" : packages[ pkg.key as keyof typeof packages ].name
               return <div key={pkg.key} className="flex flex-col gap-1">
                 <MenuHelperText>{packageLabel}</MenuHelperText>
                 <div className="grid grid-cols-3 gap-3">

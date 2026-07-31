@@ -13,6 +13,7 @@ import { nearfutureexpansion } from "@/packages/near-future-exploration"
 import { realSolarSystem } from "@/packages/rss"
 import { kcalbeloh } from "@/packages/kcalbeloh"
 import { gpp } from "@/packages/gpp"
+import type { GlobalSettings } from "@/ui/settings-section"
 
 export const packages = {
   stock,
@@ -33,6 +34,7 @@ export const packageNames = Object.keys(packages)
 export type PackageNames = keyof typeof packages
 
 export function getPackageName(id: string) {
+  if (id === "Custom") return "Custom"
   if (id in packages === false) return null
   return packages[ id as keyof typeof packages ].name
 }
@@ -40,18 +42,18 @@ export function getPackageName(id: string) {
 
 // Parsed
 export type AntennaData = ReturnType<typeof getAntennaData>
-export type AntennaItemData = AntennaData[number]
+export type AntennaItemData = AntennaData[ number ]
 export type PlanetData = ReturnType<typeof getPlanetData>
-export type PlanetItemData = PlanetData['map'] extends Map<any, infer V> ? V : never
+export type PlanetItemData = PlanetData[ 'map' ] extends Map<any, infer V> ? V : never
 
-export function getData(option: Record<PackageNames, boolean>) {
-  const antennas = getAntennaData(option)
-  const planets = getPlanetData(option)
+export function getData(option: Record<PackageNames, true | undefined>, settings: GlobalSettings) {
+  const antennas = getAntennaData(option, settings)
+  const planets = getPlanetData(option, settings)
   return { antennas, planets }
 }
 
 // Process Antenna
-function getAntennaData(option: Record<PackageNames, boolean>) {
+function getAntennaData(option: Record<PackageNames, true | undefined>, settings: GlobalSettings) {
   const map = new Map<string, AntennaDefinition & {
     package: string,
   }>()
@@ -67,13 +69,21 @@ function getAntennaData(option: Record<PackageNames, boolean>) {
     })
   })
 
+  settings.customAntennas.forEach(a => {
+    map.set(a.label, {
+      ...a,
+      image: a.image ?? "",
+      package: "Custom",
+    })
+  })
+
   const list = mapToListWithId(map)
 
   return list
 }
 
 // Process Planet Data
-function getPlanetData(option: Record<PackageNames, boolean>) {
+function getPlanetData(option: Record<PackageNames, true | undefined>, settings: GlobalSettings) {
 
   const map: Map<string, {
     package: string,
@@ -92,13 +102,13 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
   Object.entries(packages).forEach(([ pkName, pack ]) => {
     if (!option[ pkName as PackageNames ]) return
     Object.entries(pack.planets ?? {}).forEach(([ planetName, planet ]) => {
-      
+
       const soi = (() => {
         if (planet.soiRadius) return planet.soiRadius
         if (planet.soiHeight && planet.radius) return planet.soiHeight + planet.radius
         return undefined
       })()
-      
+
       map.set(planetName, {
         package: pkName,
         to: planet.distanceToPlanets,
@@ -113,7 +123,15 @@ function getPlanetData(option: Record<PackageNames, boolean>) {
         notlandable: planet.notlandable,
       })
     })
+  })
 
+  settings.customPlanets.forEach(p => {
+    const soi = p.soiHeight + p.radius
+    map.set(p.label, {
+      package: "Custom",
+      ...p,
+      soi,
+    })
   })
 
   const symmetrized = symmetrizePlanetDistanceMap(map)
