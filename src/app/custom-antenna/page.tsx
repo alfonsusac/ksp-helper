@@ -4,6 +4,7 @@ import { cns } from "@/design-system"
 import { prettyNum } from "@/lib/prettier"
 import { HomeButton, Muted } from "@/ui/common"
 import { BackOrHomeButton } from "@/ui/common.client"
+import { Footer } from "@/ui/footer"
 import { EmojioneMonotoneSatelliteAntenna } from "@/ui/icons"
 import { NumberInput, TabSelectRow, TextInput } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
@@ -63,7 +64,7 @@ export default function CustomAntennaPage() {
         </div>
 
       </div>
-
+      <Footer />
     </div>
   )
 }

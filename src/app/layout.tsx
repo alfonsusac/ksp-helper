@@ -4,6 +4,7 @@ import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { cns } from "@/design-system"
 import { Suspense } from "react"
+import { Footer } from "@/ui/footer"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,7 @@ export default function RootLayout({
     >
       <body className={cns.bg("min-h-full")}>
         <div className="root">
-          <div className="flex flex-col items-center">
+          <div className={cns.text.base("flex flex-col items-center")}>
             <Analytics />
             {children}
           </div>

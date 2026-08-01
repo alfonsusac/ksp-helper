@@ -3,7 +3,7 @@ import { IcBaselineDiscord, LucideArrowUpRight, MdiGithub } from "./icons"
 
 export function Footer() {
   return (
-    <footer className={cns.text.muted("text-sm")}>
+    <footer className={cns.text.muted("text-sm py-8")}>
       <div>Feedbacks are welcome!</div>
       <br />
       <a className="flex gap-1 items-center hover:underline cursor-pointer" target="_blank" href="https://github.com/alfonsusac/ksp-helper">

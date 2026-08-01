@@ -4,6 +4,7 @@ import { cns } from "@/design-system"
 import { prettyNum } from "@/lib/prettier"
 import { HomeButton, Muted } from "@/ui/common"
 import { BackOrHomeButton } from "@/ui/common.client"
+import { Footer } from "@/ui/footer"
 import { NumberInput, TextInput } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import { Suspense, useEffect, useState } from "react"
@@ -61,7 +62,7 @@ export default function CustomPlanetsPage() {
         </div>
 
       </div>
-
+      <Footer />
     </div>
   )
 }
