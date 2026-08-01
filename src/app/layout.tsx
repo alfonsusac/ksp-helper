@@ -3,6 +3,7 @@ import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { cns } from "@/design-system"
+import { Suspense } from "react"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

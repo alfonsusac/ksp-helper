@@ -4,7 +4,7 @@ import { cns } from "@/design-system"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-export default function UtilLayout(props: LayoutProps<any>) {
+export default function UtilLayout(props: LayoutProps<'/'>) {
 
   const pathname = usePathname()
 

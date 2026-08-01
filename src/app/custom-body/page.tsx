@@ -2,20 +2,14 @@
 
 import { cns } from "@/design-system"
 import { prettyNum } from "@/lib/prettier"
-import { BackButton, HomeButton, Muted } from "@/ui/common"
+import { HomeButton, Muted } from "@/ui/common"
+import { BackOrHomeButton } from "@/ui/common.client"
 import { NumberInput, TextInput } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
-import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 export default function CustomPlanetsPage() {
   const [ settings, setSettings ] = useGlobalSettings()
-  const sp = useSearchParams()
-  const back = (() => {
-    const v = sp.get('back')
-    if (v?.startsWith('/')) return v
-    return null
-  })()
   const [ refreshId, setRefreshId ] = useState(Math.random())
 
   if (!settings) return null
@@ -23,10 +17,9 @@ export default function CustomPlanetsPage() {
   return (
     <div className={cns.page("max-w-120")}>
 
-      {back
-        ? <BackButton href={back} />
-        : <HomeButton />
-      }
+      <Suspense fallback={<HomeButton />} >
+        <BackOrHomeButton />
+      </Suspense>
 
       <header>
         <h1 className={cns.pageTitle()}>

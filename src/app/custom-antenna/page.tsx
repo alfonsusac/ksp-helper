@@ -2,21 +2,15 @@
 
 import { cns } from "@/design-system"
 import { prettyNum } from "@/lib/prettier"
-import { BackButton, HomeButton, Muted } from "@/ui/common"
+import { HomeButton, Muted } from "@/ui/common"
+import { BackOrHomeButton } from "@/ui/common.client"
 import { EmojioneMonotoneSatelliteAntenna } from "@/ui/icons"
 import { NumberInput, TabSelectRow, TextInput } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
-import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 export default function CustomAntennaPage() {
   const [ settings, setSettings ] = useGlobalSettings()
-  const sp = useSearchParams()
-  const back = (() => {
-    const v = sp.get('back')
-    if (v?.startsWith('/')) return v
-    return null
-  })()
   const [ refreshId, setRefreshId ] = useState(Math.random())
 
   if (!settings) return null
@@ -24,10 +18,9 @@ export default function CustomAntennaPage() {
   return (
     <div className={cns.page("max-w-120")}>
 
-      {back
-        ? <BackButton href={back} />
-        : <HomeButton />
-      }
+      <Suspense fallback={<HomeButton />} >
+        <BackOrHomeButton />
+      </Suspense>
 
       <header>
         <h1 className={cns.pageTitle()}>
@@ -44,7 +37,7 @@ export default function CustomAntennaPage() {
               <AntennaItem key={i}
                 value={a}
                 onDelete={() => {
-                  settings.customPlanets = settings.customPlanets.filter((e, ei) => ei !== i)
+                  settings.customAntennas = settings.customAntennas.filter((e, ei) => ei !== i)
                   setSettings({ ...settings })
                   setRefreshId(Math.random())
                 }}
@@ -102,7 +95,7 @@ function AntennaItem(props: {
   // image?: string;
 
   return <div className="flex gap-4">
-    <EmojioneMonotoneSatelliteAntenna  className="shrink-0 size-20"/>
+    <EmojioneMonotoneSatelliteAntenna className="shrink-0 size-20" />
     <div className="flex flex-col w-full">
       <div className="grid grid-cols-[6rem_auto] items-baseline gap-x-2 gap-y-1 text-sm">
         <Muted>label:</Muted>
