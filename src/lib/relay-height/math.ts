@@ -147,11 +147,46 @@ export function lawOfCosineFindAngle(
   return acos((pow(a, 2) + pow(b, 2) - pow(c, 2)) / (2 * a * b))
 }
 
-
-
 export function mid(
   a: number,
   b: number
 ) {
   return (a + b) / 2
+}
+
+
+export function getPeriodFromRadius(radius: number, gravitationalParameter: number) {
+  const res = 2 * Math.PI * Math.sqrt((radius ** 3) / gravitationalParameter)
+  return res
+}
+
+
+// Assuming single tangential orbit from a circular orbit of radius r0
+export function getResonantOrbit(
+  radius: number,
+  gravitationalParameter: number,
+  relayCount: number,
+  mode: "diving" | "peaking" = "peaking"
+) {
+  const period = getPeriodFromRadius(radius, gravitationalParameter)
+  const divingPeriod = period * (relayCount - 1) / relayCount
+  const peakingPeriod = period * (relayCount + 1) / relayCount
+  const resonantPeriod = mode === "diving" ? divingPeriod : peakingPeriod
+
+  const semiMajorAxis = Math.cbrt(
+    gravitationalParameter * (
+      resonantPeriod / (2 * Math.PI)
+    ) ** 2
+  )
+  const semiMinorAxis = Math.sqrt(
+    radius * (2 * semiMajorAxis - radius)
+  )
+  const focusOffset = Math.abs(semiMajorAxis - radius)
+
+  return {
+    semiMinorAxis,
+    semiMajorAxis,
+    focusOffset,
+    resonantPeriod,
+  }
 }

@@ -109,7 +109,9 @@ export function RelayHeight_Client() {
                 value={data.relayCount}
                 onValueChange={changeRelayCount}
               />
-              {data.relayCount}
+              <div className="shrink-0 w-8 text-end">
+                {data.relayCount}
+              </div>
             </div>
           </div>
 
@@ -284,6 +286,7 @@ function getResult(
     rangeModifier: settings.rangeModifier,
   }).value
 
+
   if (maxRelayRange === 0) {
     return {
       status: "impossible" as const,
@@ -346,7 +349,7 @@ function getResult(
       }
     }
     const minRadius = Math.max(minRadiusBasedOnPlanet, minimumOrbitableHeight)
-    const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel), minRadius)
+    const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel, soiRadius), minRadius)
 
     // const orbitRadius = mid(minRadius, maxRadius)
     const orbitRadius = ((maxRadius - minRadius) * orbitRatio) + minRadius
@@ -386,7 +389,9 @@ function getResult(
   const vesselLinkColor = getLinkColor(vesselStrength)
   const relayLinkColor = getLinkColor(relayStrength)
 
-
+  const minHeight = (minRadius ?? NaN) - planetRadius
+  const orbitHeight = (orbitRadius ?? NaN) - planetRadius
+  const maxHeight = (maxRadius ?? NaN) - planetRadius
 
   return {
     status,
@@ -408,6 +413,10 @@ function getResult(
 
     vesselLinkColor,
     relayLinkColor,
+
+    minHeight,
+    orbitHeight,
+    maxHeight,
 
     // commons
     planetimg,
@@ -441,7 +450,6 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
         <div className={cns.error.text.base("text-xs flex items-center gap-1")}>
           <LucideTriangleAlert className={cns.error.text.base()} />
           warning
-          {/* warning: {props.reason} */}
         </div>
         {props.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
         {props.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(props.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
@@ -452,17 +460,20 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
     <div className="grid grid-cols-3 col-span-2 text-base items-center">
       <div className="text-sm">
         <p className={cns.text.muted()}>Min Height</p>
-        <p className="">{prettyNum((props.minRadius ?? NaN) - props.planetRadius, "k", "m")}</p>
+        <p className="">{(props.minHeight ?? NaN).toLocaleString()} m</p>
+        {/* <p className="">{prettyNum(props.minHeight ?? NaN, "k", "m")}</p> */}
       </div>
 
       <div className="text-center">
         <p className={cns.text.muted()}>Orbit Height</p>
-        <p className="">{prettyNum((props.orbitRadius ?? NaN) - props.planetRadius, "k", "m")}</p>
+        <p className="">{(props.orbitHeight ?? NaN).toLocaleString()} m</p>
+        {/* <p className="">{prettyNum(props.orbitHeight ?? NaN, "k", "m")}</p> */}
       </div>
 
       <div className="text-sm text-end">
         <p className={cns.text.muted()}>Max Height</p>
-        <p className="">{prettyNum((props.maxRadius ?? NaN) - props.planetRadius, "k", "m")}</p>
+        <p className="">{(props.maxHeight ?? NaN).toLocaleString()} m</p>
+        {/* <p className="">{prettyNum(props.maxHeight ?? NaN, "k", "m")}</p> */}
       </div>
     </div>
     {props.minRadius && props.maxRadius &&
@@ -554,7 +565,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
   // Probably would've been more performant using SVG / canvas
   return <div className={cns.card(
     "w-full aspect-square rounded-2xl",
-    props.soiRadius === Infinity ? "" : "bg-zinc-900",
+    props.soiRadius === Infinity ? "" : "bg-zinc-900/50!",
     "grid place-items-center relative",
     "overflow-hidden",
   )}>
@@ -581,8 +592,10 @@ function Visualization(props: ReturnType<typeof getResult>) {
     >
       <div className="absolute text-xs left-1/2 -translate-y-full text-teal-500/50">MIN</div>
     </Circle>
+    
     <div className="absolute inset-0 bg-[url(/skybox.jpeg)] bg-cover mix-blend-lighten">
     </div>
+    
     {props.atmHeight > 0 &&
       <Circle
         maxHeight={maxViewportScale}
@@ -638,7 +651,10 @@ function Visualization(props: ReturnType<typeof getResult>) {
                   })(),
                   background: props.vesselLinkColor
                 }}
-                className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
+                className={cn(
+                  // "transition-transform duration-75",
+                  "absolute w-1/2 h-px bg-green-500"
+                )}
               >
               </div>
               <div
@@ -661,7 +677,10 @@ function Visualization(props: ReturnType<typeof getResult>) {
                   background: props.vesselLinkColor
 
                 }}
-                className={cn("absolute w-1/2 h-px bg-green-500 transition-transform duration-75")}
+                className={cn(
+                  // "transition-transform duration-75",
+                  "absolute w-1/2 h-px bg-green-500"
+                )}
               >
               </div>
             </>
@@ -674,6 +693,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
       height={props.orbitRadius}
       className={cn(
         "border border-px border-emerald-400/50",
+        // "transition-none!"
       )}
     >
       {Array.from({ length: props.relayCount }, (_, i) => {
@@ -695,7 +715,8 @@ function Visualization(props: ReturnType<typeof getResult>) {
             rotate: `${ Math.PI / props.relayCount + 2 * Math.PI / props.relayCount * i }rad`, // lots of trial and error...
             background: props.relayLinkColor,
           }} className={cn(
-            "absolute w-1/2 h-px bg-green-500 transition-all starting:opacity-0",
+            // "transition-all",
+            "absolute w-1/2 h-px bg-green-500 starting:opacity-0",
             props.status === "impossible" && props.reason === "no inter-relay connection" && "bg-red-500 "
           )}>
           </div>
@@ -703,7 +724,10 @@ function Visualization(props: ReturnType<typeof getResult>) {
 
           <div style={{
             left, top,
-          }} key={i} className="absolute -translate-1/2 size-2 rounded-full text-red-500 transition-all starting:left-1/2! starting:top-0! grid place-items-center">
+          }} key={i} className={cn(
+            // "transition-all",
+            "absolute -translate-1/2 size-2 rounded-full text-red-500 starting:left-1/2! starting:top-0! grid place-items-center"
+          )}>
             <EmojioneSatellite className="absolute" />
             {i === 1 &&
               <div className="absolute text-nowrap text-white bottom-2 left-2 text-xs">
