@@ -1,5 +1,9 @@
 import type { Package } from "./types"
 
+
+// thanks poodmund
+// distanceToPlanets source: source: https://docs.google.com/spreadsheets/d/1qIgFB8OXnlgpPCGsxv7JYUYQq5O671IcZXpumVaStek
+// highestPoint source: https://forum.kerbalspaceprogram.com/topic/173446-lowest-highest-points-of-celestial-bodies/
 export const stock: Package = {
   name: "Stock KSP",
   prefix: 's',
@@ -98,7 +102,6 @@ export const stock: Package = {
       },
     },
     Gilly: {
-      // image: "https://wiki.kerbalspaceprogram.com/images/f/fb/Gilly_tracking.png",
       image: "/stock/planets/gilly-hd.png", imageScale: 1.45,
       radius: 13_000, soiRadius: 126_123.27, highestPoint: 6_401,
     },
@@ -173,27 +176,22 @@ export const stock: Package = {
     },
     Vall: {
       image: "/stock/planets/vall-hd.png", imageScale: 1.023,
-      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/b/b8/TinyVall.png/75px-TinyVall.png",
       radius: 300_000, soiRadius: 2_406_401.4, highestPoint: 7_985,
     },
     Tylo: {
       image: "/stock/planets/tylo-hd.png", imageScale: 1.015,
-      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/6/61/TinyTylo.png/75px-TinyTylo.png",
       radius: 600_000, soiRadius: 10_856_518, highestPoint: 12_904,
     },
     Bop: {
       image: "/stock/planets/bop-hd.png", imageScale: 1.28,
-      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/f/fe/TinyBop.png/75px-TinyBop.png",
       radius: 65_000, soiRadius: 1_221_060.9, highestPoint: 21_757,
     },
     Pol: {
       image: "/stock/planets/pol-hd.png", imageScale: 1.07,
-      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/f/fd/TinyPol.png/75px-TinyPol.png",
       radius: 44_000, soiRadius: 1_042_138.9, highestPoint: 4_891,
     },
     Eeloo: {
       image: "/stock/planets/eeloo-hd.png", imageScale: 1.01,
-      // image: "https://wiki.kerbalspaceprogram.com/images/thumb/e/e0/TinyEeloo.png/100px-TinyEeloo.png",
       radius: 210_000, soiRadius: 1.1908294e8, highestPoint: 3_797,
       distanceToPlanets: {
         Sarnus: { min: 16_988_828_162, max: 243_123_109_571 },

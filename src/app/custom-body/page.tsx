@@ -7,7 +7,13 @@ import { BackOrHomeButton } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"
 import { NumberInput, TextInput } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
+import type { Metadata } from "next"
 import { Suspense, useEffect, useState } from "react"
+
+export const metadata: Metadata = {
+  title: "Manage Custom Celestial Body",
+  description: "Add or remove custom celestial bodies.",
+}
 
 export default function CustomPlanetsPage() {
   const [ settings, setSettings ] = useGlobalSettings()

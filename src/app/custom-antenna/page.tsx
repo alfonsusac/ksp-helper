@@ -8,7 +8,13 @@ import { Footer } from "@/ui/footer"
 import { EmojioneMonotoneSatelliteAntenna } from "@/ui/icons"
 import { NumberInput, TabSelectRow, TextInput } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
+import type { Metadata } from "next"
 import { Suspense, useEffect, useState } from "react"
+
+export const metadata: Metadata = {
+  title: "Manage Custom Celestial Body",
+  description: "Add or remove custom celestial bodies.",
+}
 
 export default function CustomAntennaPage() {
   const [ settings, setSettings ] = useGlobalSettings()

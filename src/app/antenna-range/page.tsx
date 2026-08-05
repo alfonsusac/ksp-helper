@@ -19,8 +19,13 @@ import { Footer } from "@/ui/footer"
 import { WhatIsThisSection } from "@/ui/prose"
 import SignalStrengthItems from "@/ui/signal-strength"
 import { SettingsSection, useGlobalSettings } from "@/ui/settings-section"
+import type { Metadata } from "next"
 
 
+export const metadata: Metadata = {
+  title: "Maximum Antenna Range",
+  description: "Calculate the maximum antenna range between two bodies",
+}
 
 export default function Home() {
 

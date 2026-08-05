@@ -3,8 +3,7 @@ import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { cns } from "@/design-system"
-import { Suspense } from "react"
-import { Footer } from "@/ui/footer"
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +16,12 @@ const geistMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Maximum Antenna Range | KSP Calcualtor",
-  description: "Calculate the maximum antenna range between two bodies",
+  title: {
+    absolute: "KSP Calculator",
+    default: "KSP Calculator",
+    template: "%s | KSP Calculator"
+  },
+  description: "Collection KSP Calculators made by the Community",
 }
 
 

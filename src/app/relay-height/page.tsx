@@ -18,7 +18,13 @@ import { WhatIsThisSection } from "@/ui/prose"
 import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import SignalStrengthItems from "@/ui/signal-strength"
 import { formatCss, interpolate } from "culori"
+import type { Metadata } from "next"
 import { Fragment, type ReactNode } from "react"
+
+export const metadata: Metadata = {
+  title: "Maximum Antenna Range",
+  description: "Find the ideal relay height given antenna requirement and celestial body",
+}
 
 export default function RelayHeight() {
 
