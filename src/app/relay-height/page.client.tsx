@@ -693,7 +693,6 @@ function Visualization(props: ReturnType<typeof getResult>) {
       height={props.orbitRadius}
       className={cn(
         "border border-px border-emerald-400/50",
-        // "transition-none!"
       )}
     >
       {Array.from({ length: props.relayCount }, (_, i) => {
