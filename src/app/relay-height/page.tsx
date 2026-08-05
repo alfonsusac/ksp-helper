@@ -553,7 +553,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
   // Probably would've been more performant using SVG / canvas
   return <div className={cns.card(
     "w-full aspect-square rounded-2xl",
-    "bg-zinc-900",
+    props.soiRadius === Infinity ? "" : "bg-zinc-900",
     "grid place-items-center relative",
     "overflow-hidden",
   )}>
