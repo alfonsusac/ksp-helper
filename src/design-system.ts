@@ -51,11 +51,14 @@ export const cns = {
 
   // Common Components
 
+  surface: cnr("p-4 rounded-lg flex bg-slate-50 dark:bg-zinc-800/30"),
+
   cardBorder: cnr("border    border-slate-200 dark:border-zinc-800"),
   cardShadow: cnr("shadow-sm shadow-slate-100 dark:shadow-zinc-950"),
   card: (...c: any[]) => cn(
     cns.cardBorder(),
     cns.cardShadow(),
+    "bg-white dark:bg-transparent",
     "p-2 px-3",
     "rounded-md",
     c,

@@ -17,7 +17,7 @@ export default function SignalStrengthItems(props: {
         <SignalSymbol strength={props.strength} className={cn(
           sm && "size-3"
         )} />
-        {Math.round(props.strength * 100) + '%'}
+        {strengthNum(props.strength)}
       </div>
       <Divider className={cns.dividerStrong()} />
       <div className="flex items-center gap-2">
@@ -30,4 +30,8 @@ export default function SignalStrengthItems(props: {
       </div>
     </>
   )
+}
+
+export function strengthNum(n: number) {
+  return Math.round(n * 100) + '%'
 }

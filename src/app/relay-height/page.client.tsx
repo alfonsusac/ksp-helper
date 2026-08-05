@@ -16,7 +16,7 @@ import { Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
 import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
-import SignalStrengthItems from "@/ui/signal-strength"
+import SignalStrengthItems, { strengthNum } from "@/ui/signal-strength"
 import { formatCss, interpolate } from "culori"
 import { Fragment, type ReactNode } from "react"
 
@@ -76,11 +76,11 @@ export function RelayHeight_Client() {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-[10rem_auto] md:grid-cols-[16rem_auto] gap-8 pt-8 ">
+      <section className="grid grid-cols-1 sm:grid-cols-[10rem_auto] md:grid-cols-[16rem_auto] gap-4 pt-8 ">
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
 
-          <div className="flex flex-col gap-1">
+          <div className={cns.surface("flex-col gap-1")}>
             <label className={"text-sm"}>Celestial Body</label>
             <PlanetSelectMenu
               value={data.planet}
@@ -89,7 +89,7 @@ export function RelayHeight_Client() {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className={cns.surface("flex-col gap-1")}>
             <label className={"text-sm"}>Relay Antenna</label>
             <AntennaInput
               value={data.relay}
@@ -100,7 +100,7 @@ export function RelayHeight_Client() {
             />
           </div>
 
-          <div className="flex flex-col gap-0">
+          <div className={cns.surface("flex-col")}>
             <label className={"text-sm"}>Relay Count</label>
             <div className="flex gap-2 items-center w-full gap-4">
               <Slider
@@ -113,7 +113,7 @@ export function RelayHeight_Client() {
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className={cns.surface("flex flex-col")}>
             <label className={"text-sm"}>Target Signal Strength</label>
 
             <div className={"text-sm flex gap-4 items-center mt-1.5"}>
@@ -123,7 +123,7 @@ export function RelayHeight_Client() {
               />
             </div>
 
-            <div className="flex gap-2 items-center w-full gap-4">
+            <div className={"flex gap-2 items-center w-full gap-4"}>
               <Slider
                 className="max-w-60 w-full"
                 min={0} max={0.99} step={0.01}
@@ -147,7 +147,7 @@ export function RelayHeight_Client() {
 
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className={cns.surface("flex-col gap-1")}>
             <label className={"text-sm"}>Surface Vessel Antenna</label>
             <AntennaInput
               value={data.vessel}
@@ -435,16 +435,17 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
 
   if (props.status === "no planet data") return <></>
 
-  return <div className="grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 px-4">
+  return <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 p-5")}>
     {props.status === "impossible" && <>
       <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-        <div className={cns.text.muted("text-xs flex items-center gap-1")}>
+        <div className={cns.error.text.base("text-xs flex items-center gap-1")}>
           <LucideTriangleAlert className={cns.error.text.base()} />
-          warning: {props.reason}
+          warning
+          {/* warning: {props.reason} */}
         </div>
-        {props.reason === "no relay satellite" && "Please add a relay antenna to your relay satellite."}
-        {props.reason === "no inter-relay connection" && "Relay Antenna can't reach target strength."}
-        {props.reason === "no vessel connection" && "Vessel Antenna can't reach target strength."}
+        {props.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
+        {props.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(props.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
+        {props.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(props.vesselStrength) }). Upgrade vessel antenna or reduce target signal.`}
       </div>
     </>}
 
