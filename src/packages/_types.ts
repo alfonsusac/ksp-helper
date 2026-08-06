@@ -33,4 +33,5 @@ export type PlanetDefinition = {
   imageY?: number,
   notLandable?: boolean,
   planetGravitationalParameter?: number, // m^3s^-2
+  geeASL?: number,
 }

@@ -1,5 +1,5 @@
 import { cns } from "@/design-system"
-import { packageNames, packages, type PackageNames } from "@/lib/get-data"
+import { packageNames, packages, type PackageNames } from "@/packages/_process-packages"
 import { CheckboxRow, NumberInputBlock } from "./input"
 import { IcRoundSatelliteAlt, LucideEarth, LucideRotateCcw } from "./icons"
 import { useAppState } from "@/lib/use-app-state"

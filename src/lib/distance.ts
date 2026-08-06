@@ -1,6 +1,6 @@
 import type { DistanceRange } from "@/packages/_types"
 import { getStrength } from "./antenna"
-import type { PlanetData } from "./get-data"
+import type { PlanetData } from "../packages/_process-packages"
 
 export function getSignalStrengthDistanceMap(
   from: string,

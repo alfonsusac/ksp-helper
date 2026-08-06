@@ -1,5 +1,5 @@
 import { kscDSNdata, signalStrengthToScienceBonusLookupMap } from "@/constants"
-import type { AntennaData } from "./get-data"
+import type { AntennaData } from "../packages/_process-packages"
 
 export type AntennaPayload = Map<string, number>
 

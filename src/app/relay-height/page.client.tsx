@@ -2,7 +2,7 @@
 
 import { cns } from "@/design-system"
 import { getDistance, getMaximumRange, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload } from "@/lib/antenna"
-import { getData, type AntennaData, type PlanetData } from "@/lib/get-data"
+import { getData, type AntennaData, type PlanetData } from "@/packages/_process-packages"
 import { fixedNum, prettyNum } from "@/lib/pretty-num"
 import { prettyPeriod } from "@/lib/pretty-period"
 import { useRelayHeightAppState, type RelayHeightData } from "@/lib/relay-height/app-state"
@@ -439,7 +439,7 @@ function getResult(
           semiMajorAxis: resonantOrbit.semiMajorAxis,
           focusOffset: resonantOrbit.focusOffset,
           resonantPeriod: resonantOrbit.resonantPeriod,
-          otherApside: resonantOrbit.otherApsisRadius,
+          otherApsisRadius: resonantOrbit.otherApsisRadius,
           injectioDeltaV: resonantOrbit.injectioDeltaV,
           mode: resonantOrbit.mode,
           apsisLabel: resonantOrbit.apsisLabel
@@ -455,7 +455,7 @@ function getResult(
       semiMajorAxis: resonantOrbit.semiMajorAxis,
       focusOffset: resonantOrbit.focusOffset,
       resonantPeriod: resonantOrbit.resonantPeriod,
-      otherApside: resonantOrbit.otherApsisRadius,
+      otherApsisRadius: resonantOrbit.otherApsisRadius,
       injectioDeltaV: resonantOrbit.injectioDeltaV,
       mode: resonantOrbit.mode,
       apsisLabel: resonantOrbit.apsisLabel
@@ -582,7 +582,7 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
       <p className="text-green-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
 
       <p className={cns.text.muted()}>{props.resonantOrbit.apsisLabel}</p>
-      <p className="text-green-500">{props.resonantOrbit.otherApside.toLocaleString('en-US')}m</p>
+      <p className="text-green-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
 
       <p className={cns.text.muted()}>Injection Δv</p>
       <p className="text-green-500">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
@@ -604,12 +604,6 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
     <div className={"text-sm flex gap-4 items-center"}>
       <SignalStrengthItems size="sm" strength={props.relayStrength ?? NaN} />
     </div>
-
-    <p className={cns.text.muted()}>Maximum Relay Range</p>
-    <p className={cns.text.muted()}>{prettyNum(props.maxRelayRange, "k", "m")}</p>
-
-    <p className={cns.text.muted()}>Maximum Radius based on Relay to Relay</p>
-    <p className={cns.text.muted()}>{prettyNum(props.maxRadiusFromRelays ?? NaN, "k", "m")}</p>
 
 
     <Divider className="col-span-2" />
@@ -633,9 +627,14 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
       <p className={cns.text.muted()}>Planet Radius</p>
       <p className={cns.text.muted()}>{props.planetRadius ? prettyNum(props.planetRadius, "k", "m") : "-"}</p>
 
+      <p className={cns.text.muted()}>Maximum Relay Range</p>
+      <p className={cns.text.muted()}>{prettyNum(props.maxRelayRange, "k", "m")}</p>
+
+      <p className={cns.text.muted()}>Maximum Radius based on Relay to Relay (0% strength)</p>
+      <p className={cns.text.muted()}>{prettyNum(props.maxRadiusFromRelays ?? NaN, "k", "m")}</p>
+
       <p className={cns.text.muted()}>Minimum Radius Based of Planet Radius</p>
       <p className={cns.text.muted()}>{prettyNum(props.minRadiusBasedOnPlanet ?? NaN, "k", "m")}</p>
-
 
       <p className={cns.text.muted()}>Maximum Radius based on Relay to Vessel</p>
       <p className={cns.text.muted()}>{prettyNum(props.maxRadiusFromVessel ?? NaN, "k", "m")}</p>

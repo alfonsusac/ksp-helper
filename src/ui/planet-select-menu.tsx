@@ -1,5 +1,5 @@
 import { groupToList } from "@/lib/object"
-import { packages, type PlanetData, type PlanetItemData } from "@/lib/get-data"
+import { packages, type PlanetData, type PlanetItemData } from "@/packages/_process-packages"
 import { Menu } from "@base-ui/react"
 import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { LucideChevronDown } from "./icons"

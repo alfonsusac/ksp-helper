@@ -1,9 +1,9 @@
 import { commnetAntennasExtension } from "@/packages/commnet-antennas-ext"
-import { outerplanets } from "../packages/outer-planets-mod"
-import { stock } from "../packages/stock"
-import type { AntennaDefinition, DistanceRange } from "../packages/_types"
-import { symmetrizePlanetDistanceMap } from "./distance"
-import { mapToListWithId } from "./object"
+import { outerplanets } from "./outer-planets-mod"
+import { stock } from "./stock"
+import type { AntennaDefinition, DistanceRange } from "./_types"
+import { symmetrizePlanetDistanceMap } from "../lib/distance"
+import { mapToListWithId } from "../lib/object"
 import { restockplus } from "@/packages/restock-plus"
 import { dmagic } from "@/packages/dmagic"
 import { probesplus } from "@/packages/probesplus"
@@ -107,6 +107,12 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
         return undefined
       })()
 
+      const gravitationalParameter = (() => {
+        if (planet.planetGravitationalParameter) return planet.planetGravitationalParameter
+        if (planet.geeASL) return planet.geeASL * 9.80665 * planet.radius ** 2
+        return undefined
+      })()
+
       map.set(planetName, {
         atmHeight: planet.atmHeight,
         highestPoint: planet.highestPoint,
@@ -115,10 +121,10 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
         imageX: planet.imageX,
         imageY: planet.imageY,
         notLandable: planet.notLandable,
-        planetGravitationalParameter: planet.planetGravitationalParameter,
         radius: planet.radius,
+        planetGravitationalParameter: gravitationalParameter,
         soiRadius: soi,
-        
+
         package: pkName,
         to: planet.distanceToPlanets,
       })

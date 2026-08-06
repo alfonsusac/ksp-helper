@@ -1,7 +1,7 @@
 import { cns } from "@/design-system"
 import type { AntennaPayload } from "@/lib/antenna"
 import { groupToList } from "@/lib/object"
-import { getPackageName, type AntennaData, type AntennaItemData } from "@/lib/get-data"
+import { getPackageName, type AntennaData, type AntennaItemData } from "@/packages/_process-packages"
 import { EmojioneMonotoneSatelliteAntenna, LucideMinus, LucidePlus, LucideX, StreamlineWifiAntennaRemix } from "./icons"
 import { prettyNum } from "@/lib/pretty-num"
 import { Menu } from "@base-ui/react"
