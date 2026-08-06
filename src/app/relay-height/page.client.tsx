@@ -243,6 +243,20 @@ export function RelayHeight_Client() {
             author: "Eric Meyer",
             href: "https://meyerweb.com/eric/ksp/resonant-orbits/",
           },
+          {
+            title: "Satellite Network Spacer-out-er",
+            author: "James Warner",
+            href: "https://jwarner3412.github.io/kerbility/",
+          },
+          {
+            title: "KSP Artificial Satellite Placement",
+            author: "EnsG (twitch)",
+            href: "https://docs.google.com/spreadsheets/d/10ba8mrHmFVnjWnCaoyTgPB3pY1S4ab8ydDKO8q36sD4",
+          },
+          {
+            title: "Resonance orbit calculator",
+            href: "https://www.ksp.interrutt.com/",
+          },
         ]}
       />
 
