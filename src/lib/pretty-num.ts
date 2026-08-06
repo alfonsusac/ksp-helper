@@ -10,3 +10,9 @@ export function prettyNum(val: number, unitIfZero: 'k' | 'M' | 'G' = 'k', suffix
 export function round2dp(val: number) {
   return (Math.round(val * 100) / 100).toFixed(2)
 }
+
+export function fixedNum(val: number) {
+  const floored = Math.floor(val)
+  const decimal = val - floored
+  return `${ floored.toLocaleString('en-US') }.${ String(Math.round(decimal * 1000)).padStart(3, '0') }`
+}
