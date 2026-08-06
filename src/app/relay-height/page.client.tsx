@@ -825,7 +825,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
         maxHeight={maxViewportScale}
         height={props.resonantOrbit.semiMinorAxis}
         className={cn(
-          "border border-px border-yellow-400/50",
+          "border border-px border-yellow-400/50 border-dashed",
         )}
         style={{
           scale: `1 ${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMinorAxis }`,
