@@ -229,8 +229,8 @@ export function GenericInput(props: ComponentProps<"input"> & InputComponentProp
           onRawValueChange?.(v)
           setVal(v)
           if (v === "" && onEmpty) {
-            const emptyError = onEmpty() 
-            if (emptyError) 
+            const emptyError = onEmpty()
+            if (emptyError)
               setErr(emptyError)
             return
           }
@@ -319,6 +319,18 @@ export function InputWrapper(props: {
       {props.error && <p className={cns.error.text.base("text-xs mt-1")}>
         {props.error}
       </p>}
+    </div>
+  )
+}
+
+export function UnitInputWrapper(props: {
+  children: ReactNode,
+  unit: ReactNode,
+}) {
+  return (
+    <div className="grid grid-cols-[auto_1rem] gap-2 items-center">
+      {props.children}
+      <div className={cns.text.muted()}>{props.unit}</div>
     </div>
   )
 }

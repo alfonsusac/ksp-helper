@@ -49,7 +49,8 @@ export type GlobalSettings = {
     imageX?: number,
     imageY?: number,
     highestPoint?: number,
-    notLandable?: boolean
+    notLandable?: boolean,
+    mass: number,
   }[],
   customAntennas: {
     label: string,

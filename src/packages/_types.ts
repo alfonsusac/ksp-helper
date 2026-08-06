@@ -34,5 +34,5 @@ export type PlanetDefinition = {
   notLandable?: boolean,
   gravParam?: number, // m^3s^-2
   geeASL?: number,
-  mass?: number,
+  mass?: number, // in kg
 }

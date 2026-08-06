@@ -97,6 +97,8 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
     gravParam: number | undefined,
   }> = new Map()
 
+  const G = 6.67430e-11 // m³/(kg·s²)
+
   Object.entries(packages).forEach(([ pkName, pack ]) => {
     if (!option[ pkName as PackageNames ]) return
     Object.entries(pack.planets ?? {}).forEach(([ planetName, planet ]) => {
@@ -110,7 +112,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
       const gravitationalParameter = (() => {
         if (planet.gravParam) return planet.gravParam
         if (planet.geeASL) return planet.geeASL * 9.80665 * planet.radius ** 2
-        if (planet.mass) return planet.mass * planet.radius
+        if (planet.mass) return planet.mass * G
         return undefined
       })()
 
@@ -134,6 +136,9 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
 
   settings.customPlanets.forEach(p => {
     const soi = p.soiHeight + p.radius
+
+    const gravitationalParameter = p.mass * G
+
     map.set(p.label, {
       atmHeight: p.atmHeight,
       highestPoint: p.highestPoint,
@@ -142,7 +147,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
       imageX: p.imageX,
       imageY: p.imageY,
       notLandable: false,
-      gravParam: undefined,
+      gravParam: gravitationalParameter,
       radius: p.radius,
       to: {},
 

@@ -5,7 +5,7 @@ import { prettyNum } from "@/lib/pretty-num"
 import { HomeButton, Muted } from "@/ui/common"
 import { BackOrHomeButton } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"
-import { NumberInput, TextInput } from "@/ui/input"
+import { NumberInput, TextInput, UnitInputWrapper } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import { Suspense, useEffect, useState } from "react"
 
@@ -50,9 +50,10 @@ export function CustomPlanetsPage_Client() {
           <button className={cns.button.base()} onClick={() => {
             settings.customPlanets.push({
               label: `New Planet ${ settings.customPlanets.length }`,
-              atmHeight: 0,
-              radius: 100_000,
-              soiHeight: 5_000_000,
+              atmHeight: 70_000,
+              radius: 600_000,
+              soiHeight: 84_159_286 - 600_000,
+              mass: 5.2915158e22,
             })
             setSettings({ ...settings })
             setRefreshId(Math.random())
@@ -104,37 +105,60 @@ function CelestialBodyItem(props: {
         </div>
 
         <Muted>radius:</Muted>
-        <NumberInput
-          initialValue={value.radius}
-          onValueChange={(n) => props.onChange(({ ...value, radius: n }))}
-          onEmpty={() => "Can't be empty"}
-          validate={(n) => {
-            return n < 1 ? "Can't be negative" : undefined
-          }}
-        />
+        <UnitInputWrapper unit="m">
+          <NumberInput
+            initialValue={value.radius}
+            onValueChange={(n) => props.onChange(({ ...value, radius: n }))}
+            onEmpty={() => "Can't be empty"}
+            validate={(n) => {
+              return n < 0 ? "Can't be negative" : undefined
+            }}
+          />
+        </UnitInputWrapper>
+
         <div className="text-end col-span-2">= {prettyNum(value.radius, 'k', 'm')}</div>
 
         <Muted>soi:</Muted>
-        <NumberInput
-          initialValue={value.soiHeight}
-          onValueChange={(n) => props.onChange(({ ...value, soiHeight: n }))}
-          onEmpty={() => props.onChange(({ ...value, soiHeight: Number.POSITIVE_INFINITY }))}
-          validate={n => {
-            return n < 1 ? "Can't be negative" : undefined
-          }}
-        />
+        <UnitInputWrapper unit="m">
+          <NumberInput
+            initialValue={value.soiHeight}
+            onValueChange={(n) => props.onChange(({ ...value, soiHeight: n }))}
+            onEmpty={() => props.onChange(({ ...value, soiHeight: Number.POSITIVE_INFINITY }))}
+            validate={n => {
+              return n < 0 ? "Can't be negative" : undefined
+            }}
+          />
+        </UnitInputWrapper>
+
         <div className="text-end col-span-2">= {prettyNum(value.soiHeight, 'k', 'm')}</div>
 
         <Muted>atm height:</Muted>
-        <NumberInput
-          initialValue={value.atmHeight}
-          onValueChange={(n) => props.onChange(({ ...value, atmHeight: n }))}
-          onEmpty={() => props.onChange(({ ...value, atmHeight: 0 }))}
-          validate={n => {
-            return n < 1 ? "Can't be negative" : undefined
-          }}
-        />
+        <UnitInputWrapper unit="m">
+          <NumberInput
+            initialValue={value.atmHeight}
+            onValueChange={(n) => props.onChange(({ ...value, atmHeight: n }))}
+            onEmpty={() => props.onChange(({ ...value, atmHeight: 0 }))}
+            validate={n => {
+              return n < 0 ? "Can't be negative" : undefined
+            }}
+          />
+        </UnitInputWrapper>
+
         <div className="text-end col-span-2">= {prettyNum(value.atmHeight, 'k', 'm')}</div>
+
+        <Muted>mass:</Muted>
+        <UnitInputWrapper unit="kg">
+          <NumberInput
+            initialValue={value.mass}
+            onValueChange={(n) => props.onChange(({ ...value, mass: n }))}
+            onEmpty={() => props.onChange(({ ...value, mass: 0 }))}
+            validate={n => {
+              return n < 0 ? "Can't be negative" : undefined
+            }}
+          />
+        </UnitInputWrapper>
+
+        <div className="text-end col-span-2">= {prettyNum(value.mass, 'k', 'g')}</div>
 
       </div>
 
@@ -153,3 +177,5 @@ function CelestialBodyItem(props: {
     </div>
   </div>
 }
+
+

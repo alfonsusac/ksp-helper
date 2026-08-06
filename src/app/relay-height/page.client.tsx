@@ -581,6 +581,9 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
       <p className={cns.text.muted()}>Orbital Period</p>
       <p className="text-green-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
 
+      <p className={cns.text.muted()}>Resonant Period</p>
+      <p className="text-green-500">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
+
       <p className={cns.text.muted()}>{props.resonantOrbit.apsisLabel}</p>
       <p className="text-green-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
 
