@@ -6,7 +6,7 @@ export const gpp: Package = {
   planets: {
     "ciro": {
       image: "/gpp/ciro.png", imageScale: 36, imageX: 0, imageY: 0,
-      radius: 70_980_000, atmHeight: 600_000, soiHeight: Number.POSITIVE_INFINITY, notlandable: true, highestPoint: 2381388020 
+      radius: 70_980_000, atmHeight: 600_000, soiHeight: Number.POSITIVE_INFINITY, notLandable: true, highestPoint: 2381388020 
     },
     "icarus": {
       image: "/gpp/icarus.png", imageScale: 1, imageX: 0, imageY: 0,
@@ -54,7 +54,7 @@ export const gpp: Package = {
     },
     "otho": {
       image: "/gpp/otho.png", imageScale: 1.03, imageX: 0, imageY: 0,
-      radius: 3_400_000, atmHeight: 350_000, soiHeight: 1_725_278_000, notlandable: true
+      radius: 3_400_000, atmHeight: 350_000, soiHeight: 1_725_278_000, notLandable: true
     },
     "augustus": { // moon of otho
       image: "/gpp/augustus.png", imageScale: 1, imageX: 0, imageY: 0,
@@ -71,7 +71,7 @@ export const gpp: Package = {
 
     "gauss": { 
       image: "/gpp/gauss.png", imageScale: 1.04, imageX: 0, imageY: 0,
-      radius: 2_500_000, atmHeight: 270_000, soiHeight: 2_652_003_000, notlandable: true
+      radius: 2_500_000, atmHeight: 270_000, soiHeight: 2_652_003_000, notLandable: true
     },
     "loki": {  // moon of gauss
       image: "/gpp/loki.png", imageScale: 1, imageX: 0, imageY: 0,
@@ -88,7 +88,7 @@ export const gpp: Package = {
 
     "nero": {
       image: "/gpp/nero.png", imageScale: 2.5, imageX: 0, imageY: 0,
-      radius: 5_000_000, atmHeight: 300_000, soiHeight: 8_835_395_000, notlandable: true
+      radius: 5_000_000, atmHeight: 300_000, soiHeight: 8_835_395_000, notLandable: true
     }, 
     "hadrian": { // nero's moon 
       image: "/gpp/hadrian.png", imageScale: 1, imageX: 0, imageY: 0,
@@ -131,7 +131,7 @@ export const gpp: Package = {
 
     "grannus": {
       image: "/gpp/grannus.png", imageScale: 45, imageX: 0, imageY: 0,
-      radius: 30_170_000, atmHeight: 300_000, soiHeight: 500_000_000_000, highestPoint: 2_422_198_030, notlandable: true
+      radius: 30_170_000, atmHeight: 300_000, soiHeight: 500_000_000_000, highestPoint: 2_422_198_030, notLandable: true
     }, 
 
   }

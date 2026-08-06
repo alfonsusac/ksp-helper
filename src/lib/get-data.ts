@@ -93,7 +93,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
     imageScale: number | undefined,
     imageX: number | undefined,
     imageY: number | undefined,
-    notlandable: boolean | undefined,
+    notLandable: boolean | undefined,
     planetGravitationalParameter: number | undefined
   }> = new Map()
 
@@ -114,7 +114,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
         imageScale: planet.imageScale,
         imageX: planet.imageX,
         imageY: planet.imageY,
-        notlandable: planet.notlandable,
+        notLandable: planet.notLandable,
         planetGravitationalParameter: planet.planetGravitationalParameter,
         radius: planet.radius,
         soiRadius: soi,
@@ -134,7 +134,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
       imageScale: p.imageScale,
       imageX: p.imageX,
       imageY: p.imageY,
-      notlandable: false,
+      notLandable: false,
       planetGravitationalParameter: undefined,
       radius: p.radius,
       to: {},

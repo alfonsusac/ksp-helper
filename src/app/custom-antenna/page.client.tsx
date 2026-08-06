@@ -1,7 +1,7 @@
 "use client"
 
 import { cns } from "@/design-system"
-import { prettyNum } from "@/lib/prettier"
+import { prettyNum } from "@/lib/pretty-num"
 import { HomeButton, Muted } from "@/ui/common"
 import { BackOrHomeButton } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"

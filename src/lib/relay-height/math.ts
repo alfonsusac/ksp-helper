@@ -182,13 +182,23 @@ export function getResonantOrbit(
     radius * (2 * semiMajorAxis - radius)
   )
   const focusOffset = Math.abs(semiMajorAxis - radius)
-  const newApoapsis = 2 * semiMajorAxis - radius
+  const otherApsisRadius = 2 * semiMajorAxis - radius
+  const apsisLabel = otherApsisRadius < radius ? "Periapsis" : "Apoapsis" 
+
+
+  const circularVelocity = Math.sqrt(gravitationalParameter / radius)
+  const resonantVelocity = Math.sqrt(gravitationalParameter * (2 / radius - 1 / semiMajorAxis))
+  const injectioDeltaV = Math.abs(resonantVelocity - circularVelocity)
 
   return {
+    period,
     semiMinorAxis,
     semiMajorAxis,
     focusOffset,
     resonantPeriod,
-    newApoapsis,
+    otherApsisRadius,
+    injectioDeltaV,
+    mode,
+    apsisLabel,
   }
 }

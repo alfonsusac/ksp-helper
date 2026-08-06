@@ -7,12 +7,12 @@ export const kcalbeloh: Package = {
 
     "WH-3141-A": { // Jool's moon | wormhole
       image: undefined, imageScale: 1,
-      radius: 10_000, atmHeight: 0, soiHeight: 4_983_000, highestPoint: 45_001, notlandable: true
+      radius: 10_000, atmHeight: 0, soiHeight: 4_983_000, highestPoint: 45_001, notLandable: true
     },
 
     "Kcalbeloh": {
       image: "/kcalbeloh/kcalbeloh.png", imageScale: 15.5, imageX: 11, imageY: -7, // raw atm_height: 600_000
-      radius: 2_400_000_000, atmHeight: 6100000000, soiHeight: 20_000_000_000_000, highestPoint: 8_500_000_000, notlandable: true
+      radius: 2_400_000_000, atmHeight: 6100000000, soiHeight: 20_000_000_000_000, highestPoint: 8_500_000_000, notLandable: true
     },
     "Onrefni": {
       image: "/kcalbeloh/onrefni.png", imageScale: 1.01,
@@ -33,7 +33,7 @@ export const kcalbeloh: Package = {
 
     "Maelg": {
       image: "/kcalbeloh/maelg.png", imageScale: 1.2,
-      radius: 6_185_000, atmHeight: 435_000, soiHeight: 11_622_940_000, highestPoint: 99_500_000, notlandable: true, 
+      radius: 6_185_000, atmHeight: 435_000, soiHeight: 11_622_940_000, highestPoint: 99_500_000, notLandable: true, 
     },
     "Mehtna": {
       image: "/kcalbeloh/mehtna.png", imageScale: 1.08,
@@ -46,11 +46,11 @@ export const kcalbeloh: Package = {
 
     "Sunorc": {
       image: "/kcalbeloh/sunorc.png", imageScale: 1,
-      radius: 42_754_000, atmHeight: 436_000, soiHeight: 67_085_212_000, highestPoint: 978_000_000, notlandable: true,
+      radius: 42_754_000, atmHeight: 436_000, soiHeight: 67_085_212_000, highestPoint: 978_000_000, notLandable: true,
     },
     "Sedah": {
       image: "/kcalbeloh/sedah.png", imageScale: 1.01,
-      radius: 6_700_000, atmHeight: 291_000, soiHeight: 47_021_000, highestPoint: 0, notlandable: true
+      radius: 6_700_000, atmHeight: 291_000, soiHeight: 47_021_000, highestPoint: 0, notLandable: true
     },
     "Suluco": {
       image: "/kcalbeloh/suluco.png", imageScale: 1.07,
@@ -62,7 +62,7 @@ export const kcalbeloh: Package = {
     },
     "Sera": {
       image: "/kcalbeloh/sera.png", imageScale: 2.42,
-      radius: 690_000, atmHeight: 71_000, soiHeight: 80_511_000, highestPoint: 0, notlandable: true,
+      radius: 690_000, atmHeight: 71_000, soiHeight: 80_511_000, highestPoint: 0, notLandable: true,
     },
     "Dipuc": { // Sera's moon
       image: "/kcalbeloh/dipuc.png", imageScale: 1,
@@ -70,16 +70,16 @@ export const kcalbeloh: Package = {
     },
     "WH-3141-B": { // Sera's moon | wormhole
       image: undefined, imageScale: 1,
-      radius: 10_000, atmHeight: 0, soiHeight: 1_819_000, highestPoint: 45_001, notlandable: true
+      radius: 10_000, atmHeight: 0, soiHeight: 1_819_000, highestPoint: 45_001, notLandable: true
     },
 
     "Simetra": {
       image: "/kcalbeloh/simetra.png", imageScale: 1.06,
-      radius: 4_800_000, atmHeight: 190_000, soiHeight: 15_000, highestPoint: 0, notlandable: true
+      radius: 4_800_000, atmHeight: 190_000, soiHeight: 15_000, highestPoint: 0, notLandable: true
     },
     "Simeht": { // Simetra's twin
       image: "/kcalbeloh/simeht.png", imageScale: 1.05,
-      radius: 4_000_000, atmHeight: 177_000, soiHeight: 12_000, highestPoint: 0, notlandable: true
+      radius: 4_000_000, atmHeight: 177_000, soiHeight: 12_000, highestPoint: 0, notLandable: true
     },
     "Noira": { // Simetra-Simeht's moon
       image: "/kcalbeloh/noira.png", imageScale: 1,
@@ -102,7 +102,7 @@ export const kcalbeloh: Package = {
     // I have idea what is the minimum height without burning your vessel
     "Aralc-A": {
       image: "/kcalbeloh/aralc-a.png", imageScale: 1,
-      radius: 112_893_000, atmHeight: 436_000, soiHeight: 202_700_000_000, highestPoint: 0, notlandable: true
+      radius: 112_893_000, atmHeight: 436_000, soiHeight: 202_700_000_000, highestPoint: 0, notLandable: true
     },
     "Anneheg": { // Aralc-A's moon
       image: "/kcalbeloh/anneheg.png", imageScale: 1,
@@ -112,7 +112,7 @@ export const kcalbeloh: Package = {
     // I have idea what is the minimum height without burning your vessel
     "Aralc-B": {
       image: "/kcalbeloh/aralc-b.png", imageScale: 1,
-      radius: 22_832_000, atmHeight: 436_000, soiHeight: 5_600_000, highestPoint: 0, notlandable: true
+      radius: 22_832_000, atmHeight: 436_000, soiHeight: 5_600_000, highestPoint: 0, notLandable: true
     },
     "Arorua": { // Aralc-B's moon
       image: "/kcalbeloh/arorua.png", imageScale: 1.05,
@@ -124,7 +124,7 @@ export const kcalbeloh: Package = {
     },
     "Anehta": {
       image: "/kcalbeloh/anehta.png", imageScale: 2.78,
-      radius: 8_000_000, atmHeight: 225_000, soiHeight: 2_749_833_000, highestPoint: 0, notlandable: true
+      radius: 8_000_000, atmHeight: 225_000, soiHeight: 2_749_833_000, highestPoint: 0, notLandable: true
     },
     "Enots": { // Anehta's moon
       image: "/kcalbeloh/enots.png", imageScale: 1,
