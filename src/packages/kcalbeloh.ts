@@ -1,4 +1,4 @@
-import type { Package } from "./types"
+import type { Package } from "./_types"
 
 export const kcalbeloh: Package = {
   name: "Kcalbeloh",

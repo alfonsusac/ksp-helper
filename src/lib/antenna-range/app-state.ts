@@ -1,5 +1,5 @@
 import type { BodyPayload } from "../antenna"
-import type { PackageNames } from "../packages"
+import type { PackageNames } from "../get-data"
 import { useAppState } from "../use-app-state"
 
 export type AntennaCalculatorData = {

@@ -1,4 +1,4 @@
-import type { Package } from "./types"
+import type { Package } from "./_types"
 
 export const jsx2antenna: Package = {
   name: "JX2Antenna",

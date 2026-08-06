@@ -1,4 +1,4 @@
-import type { Package } from "./types"
+import type { Package } from "./_types"
 
 // https://forum.kerbalspaceprogram.com/topic/173446-lowest-highest-points-of-celestial-bodies/
 

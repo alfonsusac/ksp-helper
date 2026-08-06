@@ -182,11 +182,13 @@ export function getResonantOrbit(
     radius * (2 * semiMajorAxis - radius)
   )
   const focusOffset = Math.abs(semiMajorAxis - radius)
+  const newApoapsis = 2 * semiMajorAxis - radius
 
   return {
     semiMinorAxis,
     semiMajorAxis,
     focusOffset,
     resonantPeriod,
+    newApoapsis,
   }
 }

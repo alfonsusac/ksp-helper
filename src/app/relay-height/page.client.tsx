@@ -2,10 +2,10 @@
 
 import { cns } from "@/design-system"
 import { getDistance, getMaximumRange, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload } from "@/lib/antenna"
-import { getData, type AntennaData, type PlanetData } from "@/lib/packages"
+import { getData, type AntennaData, type PlanetData } from "@/lib/get-data"
 import { prettyNum } from "@/lib/prettier"
 import { useRelayHeightAppState, type RelayHeightData } from "@/lib/relay-height/app-state"
-import { getMaximumRelayHeightRelativeToEachOther, getMaximumRelayHeightRelativeToVessel, getMinimumRelayHeight, lawOfCosineFindAngle, lawOfCosineFindSide, mid } from "@/lib/relay-height/math"
+import { getMaximumRelayHeightRelativeToEachOther, getMaximumRelayHeightRelativeToVessel, getMinimumRelayHeight, getResonantOrbit, lawOfCosineFindAngle, lawOfCosineFindSide, mid } from "@/lib/relay-height/math"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 import { ShareAppURLButton } from "@/ui/button"
 import { cn } from "@/ui/cn"
@@ -265,7 +265,7 @@ function getResult(
   const planetRadius = planet.radius ?? 0
   const highestPoint = planet.highestPoint ?? 0
   const atmHeight = planet.atmHeight ?? 0
-  const soiRadius = planet.soi ?? 0
+  const soiRadius = planet.soiRadius ?? 0
   const lowestLKO = planetRadius + atmHeight
   const minimumOrbitableHeight = Math.max(planetRadius + atmHeight, planetRadius + highestPoint)
 
@@ -390,8 +390,15 @@ function getResult(
   const relayLinkColor = getLinkColor(relayStrength)
 
   const minHeight = (minRadius ?? NaN) - planetRadius
-  const orbitHeight = (orbitRadius ?? NaN) - planetRadius
+  const orbitHeight = (orbitRadius) - planetRadius
   const maxHeight = (maxRadius ?? NaN) - planetRadius
+
+  const {  } = getResonantOrbit(
+    planetRadius,
+    planetGravitationalParameter,
+    relayCount,
+    "peaking",
+  )
 
   return {
     status,

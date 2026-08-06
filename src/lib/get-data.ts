@@ -1,7 +1,7 @@
 import { commnetAntennasExtension } from "@/packages/commnet-antennas-ext"
 import { outerplanets } from "../packages/outer-planets-mod"
 import { stock } from "../packages/stock"
-import type { AntennaDefinition, DistanceRange } from "../packages/types"
+import type { AntennaDefinition, DistanceRange } from "../packages/_types"
 import { symmetrizePlanetDistanceMap } from "./distance"
 import { mapToListWithId } from "./object"
 import { restockplus } from "@/packages/restock-plus"
@@ -39,7 +39,6 @@ export function getPackageName(id: string) {
   return packages[ id as keyof typeof packages ].name
 }
 
-
 // Parsed
 export type AntennaData = ReturnType<typeof getAntennaData>
 export type AntennaItemData = AntennaData[ number ]
@@ -54,9 +53,7 @@ export function getData(option: Record<PackageNames, true | undefined>, settings
 
 // Process Antenna
 function getAntennaData(option: Record<PackageNames, true | undefined>, settings: GlobalSettings) {
-  const map = new Map<string, AntennaDefinition & {
-    package: string,
-  }>()
+  const map = new Map<string, AntennaDefinition & { package: string }>()
 
   Object.entries(packages).forEach(([ packName, pack ]) => {
     if (!option[ packName as PackageNames ]) return
@@ -87,16 +84,16 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
 
   const map: Map<string, {
     package: string,
-    to?: Record<string, DistanceRange | null>,
-    image?: string,
-    radius?: number,
-    soi?: number,
-    atmHeight?: number,
-    highestPoint?: number,
-    imageScale?: number,
-    imageX?: number,
-    imageY?: number,
-    notlandable?: boolean,
+    to: Record<string, DistanceRange | null> | undefined,
+    image: string | undefined,
+    radius: number | undefined,
+    soiRadius: number | undefined,
+    atmHeight: number | undefined,
+    highestPoint: number | undefined,
+    imageScale: number | undefined,
+    imageX: number | undefined,
+    imageY: number | undefined,
+    notlandable: boolean | undefined,
   }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
@@ -115,7 +112,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
         image: planet.image,
         atmHeight: planet.atmHeight,
         radius: planet.radius,
-        soi,
+        soiRadius: soi,
         highestPoint: planet.highestPoint,
         imageScale: planet.imageScale,
         imageX: planet.imageX,
@@ -128,9 +125,16 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
   settings.customPlanets.forEach(p => {
     const soi = p.soiHeight + p.radius
     map.set(p.label, {
+      image: undefined,
+      highestPoint: undefined,
+      imageScale: undefined,
+      imageX: undefined,
+      imageY: undefined,
+      notlandable: undefined,
+      to: undefined,
       package: "Custom",
       ...p,
-      soi,
+      soiRadius: p.soiHeight + p.radius,
     })
   })
 

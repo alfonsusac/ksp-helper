@@ -1,4 +1,4 @@
-import type { Package } from "./types"
+import type { Package } from "./_types"
 
 // src https://docs.google.com/spreadsheets/d/1iovDBhGQEDkjVv97rK0WHBqCtq9x-lu4M36FlDJrn4I
 export const commnetAntennasExtension: Package = {
