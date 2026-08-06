@@ -40,7 +40,7 @@ export const outerplanets: Package = {
     },
     "Eeloo OPM": {
       radius: 210_000, soiRadius: 1_159_000, highestPoint: 3_797,
-      planetGravitationalParameter: 7.4410815e10,
+      gravParam: 7.4410815e10,
       image: "/opm/planets/eeloo-opm-hd.png", imageScale: 1,
     },
     "Slate": {

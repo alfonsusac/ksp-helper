@@ -68,13 +68,13 @@ export const stock: Package = {
     Kerbol: {
       image: "/stock/planets/kerbol3-hd.png", imageScale: 3,
       radius: 261_600_000, atmHeight: 600_000, soiRadius: Number.POSITIVE_INFINITY,
-      planetGravitationalParameter: 1.1723328e18,
+      gravParam: 1.1723328e18,
       highestPoint: 1_000_000_000, notLandable: true,
     },
     Moho: {
       image: "/stock/planets/moho-hd.png", imageScale: 1.02,
       radius: 250_000, soiRadius: 9_646_663, highestPoint: 6_818,
-      planetGravitationalParameter: 1.6860938e11,
+      gravParam: 1.6860938e11,
       distanceToPlanets: {
         Eve: { min: 3_546_908_249, max: 16_117_620_965 },
         Kerbin: { min: 7_289_385_437, max: 19_913_538_689 },
@@ -91,7 +91,7 @@ export const stock: Package = {
     Eve: {
       image: "/stock/planets/eve-hd.png",
       radius: 700_000, soiRadius: 85_109_365, atmHeight: 90_000, highestPoint: 7_541,
-      planetGravitationalParameter: 8.1717302e12,
+      gravParam: 8.1717302e12,
       distanceToPlanets: {
         Kerbin: { min: 3_668_828_971, max: 23_530_851_543 },
         Duna: { min: 9_792_173_567, max: 31_665_478_335 },
@@ -107,12 +107,12 @@ export const stock: Package = {
     Gilly: {
       image: "/stock/planets/gilly-hd.png", imageScale: 1.45,
       radius: 13_000, soiRadius: 126_123.27, highestPoint: 6_401,
-      planetGravitationalParameter: 8_289_449.8
+      gravParam: 8_289_449.8
     },
     Kerbin: {
       image: "/stock/planets/kerbin-hd.png",
       radius: 600_000, atmHeight: 70_000, soiRadius: 84_159_286, highestPoint: 6_768,
-      planetGravitationalParameter: 3.5316000e12,
+      gravParam: 3.5316000e12,
       distanceToPlanets: {
         Duna: { min: 6_069_283_350, max: 35_383_028_257 },
         Dres: { min: 21_402_401_940, max: 60_320_789_167 },
@@ -127,17 +127,17 @@ export const stock: Package = {
     Mun: {
       image: "/stock/planets/mun-hd.png", imageScale: 1.023,
       radius: 200_000, soiRadius: 2_429_559.1, highestPoint: 7_061,
-      planetGravitationalParameter: 6.5138398e10
+      gravParam: 6.5138398e10
     },
     Minmus: {
       image: "/stock/planets/minmus-hd.png", imageScale: 1.06,
       radius: 60_000, soiRadius: 2_247_428.4, highestPoint: 5_724,
-      planetGravitationalParameter: 1.7658000e9,
+      gravParam: 1.7658000e9,
     },
     Duna: {
       image: "/stock/planets/duna-hd.png",
       radius: 320_000, soiRadius: 47_921_949, atmHeight: 50_000, highestPoint: 8_268,
-      planetGravitationalParameter: 3.0136321e11,
+      gravParam: 3.0136321e11,
       distanceToPlanets: {
         Dres: { min: 13_732_281_489, max: 68_080_257_426 },
         Jool: { min: 44_584_549_836, max: 92_947_048_984 },
@@ -151,12 +151,12 @@ export const stock: Package = {
     Ike: {
       image: "/stock/planets/ike-hd.png", imageScale: 1.07,
       radius: 130_000, soiRadius: 1_049_598.9, highestPoint: 12_738,
-      planetGravitationalParameter: 1.8568369e10,
+      gravParam: 1.8568369e10,
     },
     Dres: {
       image: "/stock/planets/dres-hd.png", imageScale: 1.025,
       radius: 138_000, soiRadius: 32_832_840, highestPoint: 5_670,
-      planetGravitationalParameter: 2.1484489e10,
+      gravParam: 2.1484489e10,
       distanceToPlanets: {
         Jool: { min: 24_526_513_238, max: 113_360_806_852 },
         Eeloo: { min: 28_689_105_419, max: 151_339_309_036 },
@@ -169,7 +169,7 @@ export const stock: Package = {
     Jool: {
       image: "/stock/planets/jool-hd.png",
       radius: 6_000_000, atmHeight: 200_000, soiRadius: 2.4559852e9, notLandable: true,
-      planetGravitationalParameter: 2.8252800e14,
+      gravParam: 2.8252800e14,
       distanceToPlanets: {
         Eeloo: { min: 11_420_136_316, max: 169_943_755_910 },
         Sarnus: { min: 47_661_436_751, max: 203_907_220_758 },
@@ -181,32 +181,32 @@ export const stock: Package = {
     Laythe: {
       image: "/stock/planets/laythe-hd.png",
       radius: 500_000, soiRadius: 3_723_645.8, atmHeight: 50_000, highestPoint: 6_079,
-      planetGravitationalParameter: 1.9620000e12,
+      gravParam: 1.9620000e12,
     },
     Vall: {
       image: "/stock/planets/vall-hd.png", imageScale: 1.023,
       radius: 300_000, soiRadius: 2_406_401.4, highestPoint: 7_985,
-      planetGravitationalParameter: 2.0748150e11,
+      gravParam: 2.0748150e11,
     },
     Tylo: {
       image: "/stock/planets/tylo-hd.png", imageScale: 1.015,
       radius: 600_000, soiRadius: 10_856_518, highestPoint: 12_904,
-      planetGravitationalParameter: 2.8252800e12,
+      gravParam: 2.8252800e12,
     },
     Bop: {
       image: "/stock/planets/bop-hd.png", imageScale: 1.28,
       radius: 65_000, soiRadius: 1_221_060.9, highestPoint: 21_757,
-      planetGravitationalParameter: 2.4868349e9,
+      gravParam: 2.4868349e9,
     },
     Pol: {
       image: "/stock/planets/pol-hd.png", imageScale: 1.07,
       radius: 44_000, soiRadius: 1_042_138.9, highestPoint: 4_891,
-      planetGravitationalParameter: 7.2170208e8,
+      gravParam: 7.2170208e8,
     },
     Eeloo: {
       image: "/stock/planets/eeloo-hd.png", imageScale: 1.01,
       radius: 210_000, soiRadius: 1.1908294e8, highestPoint: 3_797,
-      planetGravitationalParameter: 7.4410815e10,
+      gravParam: 7.4410815e10,
       distanceToPlanets: {
         Sarnus: { min: 16_988_828_162, max: 243_123_109_571 },
         Urlum: { min: 135_614_910_615, max: 373_212_339_800 },

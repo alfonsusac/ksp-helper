@@ -94,7 +94,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
     imageX: number | undefined,
     imageY: number | undefined,
     notLandable: boolean | undefined,
-    planetGravitationalParameter: number | undefined
+    gravParam: number | undefined
   }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
@@ -108,7 +108,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
       })()
 
       const gravitationalParameter = (() => {
-        if (planet.planetGravitationalParameter) return planet.planetGravitationalParameter
+        if (planet.gravParam) return planet.gravParam
         if (planet.geeASL) return planet.geeASL * 9.80665 * planet.radius ** 2
         return undefined
       })()
@@ -122,7 +122,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
         imageY: planet.imageY,
         notLandable: planet.notLandable,
         radius: planet.radius,
-        planetGravitationalParameter: gravitationalParameter,
+        gravParam: gravitationalParameter,
         soiRadius: soi,
 
         package: pkName,
@@ -141,7 +141,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
       imageX: p.imageX,
       imageY: p.imageY,
       notLandable: false,
-      planetGravitationalParameter: undefined,
+      gravParam: undefined,
       radius: p.radius,
       to: {},
 

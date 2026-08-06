@@ -413,7 +413,7 @@ function getResult(
 
 
   const resonantOrbit = (() => {
-    const gravParam = planet_data.planetGravitationalParameter
+    const gravParam = planet_data.gravParam
 
     // TODO : allow control for peaking/diving
 
