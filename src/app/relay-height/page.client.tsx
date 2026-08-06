@@ -139,7 +139,7 @@ export function RelayHeight_Client() {
                 }}
                 onValueCommitted={() => {
                   setIsDraggingOrbit(false)
-                }}  
+                }}
               />
               <div className="shrink-0 w-8 text-end">
                 {Math.round(data.strength * 100) + '%'}
@@ -860,8 +860,10 @@ function Visualization(props: ReturnType<typeof getResult> & {
           "border border-px border-yellow-400/50 border-dashed",
         )}
         style={{
-          scale: `1 ${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMajorAxis }`,
-          translate: `0px ${ ((props.resonantOrbit.semiMajorAxis - props.orbitRadius) / (2 * props.resonantOrbit.semiMajorAxis)) * 100 }%`
+          transform: ` scaleY(${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMinorAxis }) translateY(${ ((props.resonantOrbit.semiMajorAxis - props.orbitRadius) / (props.resonantOrbit.semiMajorAxis)) * 50 }%)`,
+          // scale: `1 ${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMinorAxis }`,
+          // translate: `0px ${ ((props.resonantOrbit.semiMajorAxis - props.orbitRadius) / (props.resonantOrbit.semiMajorAxis)) * 50 }%`
+          // translate: `0px %`
         }}
       >
       </Circle>
