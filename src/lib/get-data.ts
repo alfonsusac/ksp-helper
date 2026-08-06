@@ -94,6 +94,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
     imageX: number | undefined,
     imageY: number | undefined,
     notlandable: boolean | undefined,
+    planetGravitationalParameter: number | undefined
   }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
@@ -107,17 +108,19 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
       })()
 
       map.set(planetName, {
-        package: pkName,
-        to: planet.distanceToPlanets,
-        image: planet.image,
         atmHeight: planet.atmHeight,
-        radius: planet.radius,
-        soiRadius: soi,
         highestPoint: planet.highestPoint,
+        image: planet.image,
         imageScale: planet.imageScale,
         imageX: planet.imageX,
         imageY: planet.imageY,
         notlandable: planet.notlandable,
+        planetGravitationalParameter: planet.planetGravitationalParameter,
+        radius: planet.radius,
+        soiRadius: soi,
+        
+        package: pkName,
+        to: planet.distanceToPlanets,
       })
     })
   })
@@ -125,16 +128,20 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
   settings.customPlanets.forEach(p => {
     const soi = p.soiHeight + p.radius
     map.set(p.label, {
-      image: undefined,
-      highestPoint: undefined,
-      imageScale: undefined,
-      imageX: undefined,
-      imageY: undefined,
-      notlandable: undefined,
-      to: undefined,
+      atmHeight: p.atmHeight,
+      highestPoint: p.highestPoint,
+      image: p.image,
+      imageScale: p.imageScale,
+      imageX: p.imageX,
+      imageY: p.imageY,
+      notlandable: false,
+      planetGravitationalParameter: undefined,
+      radius: p.radius,
+      to: {},
+
+
       package: "Custom",
-      ...p,
-      soiRadius: p.soiHeight + p.radius,
+      soiRadius: soi,
     })
   })
 

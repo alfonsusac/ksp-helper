@@ -393,12 +393,12 @@ function getResult(
   const orbitHeight = (orbitRadius) - planetRadius
   const maxHeight = (maxRadius ?? NaN) - planetRadius
 
-  const {  } = getResonantOrbit(
-    planetRadius,
-    planetGravitationalParameter,
-    relayCount,
-    "peaking",
-  )
+  // const {  } = getResonantOrbit(
+  //   planetRadius,
+  //   planetGravitationalParameter,
+  //   relayCount,
+  //   "peaking",
+  // )
 
   return {
     status,
