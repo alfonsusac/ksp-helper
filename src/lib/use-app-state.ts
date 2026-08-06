@@ -77,10 +77,10 @@ export function useAppState<T>(
 
 export function generateShareURL<T>(data: T | undefined) {
   if (data === undefined) return ""
-  console.log(window.location)
+  // console.log(window.location)
   const url = new URL(window.location.origin + window.location.pathname)
   url.searchParams.set("data", serializeAppData(data))
   const res = url.toString()
-  console.log(res)
+  // console.log(res)
   return res
 }

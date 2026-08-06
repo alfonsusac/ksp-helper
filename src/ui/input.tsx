@@ -121,12 +121,15 @@ export function Slider(props: {
   max: number,
   value: number,
   onValueChange: (n: number) => void,
+  onValueCommitted?: (n: number) => void,
   thumbChildren?: ReactNode,
   step?: number
   className?: string,
 }) {
   return (
-    <BSlider.Root className={props.className} value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge" >
+    <BSlider.Root
+      onValueCommitted={props.onValueCommitted}
+      className={props.className} value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge">
       <BSlider.Control className="flex w-full touch-none items-center py-0 select-none">
         <BSlider.Track className={cns.slider.track(
           "h-1 w-full select-none rounded-lg"
@@ -135,6 +138,18 @@ export function Slider(props: {
             "select-none rounded-lg"
           )} />
           <BSlider.Thumb
+            // onDragStart={() => {
+            //   console.log("A")
+            // }}
+            // onDragEnd={() => {
+            //   console.log("B")
+            // }}
+            // onFocus={() => {
+            //   console.log("Focus")
+            // }}
+            // onBlur={() => {
+            //   console.log("Blur")
+            // }}
             className={cns.slider.thumb(
               "size-3 rounded-full select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ",
               // "has-[:focus-visible]:outline-neutral-950",

@@ -19,12 +19,14 @@ import { WhatIsThisSection } from "@/ui/prose"
 import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import SignalStrengthItems, { strengthNum } from "@/ui/signal-strength"
 import { formatCss, interpolate } from "culori"
-import { Fragment, type CSSProperties, type ReactNode } from "react"
+import { Fragment, useState, type CSSProperties, type ReactNode } from "react"
 
 export function RelayHeight_Client() {
 
   const [ settings, setSettings ] = useGlobalSettings()
   const [ data, setData ] = useRelayHeightAppState()
+  const [ isDraggingOrbit, setIsDraggingOrbit ] = useState(false)
+
   if (!data || !settings) return null
 
   const { antennas, planets } = getData(settings.contents, settings)
@@ -131,7 +133,13 @@ export function RelayHeight_Client() {
                 className="max-w-60 w-full"
                 min={0} max={0.99} step={0.01}
                 value={data.strength}
-                onValueChange={changeTargetStrength}
+                onValueChange={(n) => {
+                  setIsDraggingOrbit(true)
+                  changeTargetStrength(n)
+                }}
+                onValueCommitted={() => {
+                  setIsDraggingOrbit(false)
+                }}  
               />
               <div className="shrink-0 w-8 text-end">
                 {Math.round(data.strength * 100) + '%'}
@@ -165,9 +173,10 @@ export function RelayHeight_Client() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <Visualization {...result} />
+          <Visualization {...result} disableAnimation={isDraggingOrbit} />
           <ResultInfo {...result}
             onOrbitRatioChange={changeResultOrbitRatio}
+            setIsDraggingORbit={setIsDraggingOrbit}
           />
         </div>
 
@@ -514,6 +523,7 @@ function getResult(
 }
 
 function ResultInfo(props: ReturnType<typeof getResult> & {
+  setIsDraggingORbit: (val: boolean) => void,
   onOrbitRatioChange: (n: number) => void
 }) {
 
@@ -561,7 +571,14 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
       <div className="col-span-2 flex gap-2 items-center">
         <Slider
           min={0} max={1} step={0.01} className="grow"
-          value={props.orbitRatio} onValueChange={props.onOrbitRatioChange}
+          value={props.orbitRatio}
+          onValueChange={(n) => {
+            props.setIsDraggingORbit(true)
+            props.onOrbitRatioChange(n)
+          }}
+          onValueCommitted={() => {
+            props.setIsDraggingORbit(false)
+          }}
         />
         <ResetSettingsIconButton onClick={() => props.onOrbitRatioChange(0.5)} />
       </div>
@@ -655,7 +672,9 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
 }
 
 
-function Visualization(props: ReturnType<typeof getResult>) {
+function Visualization(props: ReturnType<typeof getResult> & {
+  disableAnimation: boolean,
+}) {
   if (props.status === "no planet data") return <></>
 
   const maxViewportScale = Math.max(props.maxRadius ?? 0, props.planetRadius, props.orbitRadius ?? 0)
@@ -671,21 +690,21 @@ function Visualization(props: ReturnType<typeof getResult>) {
   )}>
     {/* Below SOI Circle */}
     {props.soiRadius !== Infinity &&
-      <Circle maxHeight={maxViewportScale} height={props.soiRadius}
+      <Circle maxHeight={maxViewportScale} height={props.soiRadius} disableAnimation={props.disableAnimation}
         className="bg-black"
       >
         <div className="absolute text-xs left-1/2 -translate-y-full opacity-50">SOI</div>
       </Circle>
     }
     {/* Max Radius */}
-    <Circle maxHeight={maxViewportScale} height={props.maxRadius}
+    <Circle maxHeight={maxViewportScale} height={props.maxRadius} disableAnimation={props.disableAnimation}
       className="bg-teal-500/25"
     >
       <div className="absolute text-xs left-1/2 text-teal-500/50">MAX</div>
     </Circle>
 
     {/* Min Radius */}
-    <Circle maxHeight={maxViewportScale} height={props.minRadius}
+    <Circle maxHeight={maxViewportScale} height={props.minRadius} disableAnimation={props.disableAnimation}
       className="bg-black"
     >
       <div className="absolute text-xs left-1/2 -translate-y-full text-teal-500/50">MIN</div>
@@ -697,13 +716,13 @@ function Visualization(props: ReturnType<typeof getResult>) {
 
     {/* Atmosphere */}
     {props.atmHeight > 0 &&
-      <Circle maxHeight={maxViewportScale} height={props.planetRadius + props.atmHeight}
+      <Circle maxHeight={maxViewportScale} height={props.planetRadius + props.atmHeight} disableAnimation={props.disableAnimation}
         className="bg-blue-400/25"
       />
     }
 
     {/* Planet */}
-    <Circle maxHeight={maxViewportScale} height={props.planetRadius}
+    <Circle maxHeight={maxViewportScale} height={props.planetRadius} disableAnimation={props.disableAnimation}
       className=""
     >
       {props.planetimg ? <img
@@ -750,7 +769,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
                   background: props.vessel?.linkColor
                 }}
                 className={cn(
-                  // "transition-transform duration-75",
+                  props.disableAnimation ? "" : "transition-transform duration-75",
                   "absolute w-1/2 h-px bg-green-500"
                 )}
               >
@@ -776,7 +795,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
 
                 }}
                 className={cn(
-                  // "transition-transform duration-75",
+                  props.disableAnimation ? "" : "transition-transform duration-75",
                   "absolute w-1/2 h-px bg-green-500"
                 )}
               >
@@ -790,7 +809,7 @@ function Visualization(props: ReturnType<typeof getResult>) {
     {/* Main/Selected Orbit Circle */}
     <Circle
       maxHeight={maxViewportScale}
-      height={props.orbitRadius}
+      height={props.orbitRadius} disableAnimation={props.disableAnimation}
       className={cn(
         "border border-px border-emerald-400/50",
       )}
@@ -836,13 +855,13 @@ function Visualization(props: ReturnType<typeof getResult>) {
       props.resonantOrbit && props.resonantOrbit.status !== "missing data" &&
       <Circle
         maxHeight={maxViewportScale}
-        height={props.resonantOrbit.semiMinorAxis}
+        height={props.resonantOrbit.semiMinorAxis} disableAnimation={props.disableAnimation}
         className={cn(
           "border border-px border-yellow-400/50 border-dashed",
         )}
         style={{
-          scale: `1 ${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMinorAxis }`,
-          translate: `0px ${ ((props.resonantOrbit.semiMajorAxis - props.orbitRadius) / (2 * props.resonantOrbit.semiMinorAxis)) * 100 }%`
+          scale: `1 ${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMajorAxis }`,
+          translate: `0px ${ ((props.resonantOrbit.semiMajorAxis - props.orbitRadius) / (2 * props.resonantOrbit.semiMajorAxis)) * 100 }%`
         }}
       >
       </Circle>
@@ -859,6 +878,7 @@ function getSatellitePosition(relayCount: number, i: number) {
   return { x, y }
 }
 
+import { motion, type TargetAndTransition } from "motion/react"
 
 function Circle(props: {
   maxHeight: number,
@@ -866,11 +886,22 @@ function Circle(props: {
   className: string,
   children?: ReactNode,
   style?: CSSProperties,
+  disableAnimation: boolean,
 }) {
   if (props.height === undefined) return null
   const heightPercent = (props.height / props.maxHeight * 80) + '%'
   return (
-    <div style={{ width: heightPercent, ...props.style, }} className={cn("absolute aspect-square rounded-full transition-all", props.className)} >
+    <div
+      style={{
+        width: heightPercent, ...props.style,
+      }}
+      // transition={props.disableAnimation ? { duration: 0 } : { type: "tween", duration: 0.2 }}
+      className={cn(
+        "absolute aspect-square rounded-full",
+        props.disableAnimation ? "" : "transition-all",
+        props.className,
+      )}
+    >
       {props.children}
     </div>
   )
