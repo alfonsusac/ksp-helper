@@ -880,8 +880,6 @@ function getSatellitePosition(relayCount: number, i: number) {
   return { x, y }
 }
 
-import { motion, type TargetAndTransition } from "motion/react"
-
 function Circle(props: {
   maxHeight: number,
   height: number | undefined,
