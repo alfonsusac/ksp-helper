@@ -94,7 +94,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
     imageX: number | undefined,
     imageY: number | undefined,
     notLandable: boolean | undefined,
-    gravParam: number | undefined
+    gravParam: number | undefined,
   }> = new Map()
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
@@ -110,6 +110,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
       const gravitationalParameter = (() => {
         if (planet.gravParam) return planet.gravParam
         if (planet.geeASL) return planet.geeASL * 9.80665 * planet.radius ** 2
+        if (planet.mass) return planet.mass * planet.radius
         return undefined
       })()
 
