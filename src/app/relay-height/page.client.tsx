@@ -79,7 +79,7 @@ export function RelayHeight_Client() {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-[14rem_auto] md:grid-cols-[20rem_auto] gap-4 pt-8 ">
+      <section className="grid grid-cols-1 sm:grid-cols-[15rem_auto] md:grid-cols-[20rem_auto] gap-4 pt-8 ">
 
         <div className={("flex flex-col gap-2")}>
 
@@ -156,15 +156,19 @@ export function RelayHeight_Client() {
                 </div>
               </div>
             </div>
-            <div className={cns.surface("flex flex-col gap-2")}>
-              <label className={cns.text.muted("text-xs")}>Surface Vessel Antenna</label>
-              <AntennaInput
-                value={data.vessel}
-                onChange={changeVesselAntenna}
-                antennas={antennas}
-                className="flex flex-col"
-              />
-            </div>
+            {result.notlandable ? <div className={cns.surface(cns.text.muted("text-xs"))}>
+              Surface not landable
+            </div> :
+              <div className={cns.surface("flex flex-col gap-2")}>
+                <label className={cns.text.muted("text-xs")}>Surface Vessel Antenna</label>
+                <AntennaInput
+                  value={data.vessel}
+                  onChange={changeVesselAntenna}
+                  antennas={antennas}
+                  className="flex flex-col"
+                />
+              </div>
+            }
 
             {result.status === "impossible" && <>
               <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
@@ -404,7 +408,9 @@ function getResult(
     dsnModifier: settings.dsnModifier,
     rangeModifier: settings.rangeModifier,
   }).value
-  const maxRadiusFromVessel = getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), effectiveOccludedPlanetRadius) + effectiveOccludedPlanetRadius
+  const maxRadiusFromVessel =
+    notlandable ? Infinity :
+      getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), effectiveOccludedPlanetRadius) + effectiveOccludedPlanetRadius
 
 
   // Get min, max, mid, status, and reason
