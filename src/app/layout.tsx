@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, JetBrains_Mono } from "next/font/google"
+import { Geist, Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { cns } from "@/design-system"
@@ -13,6 +13,11 @@ const geistSans = Geist({
 const geistMono = JetBrains_Mono({
   variable: "--font-geist-mono",
   subsets: [ "latin" ],
+})
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ['latin']
 })
 
 export const metadata: Metadata = {

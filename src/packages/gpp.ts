@@ -45,7 +45,7 @@ export const gpp: Package = {
       geeASL: 0.135,
     },
     "tellumo": {
-      image: "/gpp/tellumo.png", imageScale: 1.75, imageX: 0, imageY: 0.7,
+      image: "/gpp/tellumo.png", imageScale: 1.75, imageX: -0, imageY: 0.7,
       radius: 1_000_000, atmHeight: 50_000, soiHeight: 260_440_000,
       geeASL: 1.9,
     },

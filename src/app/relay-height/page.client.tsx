@@ -66,7 +66,7 @@ export function RelayHeight_Client() {
   const result = getResult(data, settings, antennas, planets)
 
   return (
-    <div className={cns.page("max-w-240")}>
+    <div className={cns.page("max-w-200")}>
 
       <HomeButton />
 
@@ -79,96 +79,143 @@ export function RelayHeight_Client() {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-[14rem_auto] md:grid-cols-[16rem_auto] gap-4 pt-8 ">
+      <section className="grid grid-cols-1 sm:grid-cols-[14rem_auto] md:grid-cols-[20rem_auto] gap-4 pt-8 ">
 
-        <div className="flex flex-col gap-2">
+        <div className={("flex flex-col gap-2")}>
 
-          <div className={cns.surface("flex-col gap-1")}>
-            <label className={"text-sm"}>Celestial Body</label>
-            <PlanetSelectMenu
-              value={data.planet}
-              onValueChange={changePlanet}
-              planetData={planets}
-            />
-          </div>
+          <div className={("flex flex-col gap-2")}>
 
-          <div className={cns.surface("flex-col gap-1")}>
-            <label className={"text-sm"}>Relay Antenna</label>
-            <AntennaInput
-              value={data.relay}
-              onChange={changeRelayAntenna}
-              antennas={antennas}
-              className="flex flex-col"
-              filter={a => a.type === "relay"}
-            />
-          </div>
-
-          <div className={cns.surface("flex-col")}>
-            <label className={"text-sm"}>Relay Count</label>
-            <div className="flex gap-2 items-center w-full gap-4">
-              <Slider
-                className="max-w-60 w-full"
-                min={3} max={16} step={1}
-                value={data.relayCount}
-                onValueChange={changeRelayCount}
+            <div className={cns.surface("flex flex-col gap-2")}>
+              <label className={cns.text.muted("text-xs")}>Celestial Body</label>
+              <PlanetSelectMenu
+                value={data.planet}
+                onValueChange={changePlanet}
+                planetData={planets}
               />
-              <div className="shrink-0 w-8 text-end">
-                {data.relayCount}
+            </div>
+            <div className={cns.surface("flex flex-col gap-2")}>
+              <label className={cns.text.muted("text-xs")}>Relay Antenna</label>
+              <AntennaInput
+                value={data.relay}
+                onChange={changeRelayAntenna}
+                antennas={antennas}
+                className="flex flex-col"
+                filter={a => a.type === "relay"}
+              />
+            </div>
+            <div className={cns.surface("flex flex-col gap-2")}>
+              <label className={cns.text.muted("text-xs")}>Relay Count</label>
+              <div className="flex gap-2 items-center w-full gap-4">
+                <Slider
+                  className="max-w-60 w-full"
+                  min={3} max={16} step={1}
+                  value={data.relayCount}
+                  onValueChange={changeRelayCount}
+                />
+
+                <div className="shrink-0 w-8 text-end">
+                  {data.relayCount}
+                </div>
+              </div>
+            </div>
+            <div className={cns.surface("flex flex-col gap-2")}>
+              <label className={cns.text.muted("text-xs")}>Target Signal Strength</label>
+              <div>
+                <div className={"text-sm flex gap-4 items-center mt-1.5"}>
+                  <SignalStrengthItems
+                    strength={data.strength}
+                    size="sm"
+                  />
+                </div>
+                <div className={"flex gap-2 items-center w-full gap-4"}>
+                  <Slider
+                    className="max-w-60 w-full"
+                    min={0} max={0.99} step={0.01}
+                    value={data.strength}
+                    onValueChange={(n) => {
+                      setIsDraggingOrbit(true)
+                      changeTargetStrength(n)
+                    }}
+                    onValueCommitted={() => {
+                      setIsDraggingOrbit(false)
+                    }}
+                  />
+                  <div className="shrink-0 w-8 text-end">
+                    {Math.round(data.strength * 100) + '%'}
+                  </div>
+                </div>
+                <div className="flex gap-px">
+                  {[ 0.5, 0.75, 0.9, 0.95 ].map(e => {
+                    return <button key={e}
+                      className={cns.button.presetGroup()}
+                      onClick={() => changeTargetStrength(e)}
+                    >
+                      {e * 100}%
+                    </button>
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className={cns.surface("flex flex-col gap-2")}>
+              <label className={cns.text.muted("text-xs")}>Surface Vessel Antenna</label>
+              <AntennaInput
+                value={data.vessel}
+                onChange={changeVesselAntenna}
+                antennas={antennas}
+                className="flex flex-col"
+              />
+            </div>
+
+            {result.status === "impossible" && <>
+              <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
+                <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
+                  <LucideTriangleAlert className={cns.error.text.base()} />
+                  warning
+                </div>
+                {result.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
+                {result.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(result.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
+                {result.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(result.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
+              </div>
+            </>}
+            {result.resonantOrbit?.status === "missing data" && <>
+              <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
+                <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
+                  <LucideTriangleAlert className={cns.error.text.base()} />
+                  warning
+                </div>
+                Unable to calculate Resonant Orbit. The Gravitational Parameter for this planet is not provided.
+              </div>
+            </>}
+
+            <ShareAppURLButton data={data} />
+
+            <div className="grid grid-cols-2 gap-2 text-xs py-6">
+              <p className={cns.text.muted("col-span-2 text-xs")}>Debug Informations</p>
+              <div className="contents leading-3.5">
+                <p className={cns.text.muted()}>Planet Radius</p>
+                <p className={cns.text.muted()}>{result.planetRadius ? prettyNum(result.planetRadius, "k", "m") : "-"}</p>
+
+                <p className={cns.text.muted()}>Maximum Relay Range</p>
+                <p className={cns.text.muted()}>{prettyNum(result.maxRelayRange ?? NaN, "k", "m")}</p>
+
+                <p className={cns.text.muted()}>Maximum Radius based on Relay to Relay (0% strength)</p>
+                <p className={cns.text.muted()}>{prettyNum(result.maxRadiusFromRelays ?? NaN, "k", "m")}</p>
+
+                <p className={cns.text.muted()}>Minimum Radius Based of Planet Radius</p>
+                <p className={cns.text.muted()}>{prettyNum(result.minRadiusBasedOnPlanet ?? NaN, "k", "m")}</p>
+
+                <p className={cns.text.muted()}>Maximum Radius based on Relay to Vessel</p>
+                <p className={cns.text.muted()}>{prettyNum(result.maxRadiusFromVessel ?? NaN, "k", "m")}</p>
+
+                <p className={cns.text.muted()}>Lowest Low Orbit Radius</p>
+                <p className={cns.text.muted()}>{(result.lowestLKO ?? NaN)}m</p>
+
+                <p className={cns.text.muted()}>Ideal / Midpoint orbits raw value</p>
+                <p className={cns.text.muted()}>{result.orbitRadius ?? NaN}m</p>
               </div>
             </div>
           </div>
 
-          <div className={cns.surface("flex flex-col")}>
-            <label className={"text-sm"}>Target Signal Strength</label>
-
-            <div className={"text-sm flex gap-4 items-center mt-1.5"}>
-              <SignalStrengthItems
-                strength={data.strength}
-                size="sm"
-              />
-            </div>
-
-            <div className={"flex gap-2 items-center w-full gap-4"}>
-              <Slider
-                className="max-w-60 w-full"
-                min={0} max={0.99} step={0.01}
-                value={data.strength}
-                onValueChange={(n) => {
-                  setIsDraggingOrbit(true)
-                  changeTargetStrength(n)
-                }}
-                onValueCommitted={() => {
-                  setIsDraggingOrbit(false)
-                }}
-              />
-              <div className="shrink-0 w-8 text-end">
-                {Math.round(data.strength * 100) + '%'}
-              </div>
-            </div>
-            <div className="flex gap-px">
-              {[ 0.5, 0.75, 0.9, 0.95 ].map(e => {
-                return <button key={e}
-                  className={cns.button.presetGroup()}
-                  onClick={() => changeTargetStrength(e)}
-                >
-                  {e * 100}%
-                </button>
-              })}
-            </div>
-
-          </div>
-
-          <div className={cns.surface("flex-col gap-1")}>
-            <label className={"text-sm"}>Surface Vessel Antenna</label>
-            <AntennaInput
-              value={data.vessel}
-              onChange={changeVesselAntenna}
-              antennas={antennas}
-              className="flex flex-col"
-            />
-          </div>
-
-          <ShareAppURLButton data={data} />
 
         </div>
 
@@ -549,141 +596,101 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
 
   if (props.status === "no planet data") return <></>
 
-  return <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 p-5")}>
-    {props.status === "impossible" && <>
-      <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-        <div className={cns.error.text.base("text-xs flex items-center gap-1")}>
-          <LucideTriangleAlert className={cns.error.text.base()} />
-          warning
+  return <div className="flex flex-col gap-2">
+    <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 p-5")}>
+
+
+      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Result</p>
+
+
+      <div className="grid grid-cols-[2fr_3fr_2fr] col-span-2 text-base items-center">
+        <div className="text-sm">
+          <p className={cns.text.muted()}>Min Height</p>
+          <p className="">{prettyNum(props.minHeight ?? NaN).toLocaleString()}m</p>
         </div>
-        {props.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
-        {props.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(props.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
-        {props.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(props.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
-      </div>
-    </>}
-    {props.resonantOrbit?.status === "missing data" && <>
-      <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-        <div className={cns.error.text.base("text-xs flex items-center gap-1")}>
-          <LucideTriangleAlert className={cns.error.text.base()} />
-          warning
+
+        <div className="text-sm text-center">
+          <p className={cns.text.muted()}>Orbit Height</p>
+          <p className="">{prettyNum(props.orbitHeight ?? NaN).toLocaleString()}m</p>
         </div>
-        Unable to calculate Resonant Orbit. The Gravitational Parameter for this planet is not provided.
-      </div>
-    </>}
 
-    <div className="grid grid-cols-[2fr_3fr_2fr] col-span-2 text-base items-center">
-      <div className="text-sm">
-        <p className={cns.text.muted()}>Min Height</p>
-        <p className="">{prettyNum(props.minHeight ?? NaN).toLocaleString()}m</p>
+        <div className="text-sm text-end">
+          <p className={cns.text.muted()}>Max Height</p>
+          <p className="">{prettyNum(props.maxHeight ?? NaN).toLocaleString()}m</p>
+        </div>
       </div>
+      {props.minRadius && props.maxRadius &&
+        <div className="col-span-2 flex gap-2 items-center">
+          <Slider
+            min={0} max={1} step={0.01} className="grow"
+            value={props.orbitRatio}
+            onValueChange={(n) => {
+              props.setIsDraggingORbit(true)
+              props.onOrbitRatioChange(n)
+            }}
+            onValueCommitted={() => {
+              props.setIsDraggingORbit(false)
+            }}
+          />
+          <ResetSettingsIconButton onClick={() => props.onOrbitRatioChange(0.5)} />
+        </div>
+      }
 
-      <div className="text-center">
-        <p className={cns.text.muted()}>Orbit Height</p>
-        <p className="">{prettyNum(props.orbitHeight ?? NaN).toLocaleString()}m</p>
-      </div>
 
-      <div className="text-sm text-end">
-        <p className={cns.text.muted()}>Max Height</p>
-        <p className="">{prettyNum(props.maxHeight ?? NaN).toLocaleString()}m</p>
+      <div className="col-span-2 grid grid-cols-[8rem_auto] gap-2">
+        <p className={cns.text.muted()}>Orbital Height</p>
+        <p className="text-green-600 dark:text-green-500">{fixedNum(props.orbitHeight ?? NaN)}m</p>
       </div>
     </div>
-    {props.minRadius && props.maxRadius &&
-      <div className="col-span-2 flex gap-2 items-center">
-        <Slider
-          min={0} max={1} step={0.01} className="grow"
-          value={props.orbitRatio}
-          onValueChange={(n) => {
-            props.setIsDraggingORbit(true)
-            props.onOrbitRatioChange(n)
-          }}
-          onValueCommitted={() => {
-            props.setIsDraggingORbit(false)
-          }}
-        />
-        <ResetSettingsIconButton onClick={() => props.onOrbitRatioChange(0.5)} />
-      </div>
-    }
+
+    <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 p-5")}>
+      {props.resonantOrbit && props.resonantOrbit.status !== "missing data" && <div
+        className="col-span-2 grid grid-cols-[8rem_auto] gap-2"
+      >
+        <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Resonant Orbit Information</p>
+
+        <p className={cns.text.muted()}>Orbital Period</p>
+        <p className="text-green-600 dark:text-green-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
+
+        <p className={cns.text.muted()}>Resonant Period</p>
+        <p className="text-green-600 dark:text-green-500">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
+
+        <p className={cns.text.muted()}>{props.resonantOrbit.apsisLabel}</p>
+        <p className="text-green-600 dark:text-green-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
+
+        <p className={cns.text.muted()}>Injection Δv</p>
+        <p className="text-green-600 dark:text-green-500">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
+
+        <p className={cns.text.muted()}>Mode</p>
+        <p className="text-green-600 dark:text-green-500">{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
+
+      </div>}
 
 
-    <p className={cns.text.muted()}>Orbital Height</p>
-    <p className="text-green-600 dark:text-green-500 text-end">{fixedNum(props.orbitHeight ?? NaN)}m</p>
-
-
-    {props.resonantOrbit && props.resonantOrbit.status !== "missing data" && <div
-      className="col-span-2 grid grid-cols-[8rem_auto] gap-2"
-    >
       <Divider className="col-span-2" />
-      <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Resonant Orbit Information</p>
 
-      <p className={cns.text.muted()}>Orbital Period</p>
-      <p className="text-green-600 dark:text-green-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
+      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Between Each Relays</p>
 
-      <p className={cns.text.muted()}>Resonant Period</p>
-      <p className="text-green-600 dark:text-green-500">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
+      <p className={cns.text.muted()}>Distance</p>
+      <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN, "k", "m")}</p>
 
-      <p className={cns.text.muted()}>{props.resonantOrbit.apsisLabel}</p>
-      <p className="text-green-600 dark:text-green-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
-
-      <p className={cns.text.muted()}>Injection Δv</p>
-      <p className="text-green-600 dark:text-green-500">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
-
-      <p className={cns.text.muted()}>Mode</p>
-      <p className="text-green-600 dark:text-green-500">{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
-
-    </div>}
+      <p className={cns.text.muted()}>Relay Strength Achieved</p>
+      <div className={"text-sm flex gap-4 items-center"}>
+        <SignalStrengthItems size="sm" strength={props.relayStrength ?? NaN} />
+      </div>
 
 
-    <Divider className="col-span-2" />
+      <Divider className="col-span-2" />
 
-    <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Between Each Relays</p>
+      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Vessel to Relay</p>
 
-    <p className={cns.text.muted()}>Distance</p>
-    <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN, "k", "m")}</p>
+      <p className={cns.text.muted()}>Distance to Vessel</p>
+      <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN, "k", "m")}</p>
 
-    <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
-    <div className={"text-sm flex gap-4 items-center"}>
-      <SignalStrengthItems size="sm" strength={props.relayStrength ?? NaN} />
-    </div>
-
-
-    <Divider className="col-span-2" />
-
-    <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Vessel to Relay</p>
-
-    <p className={cns.text.muted()}>Distance to Vessel</p>
-    <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN, "k", "m")}</p>
-
-    <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
-    <div className={"text-sm flex gap-4 items-center"}>
-      <SignalStrengthItems size="sm" strength={props.vessel?.strength ?? NaN} />
-    </div>
-
-    <Divider className="col-span-2" />
-
-    <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>More Informations</p>
-
-    <div className="contents text-[0.9em] leading-3.5">
-
-      <p className={cns.text.muted()}>Planet Radius</p>
-      <p className={cns.text.muted()}>{props.planetRadius ? prettyNum(props.planetRadius, "k", "m") : "-"}</p>
-
-      <p className={cns.text.muted()}>Maximum Relay Range</p>
-      <p className={cns.text.muted()}>{prettyNum(props.maxRelayRange, "k", "m")}</p>
-
-      <p className={cns.text.muted()}>Maximum Radius based on Relay to Relay (0% strength)</p>
-      <p className={cns.text.muted()}>{prettyNum(props.maxRadiusFromRelays ?? NaN, "k", "m")}</p>
-
-      <p className={cns.text.muted()}>Minimum Radius Based of Planet Radius</p>
-      <p className={cns.text.muted()}>{prettyNum(props.minRadiusBasedOnPlanet ?? NaN, "k", "m")}</p>
-
-      <p className={cns.text.muted()}>Maximum Radius based on Relay to Vessel</p>
-      <p className={cns.text.muted()}>{prettyNum(props.maxRadiusFromVessel ?? NaN, "k", "m")}</p>
-
-      <p className={cns.text.muted()}>Lowest Low Orbit Radius</p>
-      <p className={cns.text.muted()}>{(props.lowestLKO ?? NaN)}m</p>
-
-      <p className={cns.text.muted()}>Ideal / Midpoint orbits raw value</p>
-      <p className={cns.text.muted()}>{props.orbitRadius ?? NaN}m</p>
+      <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
+      <div className={"text-sm flex gap-4 items-center"}>
+        <SignalStrengthItems size="sm" strength={props.vessel?.strength ?? NaN} />
+      </div>
 
     </div>
 

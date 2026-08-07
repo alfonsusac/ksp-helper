@@ -8,9 +8,9 @@ export const cns = {
   dividerStrong: cnr("border-slate-300 dark:border-zinc-700"),
   text: {
     base: cnr("font-medium font-mono text-base",
-      "               text-slate-600   dark:text-zinc-300",
+      "               text-slate-700   dark:text-zinc-300",
     ),
-    muted: cnr("      text-slate-600/75   dark:text-zinc-500"),
+    muted: cnr("      text-slate-700/75   dark:text-zinc-500"),
     link: cnr(
       "text-slate-400/75             dark:text-zinc-500",
       "decoration-slate-300          dark:decoration-zinc-700",
@@ -55,7 +55,7 @@ export const cns = {
 
   // Common Components
 
-  surface: cnr("p-4 rounded-lg flex bg-slate-50 dark:bg-zinc-800/30"),
+  surface: cnr("p-4 rounded-lg flex bg-slate-50/75 dark:bg-zinc-600/5"),
 
   cardBorder: cnr("border    border-slate-200 dark:border-zinc-800"),
   cardShadow: cnr("shadow-sm shadow-slate-100 dark:shadow-zinc-950"),
@@ -120,7 +120,7 @@ export const cns = {
       cn(
         "text-sm",
         "flex items-center justify-center rounded-md gap-2",
-        "px-3 py-2",
+        "px-2.5 py-2",
         "focus:outline-none",
         "bg-slate-50            dark:bg-zinc-800/50",
         "hover:bg-slate-200/40  dark:hover:bg-zinc-700/50",

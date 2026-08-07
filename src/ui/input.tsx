@@ -138,21 +138,8 @@ export function Slider(props: {
             "select-none rounded-lg"
           )} />
           <BSlider.Thumb
-            // onDragStart={() => {
-            //   console.log("A")
-            // }}
-            // onDragEnd={() => {
-            //   console.log("B")
-            // }}
-            // onFocus={() => {
-            //   console.log("Focus")
-            // }}
-            // onBlur={() => {
-            //   console.log("Blur")
-            // }}
             className={cns.slider.thumb(
               "size-3 rounded-full select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ",
-              // "has-[:focus-visible]:outline-neutral-950",
               "hover:cursor-pointer"
             )}
           >
