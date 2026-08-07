@@ -18,6 +18,10 @@ export const cns = {
       "hover:decoration-slate-400/50 dark:hover:decoration-zinc-600",
       "underline underline-offset-3 ",
     ),
+    link2: cnr(
+      "text-slate-400/75             dark:text-zinc-500",
+      "hover:text-slate-400          dark:hover:text-zinc-400",
+    )
   },
   input: {
     box: cnr(

@@ -244,6 +244,11 @@ export function RelayHeight_Client() {
             href: "https://meyerweb.com/eric/ksp/resonant-orbits/",
           },
           {
+            title: "Relay Network Calculator",
+            author: "GrParrot",
+            href: "https://grparrot.github.io/KSP-Relay-Calculator/",
+          },
+          {
             title: "Satellite Network Spacer-out-er",
             author: "James Warner",
             href: "https://jwarner3412.github.io/kerbility/",
@@ -257,6 +262,7 @@ export function RelayHeight_Client() {
             title: "Resonance orbit calculator",
             href: "https://www.ksp.interrutt.com/",
           },
+
         ]}
       />
 
