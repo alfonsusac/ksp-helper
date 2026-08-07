@@ -10,7 +10,7 @@ export const cns = {
     base: cnr("font-medium font-mono text-base",
       "               text-slate-500   dark:text-zinc-300",
     ),
-    muted: cnr("      text-slate-400   dark:text-zinc-500"),
+    muted: cnr("      text-slate-500/80   dark:text-zinc-500"),
     link: cnr(
       "text-slate-400/75             dark:text-zinc-500",
       "decoration-slate-300          dark:decoration-zinc-700",
@@ -75,11 +75,13 @@ export const cns = {
     c,
   ),
   linkCard: (...c: any[]) => cn(
-    "dark:hover:bg-zinc-800/25",
-    "transition-shadow duration-75",
-    "hover:shadow-lg hover:shadow-zinc-950/50",
+    "dark:hover:bg-zinc-800/25 ",
+    "transition-all duration-100",
+    "hover:shadow-lg",
+    "hover:shadow-slate-500/10 dark:hover:shadow-zinc-950/50",
     cns.card(),
     cns.clickableUI(),
+    "bg-slate-50 hover:bg-slate-50/50",
     c,
   ),
 
@@ -126,7 +128,7 @@ export const cns = {
         ...c
       ),
     ),
-    ghost: (...c: any) => cns.button.base("bg-transparent dark:bg-transparent opacity-65 hover:opacity-100", c),
+    ghost: (...c: any) => cns.button.base("bg-transparent dark:bg-transparent opacity-70 hover:opacity-100", c),
     subtle: (...c: any) => cns.button.base(
       "opacity-65 hover:opacity-100",
       "bg-slate-50 dark:bg-zinc-800",
@@ -165,7 +167,7 @@ export const cns = {
       cns.clickableUI(),
       cn(
         "rounded-md outline-hidden",
-        "data-highlighted:bg-slate-100 data-highlighted:bg-zinc-800",
+        "data-highlighted:bg-slate-100 dark:data-highlighted:bg-zinc-800",
         c,
       ),
     ),
