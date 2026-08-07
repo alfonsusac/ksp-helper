@@ -8,14 +8,14 @@ export const cns = {
   dividerStrong: cnr("border-slate-300 dark:border-zinc-700"),
   text: {
     base: cnr("font-medium font-mono text-base",
-      "               text-slate-500   dark:text-zinc-300",
+      "               text-slate-600   dark:text-zinc-300",
     ),
-    muted: cnr("      text-slate-500/80   dark:text-zinc-500"),
+    muted: cnr("      text-slate-600/75   dark:text-zinc-500"),
     link: cnr(
       "text-slate-400/75             dark:text-zinc-500",
       "decoration-slate-300          dark:decoration-zinc-700",
-      "hover:text-slate-400          dark:hover:text-zinc-400",
-      "hover:decoration-slate-400/50 dark:hover:decoration-zinc-600",
+      "hover:text-slate-500          dark:hover:text-zinc-400",
+      "hover:decoration-slate-500/50 dark:hover:decoration-zinc-600",
       "underline underline-offset-3 ",
     ),
     link2: cnr(

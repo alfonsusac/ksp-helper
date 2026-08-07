@@ -606,7 +606,7 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
 
 
     <p className={cns.text.muted()}>Orbital Height</p>
-    <p className="text-green-500 text-end">{fixedNum(props.orbitHeight ?? NaN)}m</p>
+    <p className="text-green-600 dark:text-green-500 text-end">{fixedNum(props.orbitHeight ?? NaN)}m</p>
 
 
     {props.resonantOrbit && props.resonantOrbit.status !== "missing data" && <div
@@ -616,19 +616,19 @@ function ResultInfo(props: ReturnType<typeof getResult> & {
       <p className={cns.text.muted("col-span-2 text-xs opacity-50")}>Resonant Orbit Information</p>
 
       <p className={cns.text.muted()}>Orbital Period</p>
-      <p className="text-green-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
+      <p className="text-green-600 dark:text-green-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
 
       <p className={cns.text.muted()}>Resonant Period</p>
-      <p className="text-green-500">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
+      <p className="text-green-600 dark:text-green-500">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
 
       <p className={cns.text.muted()}>{props.resonantOrbit.apsisLabel}</p>
-      <p className="text-green-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
+      <p className="text-green-600 dark:text-green-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
 
       <p className={cns.text.muted()}>Injection Δv</p>
-      <p className="text-green-500">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
+      <p className="text-green-600 dark:text-green-500">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
 
       <p className={cns.text.muted()}>Mode</p>
-      <p className="text-green-500">{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
+      <p className="text-green-600 dark:text-green-500">{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
 
     </div>}
 
