@@ -144,7 +144,7 @@ export function RelayHeight_Client() {
                     {Math.round(data.strength * 100) + '%'}
                   </div>
                 </div>
-                <div className="flex gap-px">
+                <div className="flex gap-px mt-1">
                   {[ 0.5, 0.75, 0.9, 0.95 ].map(e => {
                     return <button key={e}
                       className={cns.button.presetGroup()}

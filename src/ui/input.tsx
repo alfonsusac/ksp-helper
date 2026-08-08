@@ -129,10 +129,10 @@ export function Slider(props: {
   return (
     <BSlider.Root
       onValueCommitted={props.onValueCommitted}
-      className={props.className} value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge">
+      className={cn("group", props.className)} value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge">
       <BSlider.Control className="flex w-full touch-none items-center py-0 select-none">
         <BSlider.Track className={cns.slider.track(
-          "h-1 w-full select-none rounded-lg"
+          "h-1 w-full select-none rounded-lg h-1.5"
         )}>
           <BSlider.Indicator className={cns.slider.indicator(
             "select-none rounded-lg"
@@ -353,34 +353,6 @@ export function NumberInputBlock(props: {
         validate={() => undefined}
         step={props.step}
         onValueChange={props.onChange}
-      // validate={}
-      // filterInput={(next, prev) => {
-      //   const chars = next.split('')
-      //   // split digit into 3 part, [sign, beforeDecimal, decimal, e, exponentSign, exponentValue]
-      //   // assume decimal separator is `.` for now.
-      //   let part = "beforeDecimal" as "beforeDecimal" | "decimal" | "exponent"
-      //   let eIndex = null
-      //   for (let i = 0; i < chars.length; i++) {
-      //     const char = chars[ i ]
-      //     if (part === "beforeDecimal") {
-      //       if (i === 0 && [ '+', '-' ].includes(char)) { continue }
-      //       if (char === '.') { part = 'decimal'; continue }
-      //       if (char === 'e') { part = 'exponent'; continue }
-      //       if (!char.match(/^[\d_,]+$/)) return prev
-      //     } else if (part === "decimal") {
-      //       if (char === 'e') { part = 'exponent'; eIndex = i; continue }
-      //       if (!char.match(/^[\d]+$/)) return prev
-      //     } else if (part === "exponent") {
-      //       if (eIndex && i === eIndex + 1 && [ '+', '-' ].includes(char)) { continue }
-      //       if (!char.match(/^[\d]+$/)) return prev
-      //     }
-      //   }
-      //   return next
-      // }}
-      // onValueChange={(v) => {
-      // if (v === "") return
-      // if (isValidNumberInput(v)) props.onChange(v)
-      // }}
       />
       {props.resetValue &&
         <ResetSettingsIconButton onClick={() => props.resetValue && props.onChange(props.resetValue)}>

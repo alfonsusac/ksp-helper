@@ -27,7 +27,7 @@ export const cns = {
     box: cnr(
       "rounded-md",
       "border    border-slate-300 dark:border-zinc-700",
-      "shadow-sm shadow-slate-200 dark:shadow-zinc-950",
+      // "shadow-sm shadow-slate-200 dark:shadow-zinc-950",
       "px-3 p-2 px-3",
       "focus:outline-none",
       "flex items-center text-start gap-2 min-w-30",
@@ -55,10 +55,11 @@ export const cns = {
 
   // Common Components
 
-  surface: cnr("p-4 rounded-lg flex bg-slate-50/75 dark:bg-zinc-950/25"),
+  surface: cnr("p-4 rounded-xl! flex bg-slate-50/75 dark:bg-zinc-950/25"),
 
   cardBorder: cnr("border    border-slate-200 dark:border-zinc-800"),
-  cardShadow: cnr("shadow-sm shadow-slate-100 dark:shadow-zinc-950"),
+  // cardShadow: cnr("shadow-sm shadow-slate-100 dark:shadow-zinc-950"),
+  cardShadow: cnr(""),
   card: (...c: any[]) => cn(
     cns.cardBorder(),
     cns.cardShadow(),
@@ -135,7 +136,7 @@ export const cns = {
       c
     ),
     presetGroup: (...c: any) => cns.button.subtle(
-      "text-xs p-1 px-1.5 rounded-xs first:rounded-l-2xl last:rounded-r-2xl w-10 shrink-0",
+      "text-xs p-1 px-1.5 rounded-xs first:rounded-l-lg last:rounded-r-lg w-10 shrink-0",
       c
     ),
     iconGhost: (...c: any) => cns.button.ghost("p-1.5 size-7", c),
@@ -179,8 +180,15 @@ export const cns = {
 
   slider: {
     track: cnr("    bg-slate-200 dark:bg-zinc-800"),
-    indicator: cnr("bg-slate-400 dark:bg-zinc-300"),
-    thumb: cnr("    bg-slate-400 dark:bg-zinc-300"),
+    indicator: cnr(
+      "bg-slate-400 dark:bg-zinc-400",
+      "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"
+    ),
+    thumb: cnr(
+      "bg-slate-400 dark:bg-zinc-400",
+      "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"
+
+    ),
   },
 
 
