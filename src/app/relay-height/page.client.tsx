@@ -210,93 +210,103 @@ export function RelayHeight_Client() {
 
         <div className="flex flex-col gap-0">
           <OrbitInformations {...result} className="max-lg:hidden" />
-          <DebugInformation {...result} />
+          <DebugInformation {...result} className="max-lg:hidden" />
         </div>
       </section>
 
-      <Divider />
+      <Divider className="my-10" />
 
-      <h2 className="text-lg">
-        Settings
-      </h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
 
-      <SettingsSection settings={settings} onSettingsChange={setSettings} />
+        <section>
+          <h2 className="text-lg">
+            Settings
+          </h2>
 
+          <SettingsSection settings={settings} onSettingsChange={setSettings} />
+        </section>
 
-      <Divider />
-
-      <WhatIsThisSection
-        descs={[
-          `This calculator helps find the ideal orbit height between relays satellites and vessels 
+        <section>
+          <WhatIsThisSection
+            descs={[
+              `This calculator helps find the ideal orbit height between relays satellites and vessels 
           that are on the surface of a planet. It calculates the minimum and maximum orbit and
           find the middle orbit.`,
-        ]}
-        sources={[
-          {
-            title: "KSP Wiki - CommNet",
-            href: "https://wiki.kerbalspaceprogram.com/wiki/CommNet",
-          },
-          {
-            title: "Ranges and Signal Strength | KSP Let's Do The Math",
-            author: "Mike Aben",
-            href: "https://www.youtube.com/watch?v=hVd-WhL4tZ8",
-          },
-          {
-            title: "The Best Relay Orbit | KSP Let's Do The Math",
-            author: "Mike Aben",
-            href: "https://www.youtube.com/watch?v=gpQmvwU1x8c&t=3s",
-          },
-          {
-            title: "Science transmission relation to signal strength",
-            href: "https://forum.kerbalspaceprogram.com/topic/200317-science-transmission-relation-to-signal-strength",
-          },
-          {
-            title: "Signal Strength vs Science Bonus (Redone)",
-            href: "https://docs.google.com/spreadsheets/d/1Wr7to96dpo56xZZxFquQo3WHYJjuv0ZZ9Vpc3BViSh8",
-          },
-          {
-            title: "Lowest & Highest Points of Celestial Bodies",
-            href: "https://forum.kerbalspaceprogram.com/topic/173446-lowest-highest-points-of-celestial-bodies/",
-          },
-        ]}
-        priorWork={[
-          {
-            title: "Comnet Planner",
-            author: "blaarkies",
-            href: "https://ksp-visual-calculator.blaarkies.com/commnet-planner",
-          },
-          {
-            title: "KSP Signal Strength Calculator",
-            author: "Westbrooke117",
-            href: "https://westbrooke117.github.io/KSPSSC/",
-          },
-          {
-            title: "Resonant Orbit Calculator",
-            author: "Eric Meyer",
-            href: "https://meyerweb.com/eric/ksp/resonant-orbits/",
-          },
-          {
-            title: "Relay Network Calculator",
-            author: "GrParrot",
-            href: "https://grparrot.github.io/KSP-Relay-Calculator/",
-          },
-          {
-            title: "Satellite Network Spacer-out-er",
-            author: "James Warner",
-            href: "https://jwarner3412.github.io/kerbility/",
-          },
-          {
-            title: "KSP Artificial Satellite Placement",
-            author: "EnsG (twitch)",
-            href: "https://docs.google.com/spreadsheets/d/10ba8mrHmFVnjWnCaoyTgPB3pY1S4ab8ydDKO8q36sD4",
-          },
-          {
-            title: "Resonance orbit calculator",
-            href: "https://www.ksp.interrutt.com/",
-          },
+            ]}
+            sources={[
+              {
+                title: "KSP Wiki - CommNet",
+                href: "https://wiki.kerbalspaceprogram.com/wiki/CommNet",
+              },
+              {
+                title: "Ranges and Signal Strength | KSP Let's Do The Math",
+                author: "Mike Aben",
+                href: "https://www.youtube.com/watch?v=hVd-WhL4tZ8",
+              },
+              {
+                title: "The Best Relay Orbit | KSP Let's Do The Math",
+                author: "Mike Aben",
+                href: "https://www.youtube.com/watch?v=gpQmvwU1x8c&t=3s",
+              },
+              {
+                title: "Science transmission relation to signal strength",
+                href: "https://forum.kerbalspaceprogram.com/topic/200317-science-transmission-relation-to-signal-strength",
+              },
+              {
+                title: "Signal Strength vs Science Bonus (Redone)",
+                href: "https://docs.google.com/spreadsheets/d/1Wr7to96dpo56xZZxFquQo3WHYJjuv0ZZ9Vpc3BViSh8",
+              },
+              {
+                title: "Lowest & Highest Points of Celestial Bodies",
+                href: "https://forum.kerbalspaceprogram.com/topic/173446-lowest-highest-points-of-celestial-bodies/",
+              },
+            ]}
+            priorWork={[
+              {
+                title: "Comnet Planner",
+                author: "blaarkies",
+                href: "https://ksp-visual-calculator.blaarkies.com/commnet-planner",
+              },
+              {
+                title: "KSP Signal Strength Calculator",
+                author: "Westbrooke117",
+                href: "https://westbrooke117.github.io/KSPSSC/",
+              },
+              {
+                title: "Resonant Orbit Calculator",
+                author: "Eric Meyer",
+                href: "https://meyerweb.com/eric/ksp/resonant-orbits/",
+              },
+              {
+                title: "Relay Network Calculator",
+                author: "GrParrot",
+                href: "https://grparrot.github.io/KSP-Relay-Calculator/",
+              },
+              {
+                title: "Satellite Network Spacer-out-er",
+                author: "James Warner",
+                href: "https://jwarner3412.github.io/kerbility/",
+              },
+              {
+                title: "KSP Artificial Satellite Placement",
+                author: "EnsG (twitch)",
+                href: "https://docs.google.com/spreadsheets/d/10ba8mrHmFVnjWnCaoyTgPB3pY1S4ab8ydDKO8q36sD4",
+              },
+              {
+                title: "Resonance orbit calculator",
+                href: "https://www.ksp.interrutt.com/",
+              },
 
-        ]}
-      />
+            ]}
+          />
+        </section>
+
+      </div>
+
+
+
+
+
 
       <Divider />
 
@@ -872,9 +882,11 @@ function Circle(props: {
 }
 
 
-function DebugInformation(props: ReturnType<typeof getResult>) {
+function DebugInformation(props: ReturnType<typeof getResult> & {
+  className?: string
+}) {
   return (
-    <div className="grid grid-cols-2 gap-2 text-xs py-6 hidden sm:grid">
+    <div className={cn("grid grid-cols-2 gap-2 text-xs py-6 hidden lg:grid")}>
       <p className={cns.text.muted("col-span-2 text-xs")}>Debug Informations</p>
       <div className="contents leading-3.5">
         <p className={cns.text.muted()}>Planet Radius</p>
