@@ -79,7 +79,7 @@ export function RelayHeight_Client() {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-[15rem_auto] md:grid-cols-[20rem_auto] lg:grid-cols-[20rem_auto_20rem] gap-4 items-start pt-8 ">
+      <section className="grid grid-cols-1 sm:grid-cols-[15rem_auto] md:grid-cols-[20rem_auto] lg:grid-cols-[20rem_auto_28rem] gap-4 items-start pt-8 ">
 
         <div className={("flex flex-col gap-2")}>
 
@@ -208,9 +208,9 @@ export function RelayHeight_Client() {
           <OrbitInformations {...result} className="lg:hidden" />
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0">
           <OrbitInformations {...result} className="max-lg:hidden" />
-          <ExtraInformations {...result} />
+          <DebugInformation {...result} />
         </div>
       </section>
 
@@ -872,7 +872,7 @@ function Circle(props: {
 }
 
 
-function ExtraInformations(props: ReturnType<typeof getResult>) {
+function DebugInformation(props: ReturnType<typeof getResult>) {
   return (
     <div className="grid grid-cols-2 gap-2 text-xs py-6 hidden sm:grid">
       <p className={cns.text.muted("col-span-2 text-xs")}>Debug Informations</p>
@@ -913,20 +913,20 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
       >
         <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Resonant Orbit Information</p>
 
-        <p className={cns.text.muted()}>Orbital Period</p>
-        <p className="">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
+        <p className={cns.text.base("text-sm")}>Orbital Period</p>
+        <p className="text-emerald-600 dark:text-emerald-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
 
-        <p className={cns.text.muted()}>Resonant Period</p>
-        <p className="">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
+        <p className={cns.text.base("text-sm")}>Resonant Period</p>
+        <p className="text-emerald-600 dark:text-emerald-500">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
 
-        <p className={cns.text.muted()}>{props.resonantOrbit.apsisLabel}</p>
-        <p className="">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
+        <p className={cns.text.base("text-sm")}>{props.resonantOrbit.apsisLabel}</p>
+        <p className="text-emerald-600 dark:text-emerald-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
 
-        <p className={cns.text.muted()}>Injection Δv</p>
-        <p className="">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
+        <p className={cns.text.base("text-sm")}>Injection Δv</p>
+        <p className="text-emerald-600 dark:text-emerald-500">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
 
-        <p className={cns.text.muted()}>Mode</p>
-        <p className="">{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
+        <p className={cns.text.base("text-sm")}>Mode</p>
+        <p className="text-emerald-600 dark:text-emerald-500">{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
 
       </div>}
 
