@@ -2,11 +2,11 @@
 
 import { cns } from "@/design-system"
 import { useRelayTutorialAppState } from "./app-state"
-import { HomeButton } from "@/ui/common"
 import { InputBlock, NumberInput, TabSelectRow } from "@/ui/input"
 import Link from "next/link"
 import { LucideArrowRight } from "@/ui/icons"
 import { fixedNum } from "@/lib/pretty-num"
+import { HomeOrBackButton } from "@/ui/common.server"
 
 export function RelayTutorial_Client() {
 
@@ -16,7 +16,7 @@ export function RelayTutorial_Client() {
   return (
     <div className={cns.page("max-w-160")}>
 
-      <HomeButton />
+      <HomeOrBackButton />
 
       <header>
         <h1 className={cns.pageTitle()}>

@@ -3,7 +3,7 @@
 import { cns } from "@/design-system"
 import { prettyNum } from "@/lib/pretty-num"
 import { HomeButton, Muted } from "@/ui/common"
-import { BackOrHomeButton } from "@/ui/common.client"
+import { BackOrHomeButtonClient } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"
 import { EmojioneMonotoneSatelliteAntenna } from "@/ui/icons"
 import { NumberInput, TabSelectRow, TextInput } from "@/ui/input"
@@ -21,7 +21,7 @@ export function CustomAntennaPage_Client() {
     <div className={cns.page("max-w-120")}>
 
       <Suspense fallback={<HomeButton />} >
-        <BackOrHomeButton />
+        <BackOrHomeButtonClient />
       </Suspense>
 
       <header>

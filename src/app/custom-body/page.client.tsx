@@ -3,7 +3,7 @@
 import { cns } from "@/design-system"
 import { prettyNum } from "@/lib/pretty-num"
 import { HomeButton, Muted } from "@/ui/common"
-import { BackOrHomeButton } from "@/ui/common.client"
+import { BackOrHomeButtonClient } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"
 import { NumberInput, TextInput, UnitInputWrapper } from "@/ui/input"
 import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
@@ -19,7 +19,7 @@ export function CustomPlanetsPage_Client() {
     <div className={cns.page("max-w-120")}>
 
       <Suspense fallback={<HomeButton />} >
-        <BackOrHomeButton />
+        <BackOrHomeButtonClient />
       </Suspense>
 
       <header>

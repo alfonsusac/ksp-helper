@@ -18,7 +18,7 @@ import { AntennaInput } from "@/ui/antenna-select-menu"
 import { Footer } from "@/ui/footer"
 import { WhatIsThisSection } from "@/ui/prose"
 import SignalStrengthItems from "@/ui/signal-strength"
-import { SettingsSection, useGlobalSettings } from "@/ui/settings-section"
+import { SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import type { Metadata } from "next"
 
 
@@ -98,9 +98,9 @@ export function AntennaRange_Client() {
       </div>
 
       <Divider className="my-2" />
-      <BodyDetailInput which={0} payload={data[ 0 ]} onChange={(n) => changeData(0, n)} dsnModifier={dsnModifier} mode={mode} antennas={antennas} />
+      <BodyDetailInput which={0} payload={data[ 0 ]} onChange={(n) => changeData(0, n)} dsnModifier={dsnModifier} mode={mode} antennas={antennas} settings={settings} />
       <Divider className="my-2" />
-      <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} dsnModifier={dsnModifier} mode={mode} antennas={antennas} />
+      <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} dsnModifier={dsnModifier} mode={mode} antennas={antennas} settings={settings} />
       <Divider className="mt-2" />
 
       {
@@ -124,6 +124,7 @@ export function AntennaRange_Client() {
       </header>
 
       <ResultSection
+        settings={settings}
         className="pb-10"
         data={data}
         maximumRange={maximumRange}
@@ -214,6 +215,7 @@ function ResultSection(props: {
   className?: string,
   maximumRange: number,
   data: AntennaCalculatorData,
+  settings: GlobalSettings,
   planets: PlanetData,
   mode: "direct" | "relay"
 }) {
@@ -298,7 +300,7 @@ function ResultSection(props: {
           <div className={cns.text.muted("text-sm mb-2")}>
             Will it reach?
           </div>
-          <PlanetDistanceTableView maximumRange={maximumRange} mode={mode} planetData={planets} />
+          <PlanetDistanceTableView maximumRange={maximumRange} mode={mode} planetData={planets} settings={props.settings} />
         </div>
       </div>
 
@@ -315,6 +317,7 @@ function BodyDetailInput(props: {
   mode: "relay" | "direct",
   onChange: (newpayload: BodyPayload) => void,
   antennas: AntennaData,
+  settings: GlobalSettings
 }) {
 
   const changeKSCLevel = (level: "1" | "2" | "3") => {
@@ -396,6 +399,7 @@ function BodyDetailInput(props: {
               >Reset All</button>
             </div>
             <AntennaInput
+              setting={props.settings}
               value={props.payload.antennas}
               onChange={changeAntennaPayload}
               antennas={props.antennas}
@@ -484,7 +488,8 @@ function DistanceStrengthCalculator(props: {
 function PlanetDistanceTableView(props: {
   maximumRange: number,
   mode: "direct" | "relay",
-  planetData: PlanetData
+  planetData: PlanetData,
+  settings: GlobalSettings
 }) {
 
   const [ _from, setFrom ] = useState<"Kerbin" | string>("Kerbin")
@@ -500,6 +505,7 @@ function PlanetDistanceTableView(props: {
           <div className="flex gap-2 items-center">
             I am in
             <PlanetSelectMenu
+              setting={props.settings}
               value={from}
               onValueChange={setFrom}
               planetData={props.planetData}

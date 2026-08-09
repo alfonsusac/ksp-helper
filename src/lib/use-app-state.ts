@@ -56,9 +56,9 @@ export function useAppState<T>(
         try {
           console.log(key, 'useAppState fromSp', fromSp)
 
-          const url = new URL(window.location.href)
-          url.searchParams.delete("data")
-          window.history.replaceState({}, "", url)
+          // const url = new URL(window.location.href)
+          // url.searchParams.delete("data")
+          // window.history.replaceState({}, "", url)
 
           return parseAppData2<T>(fromSp, validate)
         } catch (error) {
@@ -67,7 +67,7 @@ export function useAppState<T>(
       }
       if (fromLocalStorage) {
         try {
-          console.log(key, 'not from sp')
+          console.log(key, 'useAppState fromLocalStorage')
           return parseAppData2<T>(fromLocalStorage, validate)
         } catch (error) {
           console.log('error loading app state from localstorage',error)

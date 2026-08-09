@@ -56,7 +56,7 @@ function getAntennaData(option: Record<PackageNames, true | undefined>, settings
   const map = new Map<string, AntennaDefinition & { package: string }>()
 
   Object.entries(packages).forEach(([ packName, pack ]) => {
-    if (!option[ packName as PackageNames ]) return
+    // if (!option[ packName as PackageNames ]) return
     Object.entries(pack.antennas ?? {}).forEach(([ satName, sat ]) => {
       const id = pack.prefix + '.' + satName
       map.set(id, {
@@ -100,7 +100,7 @@ function getPlanetData(option: Record<PackageNames, true | undefined>, settings:
   const G = 6.67430e-11 // m³/(kg·s²)
 
   Object.entries(packages).forEach(([ pkName, pack ]) => {
-    if (!option[ pkName as PackageNames ]) return
+    // if (!option[ pkName as PackageNames ]) return
     Object.entries(pack.planets ?? {}).forEach(([ planetName, planet ]) => {
 
       const soi = (() => {

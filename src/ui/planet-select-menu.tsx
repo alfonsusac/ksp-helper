@@ -1,23 +1,41 @@
 import { groupToList } from "@/lib/object"
-import { packages, type PlanetData, type PlanetItemData } from "@/packages/_process-packages"
+import { packages, type PackageNames, type PlanetData, type PlanetItemData } from "@/packages/_process-packages"
 import { Menu } from "@base-ui/react"
 import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { LucideChevronDown } from "./icons"
 import { cns, menuTrigger } from "@/design-system"
 import { Fragment } from "react/jsx-runtime"
-import { useGlobalSettings } from "./settings-section"
+import type { GlobalSettings } from "./settings-section"
 
 export function PlanetSelectMenu(props: {
   value: string,
+  setting: GlobalSettings,
   onValueChange: (planet: string) => void,
   planetData: PlanetData,
   filter?: (planet: PlanetItemData) => boolean,
 }) {
   const filter = props.filter ?? (() => true)
 
+  const visiblePlanet = (p: PlanetItemData) => {
+    if (p.package === "Custom") return true
+    if (props.setting.contents[ p.package as PackageNames ]) return true
+    return false
+  }
+  const hiddenPlanet = (p: PlanetItemData) => {
+    if (p.package === "Custom") return false
+    if (props.setting.contents[ p.package as PackageNames ]) return false
+    return true
+  }
+
   const groupedPlanet = groupToList(
-    props.planetData.list.filter(filter), e => e.package
+    props.planetData.list
+      .filter(filter)
+      .filter(visiblePlanet),
+    e => e.package
   )
+
+  const hiddenPlanets = props.planetData.list.filter(filter).filter(hiddenPlanet).length
+
   return (
     <Menu.Root>
       <Menu.Trigger className={menuTrigger()}>
@@ -63,6 +81,11 @@ export function PlanetSelectMenu(props: {
                 </div>
               </div>
             })}
+            {hiddenPlanets > 0 &&
+              <div className={cns.text.muted("text-xs opacity-70 px-2 max-w-100 mt-2")}>
+                {hiddenPlanets} hidden planet(s).
+              </div>
+            }
           </MenuPopup>
         </Menu.Positioner>
       </Menu.Portal>

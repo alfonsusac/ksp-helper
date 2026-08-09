@@ -1,15 +1,17 @@
 import { cns } from "@/design-system"
 import type { AntennaPayload } from "@/lib/antenna"
 import { groupToList } from "@/lib/object"
-import { getPackageName, type AntennaData, type AntennaItemData } from "@/packages/_process-packages"
+import { getPackageName, type AntennaData, type AntennaItemData, type PackageNames } from "@/packages/_process-packages"
 import { EmojioneMonotoneSatelliteAntenna, LucideMinus, LucidePlus, LucideX, StreamlineWifiAntennaRemix } from "./icons"
 import { prettyNum } from "@/lib/pretty-num"
 import { Menu } from "@base-ui/react"
 import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { cn } from "./cn"
+import type { GlobalSettings } from "./settings-section"
 
 export function AntennaInput(props: {
   value: AntennaPayload,
+  setting: GlobalSettings,
   onChange: (a: AntennaPayload) => void,
   antennas: AntennaData,
   className?: string,
@@ -35,8 +37,26 @@ export function AntennaInput(props: {
   }
 
   const filter = props.filter ?? (() => true)
-  const groupedAntennas = groupToList(props.antennas.filter(filter), e => e.package)
+  const visibleAntenna = (p: AntennaItemData) => {
+    if (p.package === "Custom") return true
+    if (props.setting.contents[ p.package as PackageNames ]) return true
+    return false
+  }
+  const hiddenAntenna = (p: AntennaItemData) => {
+    if (p.package === "Custom") return false
+    if (props.setting.contents[ p.package as PackageNames ]) return false
+    return true
+  }
+
+  const groupedAntennas = groupToList(
+    props.antennas
+      .filter(filter)
+      .filter(visibleAntenna),
+    e => e.package
+  )
   const hasAntenna = props.antennas.some(a => (props.value.get(a.id) ?? 0) > 0)
+
+  const hiddenAntennas = props.antennas.filter(filter).filter(hiddenAntenna).length
 
   return (
     <div className="flex flex-col gap-0.5">
@@ -148,6 +168,11 @@ export function AntennaInput(props: {
                   </div>
                 </div>
               })}
+              {hiddenAntennas > 0 &&
+                <div className={cns.text.muted("text-xs opacity-70 px-2 max-w-100 mt-2")}>
+                  {hiddenAntennas} hidden antenna(s).
+                </div>
+              }
             </MenuPopup>
           </Menu.Positioner>
         </Menu.Portal>

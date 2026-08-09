@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation"
 import { BackButton, HomeButton } from "./common"
 
-export function BackOrHomeButton() {
+export function BackOrHomeButtonClient() {
 
   const sp = useSearchParams()
   const back = (() => {

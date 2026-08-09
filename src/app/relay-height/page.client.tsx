@@ -99,6 +99,7 @@ export function RelayHeight_Client() {
 
             <InputBlock label="Celestial Body" row>
               <PlanetSelectMenu
+                setting={settings}
                 value={data.planet}
                 onValueChange={changePlanet}
                 planetData={planets}
@@ -107,6 +108,7 @@ export function RelayHeight_Client() {
             <Divider />
             <InputBlock label="Relay Antenna">
               <AntennaInput
+                setting={settings}
                 value={data.relay}
                 onChange={changeRelayAntenna}
                 antennas={antennas}
@@ -172,6 +174,7 @@ export function RelayHeight_Client() {
                 Surface not landable
               </div> :
                 <AntennaInput
+                  setting={settings}
                   value={data.vessel}
                   onChange={changeVesselAntenna}
                   antennas={antennas}
@@ -211,6 +214,7 @@ export function RelayHeight_Client() {
                   relayCount: result.relayCount,
                   mode: result.resonantOrbit.mode
                 } satisfies RelayTutorialData))
+                sp.set('back', '/relay-height')
                 return `/relay-tutorial?${ sp.toString() }`
               })()} className={cns.button.base()}>
                 View Relay Tutorial <LucideArrowRight />
