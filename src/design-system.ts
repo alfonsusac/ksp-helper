@@ -10,7 +10,8 @@ export const cns = {
     base: cnr("font-medium font-mono text-base",
       "               text-slate-700   dark:text-zinc-300",
     ),
-    muted: cnr("      text-slate-700/75   dark:text-zinc-500"),
+    label: cnr("      text-slate-700/85    dark:text-zinc-300 text-sm"),
+    muted: cnr("      text-slate-700/75   dark:text-zinc-400"),
     link: cnr(
       "text-slate-400/75             dark:text-zinc-500",
       "decoration-slate-300          dark:decoration-zinc-700",
@@ -55,7 +56,8 @@ export const cns = {
 
   // Common Components
 
-  surface: cnr("p-4 rounded-xl! flex bg-slate-50/75 dark:bg-zinc-950/25"),
+  // surface: cnr("p-4 rounded-xl! flex bg-slate-50/75 dark:bg-zinc-950/25"),
+  surface: cnr("my-0 first:pt-0"),
 
   cardBorder: cnr("border    border-slate-200 dark:border-zinc-800"),
   // cardShadow: cnr("shadow-sm shadow-slate-100 dark:shadow-zinc-950"),

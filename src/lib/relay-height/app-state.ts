@@ -8,6 +8,7 @@ export type RelayHeightData = {
   planet: string,
   strength: number,
   orbitRatio: number,
+  overrideHeight: number | undefined,
 }
 
 export const initialData = () => {
@@ -18,6 +19,7 @@ export const initialData = () => {
     planet: "Kerbin",
     strength: 0.95,
     orbitRatio: 0.5,
+    overrideHeight: undefined,
   }
   temp.relay.set("hg5", 1)
   temp.vessel.set("c16", 1)
@@ -33,6 +35,7 @@ export function useRelayHeightAppState() {
     if ('planet' in s === false) return false
     if ('strength' in s === false) return false
     if ('orbitRatio' in s === false) return false
+    if ('overrideHeight' in s && typeof s.overrideHeight !== 'number') return false
     return true
   })
 }

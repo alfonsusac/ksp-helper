@@ -39,7 +39,7 @@ export function AntennaInput(props: {
   const hasAntenna = props.antennas.some(a => (props.value.get(a.id) ?? 0) > 0)
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-0.5">
 
       {hasAntenna &&
         <div className={cn(
@@ -96,7 +96,7 @@ export function AntennaInput(props: {
           render={
             <button className={cns.button.ghost("text-sm justify-start")}>
               <LucidePlus />
-              <StreamlineWifiAntennaRemix className="size-4 mr-1" />
+              {/* <StreamlineWifiAntennaRemix className="size-4 mr-1" /> */}
               Add Antenna
             </button>
           }

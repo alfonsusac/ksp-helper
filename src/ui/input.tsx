@@ -218,33 +218,36 @@ export function GenericInput(props: ComponentProps<"input"> & InputComponentProp
 
   return (
     <div className="flex flex-col">
-      <input {...rest}
-        className={cns.input.box(
-          "max-w-60",
-          (err || error) && cns.input.errorBox(),
-          rest.className
-        )}
-        value={val}
-        onChange={(e) => {
-          props.onChange?.(e)
-          const v = e.currentTarget.value
-          onRawValueChange?.(v)
-          setVal(v)
-          if (v === "" && onEmpty) {
-            const emptyError = onEmpty()
-            if (emptyError)
-              setErr(emptyError)
-            return
-          }
-          const p = preprocessRaw ? preprocessRaw(v) : v
-          const validateResult = validate(p, v)
-          if (!validateResult) {
-            setErr(undefined)
-            onValueChange(p)
-          }
-          else setErr(validateResult)
-        }}
-      />
+      <UnitInputWrapper unit={props.unit}>
+        <input {...rest}
+          className={cns.input.box(
+            "max-w-60",
+            (err || error) && cns.input.errorBox(),
+            rest.className
+          )}
+          value={val}
+          onChange={(e) => {
+            props.onChange?.(e)
+            const v = e.currentTarget.value
+            onRawValueChange?.(v)
+            setVal(v)
+            if (v === "" && onEmpty) {
+              const emptyError = onEmpty()
+              if (emptyError)
+                setErr(emptyError)
+              return
+            }
+            const p = preprocessRaw ? preprocessRaw(v) : v
+            const validateResult = validate(p, v)
+            if (!validateResult) {
+              setErr(undefined)
+              onValueChange(p)
+            }
+            else setErr(validateResult)
+          }}
+        />
+      </UnitInputWrapper>
+
       {err && <div className={cns.error.text.muted("text-xs")}>
         {err}
       </div>}
@@ -270,6 +273,7 @@ type InputComponentProps<T> = Omit<ComponentProps<"input">, "value"> & {
   preprocessRaw?: (val: string) => string,
   error?: string,
   inputClassname?: string,
+  unit?: string,
 }
 
 export function NumberInput(props: InputComponentProps<number>) {
@@ -327,12 +331,14 @@ export function InputWrapper(props: {
 
 export function UnitInputWrapper(props: {
   children: ReactNode,
-  unit: ReactNode,
+  unit?: ReactNode,
 }) {
   return (
     <div className="grid grid-cols-[auto_1rem] gap-2 items-center">
       {props.children}
-      <div className={cns.text.muted()}>{props.unit}</div>
+      {props.unit &&
+        <div className={cns.text.muted()}>{props.unit}</div>
+      }
     </div>
   )
 }

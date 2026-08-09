@@ -13,13 +13,13 @@ import { cn } from "@/ui/cn"
 import { Divider, HomeButton } from "@/ui/common"
 import { Footer } from "@/ui/footer"
 import { EmojioneSatellite, FluentEmojiRocket, LucideTriangleAlert } from "@/ui/icons"
-import { Slider } from "@/ui/input"
+import { NumberInput, Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
 import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import SignalStrengthItems, { strengthNum } from "@/ui/signal-strength"
 import { formatCss, interpolate } from "culori"
-import { Fragment, useState, type CSSProperties, type ReactNode } from "react"
+import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react"
 
 export function RelayHeight_Client() {
 
@@ -79,22 +79,32 @@ export function RelayHeight_Client() {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-[15rem_auto] md:grid-cols-[20rem_auto] lg:grid-cols-[20rem_auto_28rem] gap-4 items-start pt-8 ">
+      <section className={cn(
+        "grid gap-8 items-start pt-8",
+        "grid-cols-1",
+        "sm:grid-cols-[15rem_auto]",
+        "md:grid-cols-[15rem_auto]",
+        "lg:grid-cols-[15rem_auto_24rem]",
+        "xl:grid-cols-[20rem_auto_26rem]",
+      )}>
 
-        <div className={("flex flex-col gap-2")}>
+        <div className={("flex flex-col gap-2 max-w-100")}>
 
-          <div className={("flex flex-col gap-2")}>
+          <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Setup</p>
+          <div className={("flex flex-col gap-6")}>
 
-            <div className={cns.surface("flex flex-col gap-2")}>
-              <label className={cns.text.muted("text-xs")}>Celestial Body</label>
+
+            <div className={cns.surface("flex items-center gap-2")}>
+              <label className={cns.text.label()}>Celestial Body</label>
               <PlanetSelectMenu
                 value={data.planet}
                 onValueChange={changePlanet}
                 planetData={planets}
               />
             </div>
-            <div className={cns.surface("flex flex-col gap-2")}>
-              <label className={cns.text.muted("text-xs")}>Relay Antenna</label>
+            <Divider />
+            <div className={cns.surface("flex flex-col gap-1.5")}>
+              <label className={cns.text.label()}>Relay Antenna</label>
               <AntennaInput
                 value={data.relay}
                 onChange={changeRelayAntenna}
@@ -103,8 +113,8 @@ export function RelayHeight_Client() {
                 filter={a => a.type === "relay"}
               />
             </div>
-            <div className={cns.surface("flex flex-col gap-2")}>
-              <label className={cns.text.muted("text-xs")}>Relay Count</label>
+            <div className={cns.surface("flex flex-col gap-1.5")}>
+              <label className={cns.text.label()}>Relay Count</label>
               <div className="flex gap-2 items-center w-full gap-4">
                 <Slider
                   className="max-w-60 w-full"
@@ -118,10 +128,10 @@ export function RelayHeight_Client() {
                 </div>
               </div>
             </div>
-            <div className={cns.surface("flex flex-col gap-2")}>
-              <label className={cns.text.muted("text-xs")}>Target Signal Strength</label>
+            <div className={cns.surface("flex flex-col gap-1.5")}>
+              <label className={cns.text.label()}>Target Signal Strength</label>
               <div>
-                <div className={"text-sm flex gap-4 items-center mt-1.5"}>
+                <div className={"text-sm flex gap-4 items-center mt-1"}>
                   <SignalStrengthItems
                     strength={data.strength}
                     size="sm"
@@ -156,42 +166,24 @@ export function RelayHeight_Client() {
                 </div>
               </div>
             </div>
-            {result.notlandable ? <div className={cns.surface(cns.text.muted("text-xs"))}>
-              Surface not landable
-            </div> :
-              <div className={cns.surface("flex flex-col gap-2")}>
-                <label className={cns.text.muted("text-xs")}>Surface Vessel Antenna</label>
+            <Divider />
+            <div className={cns.surface("flex flex-col gap-1.5")}>
+              <label className={cns.text.label()}>Surface Vessel Antenna</label>
+              {result.notlandable ? <div className={cns.text.muted("text-xs")}>
+                Surface not landable
+              </div> :
                 <AntennaInput
                   value={data.vessel}
                   onChange={changeVesselAntenna}
                   antennas={antennas}
                   className="flex flex-col"
                 />
-              </div>
-            }
+              }
+            </div>
 
-            {result.status === "impossible" && <>
-              <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-                <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
-                  <LucideTriangleAlert className={cns.error.text.base()} />
-                  warning
-                </div>
-                {result.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
-                {result.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(result.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
-                {result.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(result.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
-              </div>
-            </>}
-            {result.resonantOrbit?.status === "missing data" && <>
-              <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-                <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
-                  <LucideTriangleAlert className={cns.error.text.base()} />
-                  warning
-                </div>
-                Unable to calculate Resonant Orbit. The Gravitational Parameter for this planet is not provided.
-              </div>
-            </>}
+            <WarningsSection {...result} />
 
-            <ShareAppURLButton data={data} />
+
 
 
           </div>
@@ -199,17 +191,30 @@ export function RelayHeight_Client() {
 
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-8">
           <Visualization {...result} disableAnimation={isDraggingOrbit} />
-          <AdjustHeight {...result}
-            onOrbitRatioChange={changeResultOrbitRatio}
-            setIsDraggingORbit={setIsDraggingOrbit}
-          />
-          <OrbitInformations {...result} className="lg:hidden" />
+          <div className="px-4 flex flex-col gap-6 max-w-140 w-full mx-auto">
+            <AdjustHeight {...result}
+              onOrbitRatioChange={changeResultOrbitRatio}
+              setIsDraggingORbit={setIsDraggingOrbit}
+            />
+            <OverrideHeight {...result} onValueChange={(n) => {
+              if (result.minHeight === undefined || result.maxHeight === undefined) return
+              const newRatio = (n - result.minHeight) / (result.maxHeight - result.minHeight)
+              data.orbitRatio = newRatio
+              setData({ ...data })
+              // alert(n)
+              // data.overrideHeight = n
+              // setData({ ...data })
+            }} />
+            <OrbitInformations {...result} className="lg:hidden" />
+          </div>
+
         </div>
 
-        <div className="flex flex-col gap-0">
+        <div className="flex flex-col gap-8">
           <OrbitInformations {...result} className="max-lg:hidden" />
+          <ShareAppURLButton data={data} className="max-lg:hidden" />
           <DebugInformation {...result} className="max-lg:hidden" />
         </div>
       </section>
@@ -594,12 +599,8 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
   if (props.status === "no planet data") return <></>
 
   return <div className="flex flex-col gap-2">
-    <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 p-5")}>
-
-
-      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Result</p>
-
-
+    <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4")}>
+      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Adjust Height</p>
       <div className="grid grid-cols-[2fr_3fr_2fr] col-span-2 text-base items-center">
         <div className="text-sm">
           <p className={cns.text.muted()}>Min Height</p>
@@ -633,16 +634,40 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
         </div>
       }
 
-
-      <div className="col-span-2 grid grid-cols-[8rem_auto] gap-2">
-        <p className={cns.text.muted()}>Orbital Height</p>
-        <p className="">{fixedNum(props.orbitHeight ?? NaN)}m</p>
-      </div>
     </div>
-
-
-
   </div>
+}
+
+function OverrideHeight(props: ReturnType<typeof getResult> & {
+  onValueChange: (n: number) => void
+}) {
+  const [ val, setVal ] = useState(props.orbitHeight ?? NaN)
+  useEffect(() => {
+    setVal(props.orbitHeight ?? NaN)
+  }, [ props.orbitHeight ])
+
+  return (
+    <div className="flex flex-col gap-1">
+      <label className={cns.text.label()}>Override Height</label>
+      <NumberInput
+        className="max-w-none"
+        key={val}
+        initialValue={val}
+        onValueChange={setVal}
+        validate={(n) => {
+          if (n < 0) return "Can't be negative"
+          if (props.minHeight && n < props.minHeight) return "Can't be less than the minimum height"
+          return undefined
+        }}
+        unit="m"
+      />
+      <button className={cns.button.base()} onClick={() => {
+        props.onValueChange(val)
+      }}>
+        Set Height Override
+      </button>
+    </div>
+  )
 }
 
 
@@ -919,11 +944,14 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
   className?: string,
 }) {
   return (
-    <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4 p-5", props.className)}>
+    <div className={cns.surface("grid grid-cols-[8rem_auto] gap-2 text-sm leading-4", props.className)}>
       {props.resonantOrbit && props.resonantOrbit.status !== "missing data" && <div
         className="col-span-2 grid grid-cols-[8rem_auto] gap-2"
       >
         <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Resonant Orbit Information</p>
+
+        <p className={cns.text.base("text-sm")}>Orbit Altitude</p>
+        <p className="text-emerald-600 dark:text-emerald-500">{fixedNum(props.orbitHeight ?? NaN)}m</p>
 
         <p className={cns.text.base("text-sm")}>Orbital Period</p>
         <p className="text-emerald-600 dark:text-emerald-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
@@ -947,10 +975,10 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
 
       <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Between Each Relays</p>
 
-      <p className={cns.text.muted()}>Distance</p>
+      <p className={cns.text.base("text-sm")}>Distance</p>
       <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN, "k", "m")}</p>
 
-      <p className={cns.text.muted()}>Relay Strength Achieved</p>
+      <p className={cns.text.base("text-sm")}>Relay Strength</p>
       <div className={"text-sm flex gap-4 items-center"}>
         <SignalStrengthItems size="sm" strength={props.relayStrength ?? NaN} />
       </div>
@@ -960,10 +988,10 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
 
       <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Vessel to Relay</p>
 
-      <p className={cns.text.muted()}>Distance to Vessel</p>
+      <p className={cns.text.base("text-sm")}>Distance</p>
       <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN, "k", "m")}</p>
 
-      <p className={cns.text.muted()}>Relay Strength Achieved @ Mid</p>
+      <p className={cns.text.base("text-sm")}>Relay Strength</p>
       <div className={"text-sm flex gap-4 items-center"}>
         <SignalStrengthItems size="sm" strength={props.vessel?.strength ?? NaN} />
       </div>
@@ -976,3 +1004,31 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
 
 
 
+function WarningsSection(result: ReturnType<typeof getResult> & {
+  className?: string,
+}) {
+  return (
+    <>
+      {result.status === "impossible" && <>
+        <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
+          <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
+            <LucideTriangleAlert className={cns.error.text.base()} />
+            warning
+          </div>
+          {result.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
+          {result.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(result.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
+          {result.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(result.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
+        </div>
+      </>}
+      {result.resonantOrbit?.status === "missing data" && <>
+        <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
+          <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
+            <LucideTriangleAlert className={cns.error.text.base()} />
+            warning
+          </div>
+          Unable to calculate Resonant Orbit. The Gravitational Parameter for this planet is not provided.
+        </div>
+      </>}
+    </>
+  )
+}
