@@ -429,7 +429,7 @@ function getResult(
     reason,
   } = (() => {
     if (maxRadiusFromRelays < minRadiusBasedOnPlanet) {
-      const orbitRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, minimumOrbitableRadius)
+      const orbitRadius = overrideHeight ? (overrideHeight + planetRadius) : Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, minimumOrbitableRadius)
       return {
         status: "impossible" as const,
         reason: "no inter-relay connection" as const,
