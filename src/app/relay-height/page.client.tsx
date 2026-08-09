@@ -204,7 +204,7 @@ export function RelayHeight_Client() {
         <div className="flex flex-col gap-8">
           <OrbitInformations {...result} className="max-lg:hidden" />
           <div className="flex flex-col gap-1">
-            {result.resonantOrbit && result.resonantOrbit.status !== "missing data" &&
+            {/* {result.resonantOrbit && result.resonantOrbit.status !== "missing data" &&
               <Link href={(() => {
                 if (!result.resonantOrbit) throw new Error('Resonant Orbit not Defined. This Link button should not appear.')
                 const sp = new URLSearchParams()
@@ -219,7 +219,7 @@ export function RelayHeight_Client() {
               })()} className={cns.button.base()}>
                 View Relay Tutorial <LucideArrowRight />
               </Link>
-            }
+            } */}
             <ShareAppURLButton data={data} className="max-lg:hidden" />
           </div>
           <DebugInformation {...result} className="max-lg:hidden" />
