@@ -17,7 +17,7 @@ export const initialData = (): RelayTutorialData => {
 }
 
 export function useRelayTutorialAppState() {
-  return useAppState<RelayTutorialData>("relay-height", initialData, (s) => {
+  return useAppState<RelayTutorialData>("relay-tutorial", initialData, (s) => {
     if (typeof s !== 'object' || s === null) return 'app state not an object'
     if ('height' in s === false) return 'height is not in app state'
     if ('apoapsis' in s === false) return 'apoapsis is not in app state'

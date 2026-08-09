@@ -16,28 +16,6 @@ export function serializeAppData<T>(data: T) {
   })
 }
 
-export function parseAppData<T>(str: string, onErrorReturn: T, validate: (t: unknown) => string | true) {
-  try {
-    const res = JSON.parse(str, (key, value) => {
-      // Add more features here
-      if (value?.__type === "Map")
-        return new Map(value.value)
-      if (value?.__type === "Positive Infinity")
-        return Number.POSITIVE_INFINITY
-      return value
-    })
-    console.log(res)
-    const isValid = validate(res)
-    console.log('isvalid',)
-    if (isValid !== true) throw new Error(`Failed App Data Parsing Validation: ${ isValid }`)
-    return res as T
-  } catch (error) {
-    console.log(error)
-    return onErrorReturn
-    // console.log("error parsing app data. Returning initial data")
-  }
-}
-
 export function parseAppData2<T>(str: string, validate: (t: unknown) => string | true) {
   const res = JSON.parse(str, (key, value) => {
     // Add more features here
@@ -47,14 +25,11 @@ export function parseAppData2<T>(str: string, validate: (t: unknown) => string |
       return Number.POSITIVE_INFINITY
     return value
   })
-  console.log(res)
   const isValid = validate(res)
-  console.log('isvalid',)
   if (isValid !== true) throw new Error(`Failed App Data Parsing Validation: ${ isValid }`)
   return res as T
 
 }
-
 
 export function useAppState<T>(
   key: string,
@@ -72,8 +47,6 @@ export function useAppState<T>(
     // Read from search param first.
     // If not good or fail, load from localStorage
     // If not good or fail, load initial data
-
-
 
     const fromSp = new URLSearchParams(window.location.search).get(spKey)
     const fromLocalStorage = localStorage.getItem(key)
