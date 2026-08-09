@@ -405,8 +405,8 @@ export function InputBlock(props: {
 
   if (props.row) {
     return (
-      <div className={cns.surface("flex items-center gap-2", props.className)}>
-        <label className={cns.text.label()}>{props.label}</label>
+      <div className={cns.surface("flex gap-2", props.className)}>
+        <label className={cns.text.label("h-10 flex items-center")}>{props.label}</label>
         {props.children}
       </div>
     )

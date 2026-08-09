@@ -4,6 +4,7 @@ export type RelayTutorialData = {
   height: number,
   apoapsis: number,
   relayCount: number,
+  mode: "diving" | "peaking",
 }
 
 export const initialData = (): RelayTutorialData => {
@@ -11,6 +12,7 @@ export const initialData = (): RelayTutorialData => {
     height: 1_000_000,
     apoapsis: 0,
     relayCount: 0,
+    mode: "peaking"
   }
 }
 

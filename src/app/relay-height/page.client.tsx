@@ -57,9 +57,10 @@ export function RelayHeight_Client() {
     setData({ ...data })
   }
   const changeResultOrbitRatio = (r: number) => {
-    if (r < 0) r = 0
-    if (r > 1) r = 1
+    // if (r < 0) r = 0
+    // if (r > 1) r = 1
     data.orbitRatio = r
+    data.overrideHeight = undefined
     setData({ ...data })
   }
 
@@ -186,9 +187,7 @@ export function RelayHeight_Client() {
               setIsDraggingORbit={setIsDraggingOrbit}
             />
             <OverrideHeight {...result} onValueChange={(n) => {
-              if (result.minHeight === undefined || result.maxHeight === undefined) return
-              const newRatio = (n - result.minHeight) / (result.maxHeight - result.minHeight)
-              data.orbitRatio = newRatio
+              data.overrideHeight = n
               setData({ ...data })
             }} />
             <OrbitInformations {...result} className="lg:hidden" />
@@ -316,6 +315,8 @@ function getResult(
     status: "no planet data" as const
   }
 
+  const overrideHeight = data.overrideHeight
+
   const planetimg = planet_data.image
   const planetimgscale = planet_data.imageScale
   const planetimgx = planet_data.imageX
@@ -345,6 +346,7 @@ function getResult(
     rangeModifier: settings.rangeModifier,
   }).value
 
+  // const orbitRatio = data.orbitRatio
   const orbitRatio = data.orbitRatio
   const scienceBonusOfTargetStrength = getScienceBonusfromSignalStrength(data.strength)
 
@@ -354,6 +356,7 @@ function getResult(
       reason: "no relay satellite" as const,
 
       // -- commons --
+      overrideHeight,
       // planet data
       planetimg,
       planetRadius,
@@ -420,8 +423,7 @@ function getResult(
     const minRadius = Math.max(minRadiusBasedOnPlanet, minimumOrbitableRadius)
     const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel, soiRadius), minRadius)
 
-    // const orbitRadius = mid(minRadius, maxRadius)
-    const orbitRadius = ((maxRadius - minRadius) * orbitRatio) + minRadius
+    const orbitRadius = overrideHeight ? (overrideHeight + planetRadius) : ((maxRadius - minRadius) * orbitRatio) + minRadius
 
     return {
       status: "ok" as const,
@@ -551,6 +553,7 @@ function getResult(
     resonantOrbit,
 
     // -- commons --
+    overrideHeight,
     // planet data
     planetimg,
     planetRadius,
@@ -623,20 +626,20 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
 }
 
 function OverrideHeight(props: ReturnType<typeof getResult> & {
-  onValueChange: (n: number) => void
+  onValueChange: (n: number | undefined) => void
 }) {
-  const [ val, setVal ] = useState(props.orbitHeight ?? NaN)
+  const [ val, setVal ] = useState(props.overrideHeight ?? props.orbitHeight ?? NaN)
   useEffect(() => {
-    setVal(props.orbitHeight ?? NaN)
+    setVal(props.overrideHeight ?? props.orbitHeight ?? NaN)
   }, [ props.orbitHeight ])
 
   return (
     <div className="flex flex-col gap-2">
       <InputBlock label="Override Height" row>
         <NumberInput
+          key={props.orbitHeight}
           className="max-w-none"
-          key={val}
-          initialValue={val}
+          initialValue={props.overrideHeight ?? props.orbitHeight ?? NaN}
           onValueChange={setVal}
           validate={(n) => {
             if (n < 0) return "Can't be negative"
@@ -646,9 +649,17 @@ function OverrideHeight(props: ReturnType<typeof getResult> & {
           unit="m"
         />
       </InputBlock>
-      <button className={cns.button.base()} onClick={() => props.onValueChange(val)}>
-        Set Height Override
-      </button>
+
+      <div className="grid grid-cols-2 gap-2">
+        <button className={cns.button.base()} onClick={() => props.onValueChange(val)}>
+          Set Height Override
+        </button>
+        <button className={cns.button.base()} onClick={() => {
+          props.onValueChange(undefined)
+        }}>
+          Clear Override
+        </button>
+      </div>
     </div>
   )
 }
@@ -934,22 +945,22 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
         <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Resonant Orbit Information</p>
 
         <p className={cns.text.base("text-sm")}>Orbit Altitude</p>
-        <p className="text-emerald-600 dark:text-emerald-500">{fixedNum(props.orbitHeight ?? NaN)}m</p>
+        <p className={cns.text.green()}>{fixedNum(props.orbitHeight ?? NaN)}m</p>
 
         <p className={cns.text.base("text-sm")}>Orbital Period</p>
-        <p className="text-emerald-600 dark:text-emerald-500">{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
+        <p className={cns.text.green()}>{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
 
         <p className={cns.text.base("text-sm")}>Resonant Period</p>
-        <p className="text-emerald-600 dark:text-emerald-500">{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
+        <p className={cns.text.green()}>{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
 
         <p className={cns.text.base("text-sm")}>{props.resonantOrbit.apsisLabel}</p>
-        <p className="text-emerald-600 dark:text-emerald-500">{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
+        <p className={cns.text.green()}>{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
 
         <p className={cns.text.base("text-sm")}>Injection Δv</p>
-        <p className="text-emerald-600 dark:text-emerald-500">{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
+        <p className={cns.text.green()}>{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
 
         <p className={cns.text.base("text-sm")}>Mode</p>
-        <p className="text-emerald-600 dark:text-emerald-500">{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
+        <p className={cns.text.green()}>{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
 
       </div>}
 

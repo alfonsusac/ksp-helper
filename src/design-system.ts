@@ -22,7 +22,8 @@ export const cns = {
     link2: cnr(
       "text-slate-400/75             dark:text-zinc-500",
       "hover:text-slate-400          dark:hover:text-zinc-400",
-    )
+    ),
+    green: cnr("text-emerald-600 dark:text-emerald-500"),
   },
   input: {
     box: cnr(
@@ -51,7 +52,7 @@ export const cns = {
     cns.text.base(),
     c,
   ),
-  pageTitle: cnr("text-xl tracking-tight font-semibold"),
+  pageTitle: cnr("text-xl tracking-tight font-semibold leading-6 mb-2"),
   pageDescription: (...c: any[]) => cn(cns.text.muted("font-semibold"), c),
 
   // Common Components
