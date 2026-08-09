@@ -646,9 +646,7 @@ function OverrideHeight(props: ReturnType<typeof getResult> & {
           unit="m"
         />
       </InputBlock>
-      <button className={cns.button.base()} onClick={() => {
-        props.onValueChange(val)
-      }}>
+      <button className={cns.button.base()} onClick={() => props.onValueChange(val)}>
         Set Height Override
       </button>
     </div>
