@@ -209,7 +209,7 @@ export function IntegerInput(props: ComponentProps<"input"> & {
 }
 
 export function GenericInput(props: ComponentProps<"input"> & InputComponentProps<string>) {
-  const { onValueChange, validate, error, onRawValueChange, initialValue, preprocessRaw, onEmpty, ...rest } = props
+  const { onValueChange, validate, error, onRawValueChange, initialValue, preprocessRaw, onEmpty, unit, ...rest } = props
   const [ val, setVal ] = useState(props.initialValue)
   const [ err, setErr ] = useState<string | undefined>(undefined)
   // useEffect(() => {
@@ -217,8 +217,8 @@ export function GenericInput(props: ComponentProps<"input"> & InputComponentProp
   // }, [ props.initialValue ])
 
   return (
-    <div className="flex flex-col">
-      <UnitInputWrapper unit={props.unit}>
+    <div className="flex flex-col max-w-none grow">
+      <UnitInputWrapper unit={unit}>
         <input {...rest}
           className={cns.input.box(
             "max-w-60",
@@ -333,11 +333,12 @@ export function UnitInputWrapper(props: {
   children: ReactNode,
   unit?: ReactNode,
 }) {
+  if (props.unit === undefined) return <>{props.children}</>
   return (
     <div className="grid grid-cols-[auto_1rem] gap-2 items-center">
       {props.children}
-      {props.unit &&
-        <div className={cns.text.muted()}>{props.unit}</div>
+      {props.unit ?
+        <div className={cns.text.muted()}>{props.unit}</div> : null
       }
     </div>
   )
@@ -392,5 +393,29 @@ export function TextInputBlock(props: {
         </ResetSettingsIconButton>
       }
     </InputWrapper>
+  )
+}
+
+export function InputBlock(props: {
+  label: ReactNode,
+  children: ReactNode,
+  className?: string,
+  row?: boolean
+}) {
+
+  if (props.row) {
+    return (
+      <div className={cns.surface("flex items-center gap-2", props.className)}>
+        <label className={cns.text.label()}>{props.label}</label>
+        {props.children}
+      </div>
+    )
+  }
+
+  return (
+    <div className={cns.surface("flex flex-col gap-1.5", props.className)}>
+      <label className={cns.text.label()}>{props.label}</label>
+      {props.children}
+    </div>
   )
 }

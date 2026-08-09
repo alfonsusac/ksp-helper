@@ -13,7 +13,7 @@ import { cn } from "@/ui/cn"
 import { Divider, HomeButton } from "@/ui/common"
 import { Footer } from "@/ui/footer"
 import { EmojioneSatellite, FluentEmojiRocket, LucideTriangleAlert } from "@/ui/icons"
-import { NumberInput, Slider } from "@/ui/input"
+import { InputBlock, NumberInput, Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
 import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
@@ -93,18 +93,15 @@ export function RelayHeight_Client() {
           <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Setup</p>
           <div className={("flex flex-col gap-6")}>
 
-
-            <div className={cns.surface("flex items-center gap-2")}>
-              <label className={cns.text.label()}>Celestial Body</label>
+            <InputBlock label="Celestial Body" row>
               <PlanetSelectMenu
                 value={data.planet}
                 onValueChange={changePlanet}
                 planetData={planets}
               />
-            </div>
+            </InputBlock>
             <Divider />
-            <div className={cns.surface("flex flex-col gap-1.5")}>
-              <label className={cns.text.label()}>Relay Antenna</label>
+            <InputBlock label="Relay Antenna">
               <AntennaInput
                 value={data.relay}
                 onChange={changeRelayAntenna}
@@ -112,9 +109,8 @@ export function RelayHeight_Client() {
                 className="flex flex-col"
                 filter={a => a.type === "relay"}
               />
-            </div>
-            <div className={cns.surface("flex flex-col gap-1.5")}>
-              <label className={cns.text.label()}>Relay Count</label>
+            </InputBlock>
+            <InputBlock label="Relay Count">
               <div className="flex gap-2 items-center w-full gap-4">
                 <Slider
                   className="max-w-60 w-full"
@@ -127,9 +123,9 @@ export function RelayHeight_Client() {
                   {data.relayCount}
                 </div>
               </div>
-            </div>
-            <div className={cns.surface("flex flex-col gap-1.5")}>
-              <label className={cns.text.label()}>Target Signal Strength</label>
+            </InputBlock>
+
+            <InputBlock label="Target Signal Strength">
               <div>
                 <div className={"text-sm flex gap-4 items-center mt-1"}>
                   <SignalStrengthItems
@@ -165,10 +161,9 @@ export function RelayHeight_Client() {
                   })}
                 </div>
               </div>
-            </div>
+            </InputBlock>
             <Divider />
-            <div className={cns.surface("flex flex-col gap-1.5")}>
-              <label className={cns.text.label()}>Surface Vessel Antenna</label>
+            <InputBlock label="Surface Vessel Antenna">
               {result.notlandable ? <div className={cns.text.muted("text-xs")}>
                 Surface not landable
               </div> :
@@ -179,18 +174,10 @@ export function RelayHeight_Client() {
                   className="flex flex-col"
                 />
               }
-            </div>
-
+            </InputBlock>
             <WarningsSection {...result} />
-
-
-
-
           </div>
-
-
         </div>
-
         <div className="flex flex-col gap-8">
           <Visualization {...result} disableAnimation={isDraggingOrbit} />
           <div className="px-4 flex flex-col gap-6 max-w-140 w-full mx-auto">
@@ -203,9 +190,6 @@ export function RelayHeight_Client() {
               const newRatio = (n - result.minHeight) / (result.maxHeight - result.minHeight)
               data.orbitRatio = newRatio
               setData({ ...data })
-              // alert(n)
-              // data.overrideHeight = n
-              // setData({ ...data })
             }} />
             <OrbitInformations {...result} className="lg:hidden" />
           </div>
@@ -647,20 +631,21 @@ function OverrideHeight(props: ReturnType<typeof getResult> & {
   }, [ props.orbitHeight ])
 
   return (
-    <div className="flex flex-col gap-1">
-      <label className={cns.text.label()}>Override Height</label>
-      <NumberInput
-        className="max-w-none"
-        key={val}
-        initialValue={val}
-        onValueChange={setVal}
-        validate={(n) => {
-          if (n < 0) return "Can't be negative"
-          if (props.minHeight && n < props.minHeight) return "Can't be less than the minimum height"
-          return undefined
-        }}
-        unit="m"
-      />
+    <div className="flex flex-col gap-2">
+      <InputBlock label="Override Height" row>
+        <NumberInput
+          className="max-w-none"
+          key={val}
+          initialValue={val}
+          onValueChange={setVal}
+          validate={(n) => {
+            if (n < 0) return "Can't be negative"
+            if (props.minHeight && n < props.minHeight) return "Can't be less than the minimum height"
+            return undefined
+          }}
+          unit="m"
+        />
+      </InputBlock>
       <button className={cns.button.base()} onClick={() => {
         props.onValueChange(val)
       }}>
