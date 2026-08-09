@@ -21,9 +21,9 @@ export const initialData: AntennaCalculatorData = {
 
 export function useAntennaRangeAppStateData() {
   return useAppState("antenna-range", () => initialData, (s) => {
-    if (typeof s !== 'object' || s === null) return false
-    if ('0' in s === false) return false
-    if ('1' in s === false) return false
+    if (typeof s !== 'object' || s === null) return 'app state not an object'
+    if ('0' in s === false) return '0 not in app state'
+    if ('1' in s === false) return '1 not in app state'
     return true
   })
 }

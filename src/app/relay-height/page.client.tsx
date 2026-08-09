@@ -12,7 +12,7 @@ import { ShareAppURLButton } from "@/ui/button"
 import { cn } from "@/ui/cn"
 import { Divider, HomeButton } from "@/ui/common"
 import { Footer } from "@/ui/footer"
-import { EmojioneSatellite, FluentEmojiRocket, LucideTriangleAlert } from "@/ui/icons"
+import { EmojioneSatellite, FluentEmojiRocket, LucideArrowRight, LucideTriangleAlert } from "@/ui/icons"
 import { InputBlock, NumberInput, Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
@@ -20,6 +20,9 @@ import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type Globa
 import SignalStrengthItems, { strengthNum } from "@/ui/signal-strength"
 import { formatCss, interpolate } from "culori"
 import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react"
+import Link from "next/link"
+import { serializeAppData } from "@/lib/use-app-state"
+import type { RelayTutorialData } from "../relay-tutorial/app-state"
 
 export function RelayHeight_Client() {
 
@@ -197,7 +200,24 @@ export function RelayHeight_Client() {
 
         <div className="flex flex-col gap-8">
           <OrbitInformations {...result} className="max-lg:hidden" />
-          <ShareAppURLButton data={data} className="max-lg:hidden" />
+          <div className="flex flex-col gap-1">
+            {result.resonantOrbit && result.resonantOrbit.status !== "missing data" &&
+              <Link href={(() => {
+                if (!result.resonantOrbit) throw new Error('Resonant Orbit not Defined. This Link button should not appear.')
+                const sp = new URLSearchParams()
+                sp.set('data', serializeAppData({
+                  height: result.orbitHeight,
+                  apoapsis: result.resonantOrbit.otherApsisRadius,
+                  relayCount: result.relayCount,
+                  mode: result.resonantOrbit.mode
+                } satisfies RelayTutorialData))
+                return `/relay-tutorial?${ sp.toString() }`
+              })()} className={cns.button.base()}>
+                View Relay Tutorial <LucideArrowRight />
+              </Link>
+            }
+            <ShareAppURLButton data={data} className="max-lg:hidden" />
+          </div>
           <DebugInformation {...result} className="max-lg:hidden" />
         </div>
       </section>

@@ -28,14 +28,14 @@ export const initialData = () => {
 
 export function useRelayHeightAppState() {
   return useAppState<RelayHeightData>("relay-height", initialData, (s) => {
-    if (typeof s !== 'object' || s === null) return false
-    if ('vessel' in s === false) return false
-    if ('relay' in s === false) return false
-    if ('relayCount' in s === false) return false
-    if ('planet' in s === false) return false
-    if ('strength' in s === false) return false
-    if ('orbitRatio' in s === false) return false
-    if ('overrideHeight' in s && typeof s.overrideHeight !== 'number') return false
+    console.log(s)
+    if (typeof s !== 'object' || s === null) return 'state is not an object'
+    if ('vessel' in s === false) return 'vessel not in state object'
+    if ('relay' in s === false) return 'relay not in state object'
+    if ('relayCount' in s === false) return 'relayCount not in state object'
+    if ('planet' in s === false) return 'planet not in state object'
+    if ('strength' in s === false) return 'strength not in state object'
+    if ('orbitRatio' in s === false) return 'orbitRatio not in state object'
     return true
   })
 }

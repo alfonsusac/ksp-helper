@@ -7,16 +7,16 @@ import { useEffect, useState } from "react"
 export function serializeAppData<T>(data: T) {
   return JSON.stringify(data, (_, value) => {
     // Add more features here
-    if (value === Number.POSITIVE_INFINITY) 
+    if (value === Number.POSITIVE_INFINITY)
       return { __type: "Positive Infinity" }
-    if (value instanceof Map) 
+    if (value instanceof Map)
       return { __type: "Map", value: [ ...value ] }
-    
+
     return value
   })
 }
 
-export function parseAppData<T>(str: string, onErrorReturn: T, validate: (t: unknown) => boolean) {
+export function parseAppData<T>(str: string, onErrorReturn: T, validate: (t: unknown) => string | true) {
   try {
     const res = JSON.parse(str, (key, value) => {
       // Add more features here
@@ -28,19 +28,39 @@ export function parseAppData<T>(str: string, onErrorReturn: T, validate: (t: unk
     })
     console.log(res)
     const isValid = validate(res)
-    if (!isValid) throw new Error("Failed App Data Parsing Validation")
+    console.log('isvalid',)
+    if (isValid !== true) throw new Error(`Failed App Data Parsing Validation: ${ isValid }`)
     return res as T
   } catch (error) {
+    console.log(error)
     return onErrorReturn
     // console.log("error parsing app data. Returning initial data")
   }
+}
+
+export function parseAppData2<T>(str: string, validate: (t: unknown) => string | true) {
+  const res = JSON.parse(str, (key, value) => {
+    // Add more features here
+    if (value?.__type === "Map")
+      return new Map(value.value)
+    if (value?.__type === "Positive Infinity")
+      return Number.POSITIVE_INFINITY
+    return value
+  })
+  console.log(res)
+  const isValid = validate(res)
+  console.log('isvalid',)
+  if (isValid !== true) throw new Error(`Failed App Data Parsing Validation: ${ isValid }`)
+  return res as T
+
 }
 
 
 export function useAppState<T>(
   key: string,
   initialData: () => T,
-  validate: (r: unknown) => boolean,
+  validate: (r: unknown) => string | true,
+  spKey: string = "data",
 ) {
   const [ data, setData ] = useState<T | undefined>(undefined)
 
@@ -49,23 +69,42 @@ export function useAppState<T>(
   }, [ data ])
 
   useEffect(() => {
-    const fromSp = new URLSearchParams(window.location.search).get('settings')
-    if (fromSp) {
-      setData(
-        parseAppData(fromSp, initialData(), validate)
-      )
-      const url = new URL(window.location.href)
-      url.searchParams.delete("settings")
-      window.history.replaceState({}, "", url)
-    } else {
-      const stored = localStorage.getItem(key)
-      setData((() => {
-        if (stored)
-          return parseAppData(stored, initialData(), validate)
-        else
-          return initialData
-      })())
-    }
+    // Read from search param first.
+    // If not good or fail, load from localStorage
+    // If not good or fail, load initial data
+
+
+
+    const fromSp = new URLSearchParams(window.location.search).get(spKey)
+    const fromLocalStorage = localStorage.getItem(key)
+
+    const retrievedData = (() => {
+      if (fromSp) {
+        try {
+          console.log(key, 'useAppState fromSp', fromSp)
+
+          const url = new URL(window.location.href)
+          url.searchParams.delete("data")
+          window.history.replaceState({}, "", url)
+
+          return parseAppData2<T>(fromSp, validate)
+        } catch (error) {
+          console.log('error loading app state from searchParams', error)
+        }
+      }
+      if (fromLocalStorage) {
+        try {
+          console.log(key, 'not from sp')
+          return parseAppData2<T>(fromLocalStorage, validate)
+        } catch (error) {
+          console.log('error loading app state from localstorage',error)
+        }
+      }
+      console.log("No data from localstorage nor SP")
+      return initialData()
+    })()
+
+    setData(retrievedData)
   }, [])
 
   return [ data, setData ] as const

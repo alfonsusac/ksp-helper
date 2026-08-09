@@ -90,27 +90,14 @@ export function ResetSettingsIconButton(props: ComponentProps<"button">) {
 
 export function useGlobalSettings() {
   const [ settings, setSettings ] = useAppState("settings", getInitialGlobalSettings, (s) => {
-    if (typeof s !== 'object' || s === null) return false
-    if ('rangeModifier' in s === false) return false
-    if ('dsnModifier' in s === false) return false
-    if ('contents' in s === false) return false
+    if (typeof s !== 'object' || s === null) return 'app state not an object'
+    if ('rangeModifier' in s === false) return 'rangeModifier not in app state'
+    if ('dsnModifier' in s === false) return 'dsnModifier not in app state'
+    if ('contents' in s === false) return 'contents not in app state'
     if ('customAntennas' in s === false) { (s as any).customAntennas = [] }
     if ('customPlanets' in s === false) { (s as any).customPlanets = [] }
     return true
-  })
-
-  // const changeSettings = (fn: (prev: GlobalSettings) => GlobalSettings) => {
-  //   setSettings(prev => prev === undefined ? prev : fn(prev))
-  // }
-  // const changeModifier = (setting: "rangeModifier" | "dsnModifier" | "occlusionModifierAtm" | "occlusionModifierVac", value: number) => {
-  //   changeSettings(prev => ({ ...prev, [ setting ]: value }))
-  // }
-  // const changeContentToggle = (which: PackageNames, value: boolean) => {
-  //   changeSettings(prev => ({ ...prev, contents: { ...prev.contents, [ which ]: value } }))
-  // }
-  // return {
-  //   value: settings,
-  // }
+  }, 'settings')
 
   return [ settings, setSettings ] as const
 }

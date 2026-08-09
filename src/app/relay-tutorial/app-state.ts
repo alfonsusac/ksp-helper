@@ -18,10 +18,11 @@ export const initialData = (): RelayTutorialData => {
 
 export function useRelayTutorialAppState() {
   return useAppState<RelayTutorialData>("relay-height", initialData, (s) => {
-    if (typeof s !== 'object' || s === null) return false
-    if ('height' in s === false) return false
-    if ('apoapsis' in s === false) return false
-    if ('relayCount' in s === false) return false
+    if (typeof s !== 'object' || s === null) return 'app state not an object'
+    if ('height' in s === false) return 'height is not in app state'
+    if ('apoapsis' in s === false) return 'apoapsis is not in app state'
+    if ('relayCount' in s === false) return 'relayCount is not in app state'
+    if ('mode' in s === false) return 'mode is not in app state'
     return true
   })
 }
