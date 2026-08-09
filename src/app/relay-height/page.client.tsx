@@ -423,37 +423,39 @@ function getResult(
   // Get min, max, mid, status, and reason
   const {
     maxRadius,
-    orbitRadius,
+    suggestedRadius,
     minRadius,
     status,
     reason,
   } = (() => {
     if (maxRadiusFromRelays < minRadiusBasedOnPlanet) {
-      const orbitRadius = overrideHeight ? (overrideHeight + planetRadius) : Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, minimumOrbitableRadius)
+      const suggestedRadius = Math.max(maxRadiusFromRelays, minRadiusBasedOnPlanet, minimumOrbitableRadius)
       return {
         status: "impossible" as const,
         reason: "no inter-relay connection" as const,
-        orbitRadius
+        suggestedRadius
       }
     }
     if (Number.isNaN(maxRadiusFromVessel)) {
-      const orbitRadius = Math.max(minRadiusBasedOnPlanet, minimumOrbitableRadius)
+      const suggestedRadius = Math.max(minRadiusBasedOnPlanet, minimumOrbitableRadius)
       return {
         status: "impossible" as const,
         reason: "no vessel connection" as const,
-        orbitRadius
+        suggestedRadius
       }
     }
     const minRadius = Math.max(minRadiusBasedOnPlanet, minimumOrbitableRadius)
     const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel, soiRadius), minRadius)
 
-    const orbitRadius = overrideHeight ? (overrideHeight + planetRadius) : ((maxRadius - minRadius) * orbitRatio) + minRadius
+    const suggestedRadius = ((maxRadius - minRadius) * orbitRatio) + minRadius
 
     return {
       status: "ok" as const,
-      orbitRadius, minRadius, maxRadius
+      suggestedRadius, minRadius, maxRadius
     }
   })()
+
+  const orbitRadius = overrideHeight ? (overrideHeight + planetRadius) : suggestedRadius
 
   const maxHeightFromRelays = maxRadiusFromRelays + effectiveOccludedPlanetRadius
   const minHeightBasedOnPlanet = minRadiusBasedOnPlanet + effectiveOccludedPlanetRadius
