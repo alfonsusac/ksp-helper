@@ -3,26 +3,26 @@
 import { cns } from "@/design-system"
 import { getDistance, getMaximumRange, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload } from "@/lib/antenna"
 import { getData, type AntennaData, type PlanetData } from "@/packages/_process-packages"
-import { fixedNum, prettyNum } from "@/lib/pretty-num"
+import { fixedNum, ordinal, prettyNum } from "@/lib/pretty-num"
 import { prettyPeriod } from "@/lib/pretty-period"
 import { useRelayHeightAppState, type RelayHeightData } from "@/lib/relay-height/app-state"
 import { getMaximumRelayHeightRelativeToEachOther, getMaximumRelayHeightRelativeToVessel, getMinimumRelayHeight, getResonantOrbit, lawOfCosineFindAngle, lawOfCosineFindSide, mid } from "@/lib/relay-height/math"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 import { ShareAppURLButton } from "@/ui/button"
 import { cn } from "@/ui/cn"
-import { Divider, HomeButton } from "@/ui/common"
+import { Divider, Green, HomeButton, KSPBox } from "@/ui/common"
 import { Footer } from "@/ui/footer"
-import { EmojioneSatellite, FluentEmojiRocket, LucideArrowRight, LucideTriangleAlert } from "@/ui/icons"
+import { EmojioneSatellite, GlyphsPolyRocket, LucideTriangleAlert, MdiTriangle, OpenmojiFire } from "@/ui/icons"
 import { InputBlock, NumberInput, Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
 import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import SignalStrengthItems, { strengthNum } from "@/ui/signal-strength"
-import { formatCss, interpolate } from "culori"
-import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react"
-import Link from "next/link"
-import { serializeAppData } from "@/lib/use-app-state"
-import type { RelayTutorialData } from "../relay-tutorial/app-state"
+import { formatCss, interpolate as color_interpolate } from "culori"
+import { Fragment, useEffect, useState, type ComponentProps, type CSSProperties, type ReactNode } from "react"
+import { bezier, constant, easeInOutCubic, easeInOutQuad, easeInOutQuart, easeInOutSine, easeOutBack, interp, lerp, multiSequencer, sequencer, slideshowSequencer, step, type InterpolatorFn } from "@/lib/relay-height/animation"
+import { propagateServerField } from "next/dist/server/lib/render-server"
+
 
 export function RelayHeight_Client() {
 
@@ -204,22 +204,6 @@ export function RelayHeight_Client() {
         <div className="flex flex-col gap-8">
           <OrbitInformations {...result} className="max-lg:hidden" />
           <div className="flex flex-col gap-1">
-            {/* {result.resonantOrbit && result.resonantOrbit.status !== "missing data" &&
-              <Link href={(() => {
-                if (!result.resonantOrbit) throw new Error('Resonant Orbit not Defined. This Link button should not appear.')
-                const sp = new URLSearchParams()
-                sp.set('data', serializeAppData({
-                  height: result.orbitHeight,
-                  apoapsis: result.resonantOrbit.otherApsisRadius,
-                  relayCount: result.relayCount,
-                  mode: result.resonantOrbit.mode
-                } satisfies RelayTutorialData))
-                sp.set('back', '/relay-height')
-                return `/relay-tutorial?${ sp.toString() }`
-              })()} className={cns.button.base()}>
-                View Relay Tutorial <LucideArrowRight />
-              </Link>
-            } */}
             <ShareAppURLButton data={data} className="max-lg:hidden" />
           </div>
           <DebugInformation {...result} className="max-lg:hidden" />
@@ -228,10 +212,16 @@ export function RelayHeight_Client() {
 
       <Divider className="my-10" />
 
+      <TutorialSection {...result} />
+
+
+
+      <Divider className="my-10" />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
 
         <section>
-          <h2 className="text-lg">
+          <h2 className="text-lg mb-6">
             Settings
           </h2>
 
@@ -334,12 +324,19 @@ function getResult(
   antennas: AntennaData,
   planets: PlanetData,
 ) {
+  const overrideHeight = data.overrideHeight
+  const relayCount = data.relayCount
+  const orbitRatio = data.orbitRatio
+
   const planet_data = planets.map.get(data.planet)
   if (!planet_data) return {
-    status: "no planet data" as const
+    status: "no planet data" as const,
+
+    // commons
+    overrideHeight,
+    relayCount,
   }
 
-  const overrideHeight = data.overrideHeight
 
   const planetimg = planet_data.image
   const planetimgscale = planet_data.imageScale
@@ -361,7 +358,6 @@ function getResult(
     }
   })()
 
-  const relayCount = data.relayCount
   const maxRelayRange = getMaximumRange({
     body1: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
     body2: { type: "ship", isRelay: true, hasCommandModule: true, antennas: data.relay, },
@@ -370,8 +366,6 @@ function getResult(
     rangeModifier: settings.rangeModifier,
   }).value
 
-  // const orbitRatio = data.orbitRatio
-  const orbitRatio = data.orbitRatio
   const scienceBonusOfTargetStrength = getScienceBonusfromSignalStrength(data.strength)
 
   if (maxRelayRange === 0) {
@@ -381,6 +375,7 @@ function getResult(
 
       // -- commons --
       overrideHeight,
+      relayCount,
       // planet data
       planetimg,
       planetRadius,
@@ -393,7 +388,6 @@ function getResult(
 
       // derived from planet data
       maxRelayRange,
-      relayCount,
       effectiveOccludedPlanetRadius,
       highestPoint,
       minimumOrbitableRadius,
@@ -470,7 +464,7 @@ function getResult(
   })()
 
   const getLinkColor = (strength: number) => {
-    const gradient = interpolate(
+    const gradient = color_interpolate(
       [
         cns.cellGradient1,
         cns.cellGradient2,
@@ -580,6 +574,7 @@ function getResult(
 
     // -- commons --
     overrideHeight,
+    relayCount,
     // planet data
     planetimg,
     planetRadius,
@@ -592,7 +587,6 @@ function getResult(
 
     // derived from planet data
     maxRelayRange,
-    relayCount,
     effectiveOccludedPlanetRadius,
     highestPoint,
     minimumOrbitableRadius,
@@ -696,16 +690,13 @@ function Visualization(props: ReturnType<typeof getResult> & {
 }) {
   if (props.status === "no planet data") return <></>
 
-  const maxViewportScale = Math.max(props.maxRadius ?? 0, props.planetRadius, props.orbitRadius ?? 0)
+  const maxViewportScale = Math.max(props.maxRadius ?? 0, props.planetRadius, props.orbitRadius ?? 0, props.resonantOrbit?.otherApsisRadius ?? 0)
 
   const rocketPos = getSatellitePosition(props.relayCount, 0.5)
 
   // Probably would've been more performant using SVG / canvas
-  return <div className={cns.card(
-    "w-full aspect-square rounded-2xl",
+  return <VisViewport className={cns.card(
     props.soiRadius === Infinity ? "bg-black" : "bg-zinc-900/50!",
-    "grid place-items-center relative",
-    "overflow-hidden",
   )}>
     {/* Below SOI Circle */}
     {props.soiRadius !== Infinity &&
@@ -729,9 +720,7 @@ function Visualization(props: ReturnType<typeof getResult> & {
       <div className="absolute text-xs left-1/2 -translate-y-full text-teal-500/50">MIN</div>
     </Circle>
 
-    {/* Skybox (with screen blend) */}
-    <div className="absolute inset-0 bg-[url(/skybox.jpeg)] bg-cover mix-blend-lighten">
-    </div>
+    <VisViewportSkybox />
 
     {/* Atmosphere */}
     {props.atmHeight > 0 &&
@@ -741,31 +730,17 @@ function Visualization(props: ReturnType<typeof getResult> & {
     }
 
     {/* Planet */}
-    <Circle maxHeight={maxViewportScale} height={props.planetRadius} disableAnimation={props.disableAnimation}
-      className=""
-    >
-      {props.planetimg ? <img
-        src={props.planetimg}
-        className="absolute w-full h-full object-contain rounded-full overflow-hidden"
-        style={{
-          scale: props.planetimgscale || undefined,
-          translate: `${ (props.planetimgx ?? 0) }% ${ (props.planetimgy ?? 0) }%`
-        }}
-      /> : <div
-        className={cns.planet("absolute w-full h-full rounded-full overflow-hidden")}
-        style={{
-          scale: props.planetimgscale || undefined,
-        }}
-      />}
+    <VisViewportPlanet {...props} maxViewportScale={maxViewportScale} disableAnimation={props.disableAnimation}>
       {
         props.notlandable ? <></> :
           <>
-            <FluentEmojiRocket
+            <GlyphsPolyRocket
               style={{
                 left: `${ 50 + (-rocketPos.x * 50) }%`,
-                top: `${ 50 + (rocketPos.y * 50) }%`
+                top: `${ 50 + (rocketPos.y * 50) }%`,
+                scale: 1.5,
               }}
-              className="-translate-1/2 absolute"
+              className="-translate-1/2 absolute z-10"
             />
             {props.reason !== "no relay satellite" && <>
               <div
@@ -823,7 +798,7 @@ function Visualization(props: ReturnType<typeof getResult> & {
             }
           </>
       }
-    </Circle>
+    </VisViewportPlanet>
 
     {/* Main/Selected Orbit Circle */}
     <Circle
@@ -857,14 +832,10 @@ function Visualization(props: ReturnType<typeof getResult> & {
           )}>
           </div>
 
+          <VisViewportRelaySatellite
+            phase={i / props.relayCount}
+          />
 
-          <div style={{
-            left, top,
-          }} key={i} className={cn(
-            "absolute -translate-1/2 size-2 rounded-full text-red-500 starting:left-1/2! starting:top-0! grid place-items-center"
-          )}>
-            <EmojioneSatellite className="absolute" />
-          </div>
         </Fragment>
       })}
     </Circle>
@@ -872,30 +843,143 @@ function Visualization(props: ReturnType<typeof getResult> & {
     {/* Resonant Orbit */}
     {
       props.resonantOrbit && props.resonantOrbit.status !== "missing data" &&
-      <Circle
-        maxHeight={maxViewportScale}
-        height={props.resonantOrbit.semiMinorAxis} disableAnimation={props.disableAnimation}
+      <VisViewportOrbit
+        maxViewportScale={maxViewportScale}
+        orbitRadius={props.orbitRadius}
+        semiMajorAxis={props.resonantOrbit.semiMajorAxis}
+        semiMinorAxis={props.resonantOrbit.semiMinorAxis}
+        disableAnimation={props.disableAnimation}
         className={cn(
           "border border-px border-yellow-400/50 border-dashed",
         )}
-        style={{
-          transform: ` scaleY(${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMinorAxis }) translateY(${ ((props.resonantOrbit.semiMajorAxis - props.orbitRadius) / (props.resonantOrbit.semiMajorAxis)) * 50 }%)`,
-          // scale: `1 ${ props.resonantOrbit.semiMajorAxis / props.resonantOrbit.semiMinorAxis }`,
-          // translate: `0px ${ ((props.resonantOrbit.semiMajorAxis - props.orbitRadius) / (props.resonantOrbit.semiMajorAxis)) * 50 }%`
-          // translate: `0px %`
-        }}
       >
-      </Circle>
+      </VisViewportOrbit>
     }
 
-  </div>
+  </VisViewport>
+}
+
+function VisViewportRelaySatellite(props: {
+  phase: number,
+  style?: CSSProperties,
+}) {
+  // console.log(props.phase)
+  const { x, y } = getSatellitePosition(1, props.phase ?? 0)
+  const left = `${ 50 + (-x * 50) }%`
+  const top = `${ 50 + (y * 50) }%`
+  return (
+    <div style={{
+      left, top,
+      ...props.style,
+    }} className={cn(
+      "z-10",
+      "absolute -translate-1/2 size-2 rounded-full text-red-500 starting:left-1/2! starting:top-0! grid place-items-center"
+    )}>
+      <EmojioneSatellite className="absolute z-10 scale-110" />
+    </div>
+  )
+}
+
+function VisViewportObjectAlongOrbit(props: {
+  phase: number,
+  style?: CSSProperties,
+  children: ReactNode,
+}) {
+  // console.log(props.phase)
+  const { x, y } = getSatellitePosition(1, props.phase ?? 0)
+  const left = `${ 50 + (-x * 50) }%`
+  const top = `${ 50 + (y * 50) }%`
+  return (
+    <div style={{
+      left, top,
+      ...props.style,
+    }} className={cn(
+      "absolute -translate-1/2 size-2 rounded-full text-red-500 starting:left-1/2! starting:top-0! grid place-items-center"
+    )}>
+      {props.children}
+    </div>
+  )
+}
+
+function VisViewport(props: ComponentProps<"div">) {
+  return (
+    <div {...props} className={cns.card(
+      "w-full aspect-square rounded-2xl",
+      "grid place-items-center relative",
+      "overflow-hidden",
+      props.className
+    )} />
+  )
+}
+
+function VisViewportSkybox(props: ComponentProps<"div">) {
+  {/* Skybox (with screen blend) */ }
+  return (
+    <div {...props} className={cn("absolute inset-0 bg-[url(/skybox.jpeg)] bg-cover mix-blend-lighten", props.className)}>
+    </div>
+  )
+}
+
+function VisViewportPlanet(props: ReturnType<typeof getResult> & {
+  maxViewportScale: number,
+  disableAnimation: boolean,
+  children?: ReactNode,
+}) {
+  {/* Planet */ }
+  return (
+    <Circle maxHeight={props.maxViewportScale} height={props.planetRadius} disableAnimation={props.disableAnimation}
+      className=""
+    >
+      {
+        props.planetimg ? <img
+          src={props.planetimg}
+          className="absolute w-full h-full object-contain rounded-full overflow-hidden"
+          style={{
+            scale: props.planetimgscale || undefined,
+            translate: `${ (props.planetimgx ?? 0) }% ${ (props.planetimgy ?? 0) }%`
+          }}
+        /> : <div
+          className={cns.planet("absolute w-full h-full rounded-full overflow-hidden")}
+          style={{
+            scale: props.planetimgscale || undefined,
+          }}
+        />
+      }
+      {props.children}
+    </Circle >
+  )
+}
+
+function VisViewportOrbit(props: {
+  maxViewportScale: number,
+  orbitRadius: number,
+  semiMinorAxis: number,
+  semiMajorAxis: number,
+  disableAnimation: boolean,
+  className?: string,
+  children?: ReactNode
+}) {
+  return (
+    <Circle
+      maxHeight={props.maxViewportScale}
+      height={props.semiMinorAxis} disableAnimation={props.disableAnimation}
+      className={cn(
+        "border border-px border-yellow-400/50",
+        props.className,
+      )}
+      style={{
+        transform: ` scaleY(${ props.semiMajorAxis / props.semiMinorAxis }) translateY(${ ((props.semiMajorAxis - props.orbitRadius) / (props.semiMajorAxis)) * 50 }%)`,
+      }}
+    >
+      {props.children}
+    </Circle>
+  )
 }
 
 
-
 function getSatellitePosition(relayCount: number, i: number) {
-  const x = Math.cos(2 * Math.PI / relayCount * i + Math.PI / 2)
-  const y = -Math.sin(2 * Math.PI / relayCount * i + Math.PI / 2)
+  const x = Math.cos(2 * Math.PI * i / relayCount + Math.PI / 2)
+  const y = -Math.sin(2 * Math.PI * i / relayCount + Math.PI / 2)
   return { x, y }
 }
 
@@ -908,13 +992,10 @@ function Circle(props: {
   disableAnimation: boolean,
 }) {
   if (props.height === undefined) return null
-  const heightPercent = (props.height / props.maxHeight * 80) + '%'
+  const heightPercent = (props.height / props.maxHeight * 90) + '%'
   return (
     <div
-      style={{
-        width: heightPercent, ...props.style,
-      }}
-      // transition={props.disableAnimation ? { duration: 0 } : { type: "tween", duration: 0.2 }}
+      style={{ width: heightPercent, ...props.style }}
       className={cn(
         "absolute aspect-square rounded-full",
         props.disableAnimation ? "" : "transition-all",
@@ -1050,5 +1131,408 @@ function WarningsSection(result: ReturnType<typeof getResult> & {
         </div>
       </>}
     </>
+  )
+}
+
+
+function TutorialSection(result: ReturnType<typeof getResult>) {
+
+  const burnGrade = result.resonantOrbit?.mode === "diving" ? "Retrograde" : "Prograde"
+  const oppositeGrade = result.resonantOrbit?.mode === "diving" ? "Prograde" : "Retrograde"
+
+
+  return (
+    <section className="">
+      <header className="flex flex-col mb-6">
+        <h2 className="text-lg">
+          Tutorial
+        </h2>
+        <p className={cns.text.muted("text-sm")}>So what to do when I finished picking up my orbit height?</p>
+      </header>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-20 [&_p]:text-sm [&_li]:text-sm [&_li]:my-1">
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-2">
+            <img className="rounded-md max-w-40" src="https://preview.redd.it/ksp-relay-network-guide-v0-uv5s8cnlfyi71.png?width=594&format=png&auto=webp&s=69eba80d43235996448e92d0402fa4982287e4df" />
+            <div>
+              <p>This tutorial assumes your satellite payload are on the same craft like the picture on the left</p>
+              <br />
+              <p className={cns.text.muted("break-all")}>Source: https://www.reddit.com/r/KerbalSpaceProgram/comments/p9k3vu/ksp_relay_network_guide/</p>
+            </div>
+          </div>
+          <p>After you planned your orbit, tl:dr</p>
+          <ol className="list-decimal pl-8">
+            <li>Bring your satellite carrier to circular orbit with altitude of <Green>{fixedNum(result.orbitHeight ?? NaN)}m</Green></li>
+            <li>Drop your 1st satellite payload</li>
+            <li>Burn <Green>{burnGrade}</Green> until your <Green>{result.resonantOrbit?.apsisLabel}</Green> reaches <Green>{((result.resonantOrbit?.otherApsisRadius ?? NaN) - (result.planetRadius ?? NaN)).toLocaleString('en-US')}m</Green></li>
+            <li>Wait one full orbit</li>
+            <li>Burn <Green>{oppositeGrade}</Green> until your <Green>{result.resonantOrbit?.apsisLabel}</Green> reaches back to <Green>{fixedNum(result.orbitHeight ?? NaN)}m</Green></li>
+            <p>-- Repeat step 2 until all payload is deployed --</p>
+            <li>Adjust each satellites orbit to make sure each have the same period</li>
+            <p>You can do this by clicking the orbit information UI (the purple tab on the bottom left GUI).</p>
+            <img src="/orbitinfo.png" className="my-4 rounded-lg" />
+          </ol>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <TutorialAnimation {...result} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function TutorialAnimation(result: ReturnType<typeof getResult>) {
+
+  const maxViewportScale = Math.max(((result.orbitRadius) ?? 0) * 1.4, result.resonantOrbit?.otherApsisRadius ?? 0)
+
+  const [ time, setTime ] = useState(0) // in s
+  const [ targetTime, setTargetTime ] = useState(0)
+  const [ isPlaying, setIsPlaying ] = useState(false)
+
+  useEffect(() => {
+    if (!isPlaying) return
+    const startTime = performance.now()
+    const from = time
+    const to = timeline.stepToTimemark[ targetTime ]
+    console.log(from, to)
+    const duration = Math.abs(to - from) * 500 // 1 timeline second = 1 real second
+    let frame: number
+    const ease = (t: number) => t
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1)
+      const easedProgress = ease(progress)
+      const nextTime =
+        from + (to - from) * easedProgress
+      setTime(nextTime)
+      if (progress < 1) {
+        frame = requestAnimationFrame(tick)
+      } else {
+        setTime(to)
+        setIsPlaying(false)
+      }
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [ isPlaying, targetTime ])
+
+
+  if (!result.orbitRadius || !result.resonantOrbit.semiMajorAxis) return null
+
+  const relayCount = 3
+
+  const orbitRadius = result.orbitRadius
+  const semiMajorAxis = result.resonantOrbit.semiMajorAxis
+  const semiMinorAxis = result.resonantOrbit.semiMinorAxis
+  const isDiving = result.resonantOrbit.mode === "diving"
+
+  const timeline = (() => {
+    const burnToResonantOrbit = {
+      semiMajorAxis: lerp([ orbitRadius, semiMajorAxis ], easeInOutSine),
+      semiMinorAxis: lerp([ orbitRadius, semiMinorAxis ], easeInOutSine),
+    }
+    const burnToNormalOrbit = {
+      semiMajorAxis: lerp([ semiMajorAxis, orbitRadius ], easeInOutSine),
+      semiMinorAxis: lerp([ semiMinorAxis, orbitRadius ], easeInOutSine),
+    }
+
+    const toRetrograde = lerp([ 0, 180 ], bezier(.47, .01, .9, 1.1))
+    const toPrograde = lerp([ 180, 0 ], bezier(.47, .01, .9, 1.1))
+
+    const flameSize = sequencer([
+      { range: [ 0, 0.1 ], fn: lerp([ 0, 1 ]) },
+      { range: [ 0.1, 0.9 ], fn: lerp([ 1, 1 ]) },
+      { range: [ 0.9, 1 ], fn: lerp([ 1, 0 ]) },
+    ])
+
+    const burnToResonant = { duration: 2, props: { helperText: constant(`Initiate Burn until ${ result.resonantOrbit.apsisLabel.slice(0, 2) } = ${ (result.resonantOrbit.otherApsisRadius - result.planetRadius).toLocaleString('en-us') }m`), ...burnToResonantOrbit, flameSize }, }
+    const burnToOrbit = { duration: 2, props: { helperText: constant("Circularize"), ...burnToNormalOrbit, flameSize } }
+    const aimPrograde = { duration: 1, props: { helperText: constant("Aim Prograde"), rocketRot: toPrograde, direction: constant("prograde") } }
+    const aimRetrograde = { duration: 1, props: { helperText: constant("Aim Retrograde"), rocketRot: toRetrograde, direction: constant("retrograde") } }
+    const timewarpSequence = sequencer([
+      { range: [ 0, 0.3 ], fn: lerp([ 0, 5 ]) },
+      { range: [ 0.3, 0.7 ], fn: lerp([ 5, 5 ]) },
+      { range: [ 0.7, 1 ], fn: lerp([ 5, 0 ]) },
+    ])
+
+    const {
+      stepToTimemark,
+      totalDuration,
+      fn,
+      slideLength,
+    } = slideshowSequencer<{
+      semiMajorAxis: InterpolatorFn,
+      semiMinorAxis: InterpolatorFn,
+      rocketPhase: InterpolatorFn,
+      rocketRot: InterpolatorFn,
+      rocketOpacity: InterpolatorFn,
+      satellite1Scale: InterpolatorFn,
+      satellite1Phase: InterpolatorFn,
+      satellite1Opacity: InterpolatorFn,
+      satellite2Scale: InterpolatorFn,
+      satellite2Phase: InterpolatorFn,
+      satellite2Opacity: InterpolatorFn,
+      satellite3Scale: InterpolatorFn,
+      satellite3Phase: InterpolatorFn,
+      satellite3Opacity: InterpolatorFn,
+      helperText: InterpolatorFn<string>,
+      timeWarp: InterpolatorFn,
+      flameSize: InterpolatorFn,
+      direction: InterpolatorFn<"prograde" | "retrograde">,
+    }>([
+      {
+        duration: 2, props: {
+          helperText: constant("The Orbit is going this way. ➡️"),
+          rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
+          direction: constant("prograde")
+        },
+      },
+      {
+        duration: 1, props: {
+          helperText: constant("Drop your 1st payload"),
+          satellite1Scale: easeOutBack,
+        },
+      },
+      isDiving ? aimRetrograde : undefined,
+      burnToResonant,
+      {
+        duration: 4, props: {
+          helperText: constant("Wait full orbit"),
+          rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
+          satellite1Phase: lerp([ 0, isDiving ? 2 / 3 : 4 / 3 ], easeInOutCubic),
+          timeWarp: timewarpSequence,
+        }
+      },
+      isDiving ? aimPrograde : aimRetrograde,
+      burnToOrbit,
+      {
+        duration: 1, props: {
+          helperText: constant("Drop 2nd payload"),
+          satellite2Scale: easeOutBack,
+        }
+      },
+      isDiving ? aimRetrograde : aimPrograde,
+      burnToResonant,
+      {
+        duration: 4, props: {
+          helperText: constant("Wait full orbit"),
+          rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
+          satellite1Phase: lerp([ isDiving ? 2 / 3 : 4 / 3, isDiving ? 4 / 3 : 8 / 3 ], easeInOutCubic),
+          satellite2Phase: lerp([ 0, isDiving ? 2 / 3 : 4 / 3 ], easeInOutCubic),
+          timeWarp: timewarpSequence,
+        }
+      },
+      isDiving ? aimPrograde : aimRetrograde,
+      burnToOrbit,
+      {
+        duration: 1, props: {
+          helperText: constant("Drop 3rd payload"),
+          satellite3Scale: easeOutBack,
+        }
+      },
+      {
+        duration: 1, props: {
+          helperText: constant("Done! 🎉"),
+          rocketRot: isDiving ? undefined : toPrograde,
+          rocketOpacity: lerp([ 1, 0 ])
+        }
+      }
+    ])
+
+    const tl = fn(time)
+
+    return {
+      slideLength,
+      stepToTimemark,
+      duration: totalDuration,
+      helperText: tl.helperText,
+      semiMajorAxis: tl.semiMajorAxis,
+      semiMinorAxis: tl.semiMinorAxis,
+      rocketPhase: tl.rocketPhase,
+      rocketRot: tl.rocketRot,
+      rocketOpacity: tl.rocketOpacity,
+      satellite: [
+        {
+          phase: tl.satellite1Phase,
+          opacity: tl.satellite1Opacity,
+          scale: tl.satellite1Scale
+        },
+        {
+          phase: tl.satellite2Phase,
+          opacity: tl.satellite2Opacity,
+          scale: tl.satellite2Scale
+        },
+        {
+          phase: tl.satellite3Phase,
+          opacity: tl.satellite3Opacity,
+          scale: tl.satellite3Scale
+        },
+      ],
+      timeWarp: tl.timeWarp,
+      flameSize: tl.flameSize,
+      direction: tl.direction
+    }
+  })()
+
+
+
+  return (<>
+    <div className="flex gap-4 items-center">
+      <button
+        disabled={targetTime === 0}
+        className={cns.button.base("w-20")} onClick={() => {
+          if (targetTime <= 0) return
+          setTime(timeline.stepToTimemark[ targetTime ])
+          setTargetTime(targetTime - 1)
+          setIsPlaying(true)
+        }}>
+        Prev
+      </button>
+      <button
+        disabled={targetTime >= timeline.slideLength}
+        className={cns.button.base("w-20")} onClick={() => {
+          if (targetTime >= timeline.duration) return
+          setTime(timeline.stepToTimemark[ targetTime ])
+          setTargetTime(targetTime + 1)
+          setIsPlaying(true)
+        }}>
+        Next
+      </button>
+
+      <div className="grow">
+        Step {targetTime + 1} of {timeline.slideLength + 1}
+      </div>
+
+      <button
+        className={cns.button.base("w-20")} onClick={() => {
+          setTime(0)
+          setTargetTime(0)
+        }}>
+        Restart
+      </button>
+    </div>
+    <VisViewport>
+      <div className="z-20 absolute top-0 left-0 flex flex-col w-full">
+        <KSPBox outerClassName={"min-w-1/2 w-fit"}>
+          {targetTime === 0 ? "Press 'Next' to start visualization" : timeline.helperText}
+        </KSPBox>
+        <TimeWarpBox level={timeline.timeWarp} />
+        <img src={`/${ timeline.direction }.png`} className="m-2 w-12" />
+      </div>
+      <VisViewportSkybox />
+      <VisViewportPlanet {...result} maxViewportScale={maxViewportScale} disableAnimation={false} />
+
+      {/* Changing Resonant Orbit */}
+      <VisViewportOrbit
+        maxViewportScale={maxViewportScale}
+        orbitRadius={result.orbitRadius}
+        semiMajorAxis={timeline.semiMajorAxis}
+        semiMinorAxis={timeline.semiMinorAxis}
+        disableAnimation={true}
+        className={cn(
+          "border-[#008C92] border-2 z-10",
+        )}
+      >
+        {/* Plane */}
+        <VisViewportObjectAlongOrbit
+          phase={timeline.rocketPhase}
+        >
+          <div className="absolute flex items-center justify-center"
+            style={{
+              rotate: `${ 90 + timeline.rocketRot }deg`,
+              opacity: `${ timeline.rocketOpacity }`,
+              scale: `2.5`,
+            }}
+          >
+            <GlyphsPolyRocket className="absolute z-10" />
+            <OpenmojiFire
+              style={{
+                transformOrigin: "bottom center",
+                rotate: '180deg',
+                scale: `${ 0.5 * timeline.flameSize }`,
+                translate: `0 -0.15rem`
+              }}
+            />
+          </div>
+        </VisViewportObjectAlongOrbit>
+
+        {/* Apsis Marker */}
+        <ApsisMarker
+          apsisLabel={result.resonantOrbit.apsisLabel}
+        />
+      </VisViewportOrbit>
+      <VisViewportOrbit
+        maxViewportScale={maxViewportScale}
+        orbitRadius={result.orbitRadius}
+        semiMajorAxis={result.resonantOrbit.semiMajorAxis}
+        semiMinorAxis={result.resonantOrbit.semiMinorAxis}
+        disableAnimation={true}
+        className={cn(
+          "border-zinc-400/50 border-dashed -z-10",
+        )}
+      >
+        <ApsisMarker
+          apsisLabel={result.resonantOrbit.apsisLabel}
+          className="text-zinc-400/50 -z-10"
+        />
+      </VisViewportOrbit>
+      <VisViewportOrbit
+        maxViewportScale={maxViewportScale}
+        orbitRadius={result.orbitRadius}
+        semiMajorAxis={result.orbitRadius}
+        semiMinorAxis={result.orbitRadius}
+        disableAnimation={true}
+        className={cn(
+          "border-zinc-400/50 border-dashed -z-10",
+        )}
+      >
+        {timeline.satellite.map((s, i) => {
+          return (
+            <VisViewportObjectAlongOrbit
+              key={i}
+              phase={s.phase}
+              style={{ opacity: s.opacity, scale: 2 * s.scale }}
+            >
+              <EmojioneSatellite className="absolute" />
+            </VisViewportObjectAlongOrbit>
+          )
+        })}
+      </VisViewportOrbit>
+
+    </VisViewport>
+  </>)
+}
+
+
+function TimeWarpBox(props: {
+  level: number
+}) {
+  const level = Math.round(props.level)
+
+  return (
+    <KSPBox outerClassName={"w-fit"} innserClassName="flex">
+      <MdiTriangle className={cn("rotate-90", level < 0 && "text-[#101C13]")} />
+      <MdiTriangle className={cn("rotate-90", level < 1 && "text-[#101C13]")} />
+      <MdiTriangle className={cn("rotate-90", level < 2 && "text-[#101C13]")} />
+      <MdiTriangle className={cn("rotate-90", level < 3 && "text-[#101C13]")} />
+      <MdiTriangle className={cn("rotate-90", level < 4 && "text-[#101C13]")} />
+      <MdiTriangle className={cn("rotate-90", level < 5 && "text-[#101C13]")} />
+    </KSPBox>
+  )
+}
+
+
+function ApsisMarker(props: {
+  apsisLabel: string,
+  className?: string,
+}) {
+  return (
+    <VisViewportObjectAlongOrbit
+      phase={1 / 2}
+    >
+      <div className={cn("-translate-y-full -translate-x-1/2 flex flex-col items-center text-[0.7em] text-[#008C92] leading-3", props.className)}>
+        {props.apsisLabel.slice(0, 2)}
+        <MdiTriangle className="rotate-180 text-xs" />
+      </div>
+    </VisViewportObjectAlongOrbit>
   )
 }

@@ -129,6 +129,7 @@ export const cns = {
         "bg-slate-50            dark:bg-zinc-800/50",
         "hover:bg-slate-200/40  dark:hover:bg-zinc-700/50",
         "active:bg-slate-200/55 dark:active:bg-zinc-700/35",
+        "disabled:opacity-25 disabled:pointer-events-none",
         ...c
       ),
     ),

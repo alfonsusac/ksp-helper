@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import type { ComponentProps, ReactNode } from "react"
 import { cn } from "./cn"
 import { cns } from "@/design-system"
 import Link from "next/link"
@@ -75,5 +75,26 @@ export function BackButton(props: { href: string }) {
 export function Muted(props: ComponentProps<"span">) {
   return (
     <span {...props} className={cns.text.muted(props.className)} />
+  )
+}
+export function Green(props: ComponentProps<"span">) {
+  return (
+    <span {...props} className={cns.text.green(props.className)} />
+  )
+}
+
+export function KSPBox(props: {
+  outerClassName?: string,
+  innserClassName?: string,
+  children?: ReactNode
+}) {
+  return (
+    <div className={cn("rounded-br-lg ksp-ui-box-outer", props.outerClassName)}>
+      <div className="ksp-ui-box-inner-ring">
+        <div className={cn("ksp-ui-box-inner text-sm", props.innserClassName)}>
+          {props.children}
+        </div>
+      </div>
+    </div>
   )
 }

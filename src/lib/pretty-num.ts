@@ -16,3 +16,10 @@ export function fixedNum(val: number) {
   const decimal = val - floored
   return `${ floored.toLocaleString('en-US') }.${ String(Math.round(decimal * 1000)).padStart(3, '0') }`
 }
+
+// https://stackoverflow.com/a/31615643
+export function ordinal(n: number) {
+  var s = [ "th", "st", "nd", "rd" ],
+    v = n % 100
+  return n + (s[ (v - 20) % 10 ] || s[ v ] || s[ 0 ])
+}

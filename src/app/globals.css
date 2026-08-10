@@ -22,4 +22,52 @@ body {
   font-size: 14px;
 }
 
+@utility ksp-ui-box-outer {
+  @apply p-1 px-2;
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -3;
+    inset: 0;
+    border-radius: 0rem 0rem 0.7rem 0rem;
+    filter: blur(1px);
+    background: linear-gradient(#6A757F, #49545E);
+    box-shadow: inset -1px -2px 2px #14191C, inset 1px 2px 2px #89949E;
+  }
+}
 
+@utility ksp-ui-box-inner-ring {
+  position: relative;
+  padding: 0.15rem;
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    background: linear-gradient(
+      #1E2022,
+      #40464D 20%,
+      #363D44 80%,
+      #C5C7CA 100%
+    );
+    border-radius: 0.4rem;
+    filter: blur(0.8px)
+
+  }
+}
+
+@utility ksp-ui-box-inner {
+  position:relative;
+  padding: 0.1rem 0.5rem;
+  color: #00FF00;
+  &:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-color: #3A3A3F;
+    border-radius: 0.25rem;
+    filter: blur(0.5px);
+  }
+}
