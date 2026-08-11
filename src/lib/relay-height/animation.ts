@@ -130,6 +130,11 @@ export function multiSequencer<T extends PropShape>(sequence: {
 
 }
 
+export type SlideshowSequenceItem<T extends PropShape> = {
+  duration: number,
+  props: DeepPartial<T>,
+} | undefined
+
 export function slideshowSequencer<T extends PropShape>(slides: ({
   duration: number,
   props: DeepPartial<T>,
@@ -162,6 +167,10 @@ export function slideshowSequencer<T extends PropShape>(slides: ({
     totalDuration: s.duration,
     fn: s.fn,
   }
+}
+// Helper
+export function slideshowSequenceItem<T extends PropShape>(duration: number, props: DeepPartial<T>) {
+  return { duration, props }
 }
 
 

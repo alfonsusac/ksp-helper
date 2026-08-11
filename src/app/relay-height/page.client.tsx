@@ -20,8 +20,7 @@ import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type Globa
 import SignalStrengthItems, { strengthNum } from "@/ui/signal-strength"
 import { formatCss, interpolate as color_interpolate } from "culori"
 import { Fragment, useEffect, useState, type ComponentProps, type CSSProperties, type ReactNode } from "react"
-import { bezier, constant, easeInOutCubic, easeInOutQuad, easeInOutQuart, easeInOutSine, easeOutBack, interp, lerp, multiSequencer, sequencer, slideshowSequencer, step, type InterpolatorFn } from "@/lib/relay-height/animation"
-import { propagateServerField } from "next/dist/server/lib/render-server"
+import { bezier, constant, easeInOutCubic, easeInOutQuad, easeInOutQuart, easeInOutSine, easeOutBack, interp, lerp, multiSequencer, sequencer, slideshowSequencer, step, type InterpolatorFn, type SlideshowSequenceItem } from "@/lib/relay-height/animation"
 
 
 export function RelayHeight_Client() {
@@ -338,6 +337,7 @@ function getResult(
   }
 
 
+  const planetlabel = data.planet
   const planetimg = planet_data.image
   const planetimgscale = planet_data.imageScale
   const planetimgx = planet_data.imageX
@@ -377,6 +377,7 @@ function getResult(
       overrideHeight,
       relayCount,
       // planet data
+      planetlabel,
       planetimg,
       planetRadius,
       planetimgscale,
@@ -576,6 +577,7 @@ function getResult(
     overrideHeight,
     relayCount,
     // planet data
+    planetlabel,
     planetimg,
     planetRadius,
     planetimgscale,
@@ -884,6 +886,7 @@ function VisViewportObjectAlongOrbit(props: {
   phase: number,
   style?: CSSProperties,
   children: ReactNode,
+  className?: string,
 }) {
   // console.log(props.phase)
   const { x, y } = getSatellitePosition(1, props.phase ?? 0)
@@ -894,6 +897,7 @@ function VisViewportObjectAlongOrbit(props: {
       left, top,
       ...props.style,
     }} className={cn(
+      props.className,
       "absolute -translate-1/2 size-2 rounded-full text-red-500 starting:left-1/2! starting:top-0! grid place-items-center"
     )}>
       {props.children}
@@ -1218,7 +1222,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
 
   if (!result.orbitRadius || !result.resonantOrbit.semiMajorAxis) return null
 
-  const relayCount = 3
+  const relayCount: number = result.relayCount
 
   const orbitRadius = result.orbitRadius
   const semiMajorAxis = result.resonantOrbit.semiMajorAxis
@@ -1244,41 +1248,88 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
       { range: [ 0.9, 1 ], fn: lerp([ 1, 0 ]) },
     ])
 
-    const burnToResonant = { duration: 2, props: { helperText: constant(`Initiate Burn until ${ result.resonantOrbit.apsisLabel.slice(0, 2) } = ${ (result.resonantOrbit.otherApsisRadius - result.planetRadius).toLocaleString('en-us') }m`), ...burnToResonantOrbit, flameSize }, }
-    const burnToOrbit = { duration: 2, props: { helperText: constant("Circularize"), ...burnToNormalOrbit, flameSize } }
-    const aimPrograde = { duration: 1, props: { helperText: constant("Aim Prograde"), rocketRot: toPrograde, direction: constant("prograde") } }
-    const aimRetrograde = { duration: 1, props: { helperText: constant("Aim Retrograde"), rocketRot: toRetrograde, direction: constant("retrograde") } }
+    type AnimationShape = {
+      semiMajorAxis: InterpolatorFn,
+      semiMinorAxis: InterpolatorFn,
+      rocketPhase: InterpolatorFn,
+      rocketRot: InterpolatorFn,
+      rocketOpacity: InterpolatorFn,
+      helperText: InterpolatorFn<string>,
+      timeWarp: InterpolatorFn,
+      flameSize: InterpolatorFn,
+      direction: InterpolatorFn<"prograde" | "retrograde">,
+    } & { [ key in `satellite${ number }Scale` ]: InterpolatorFn }
+      & { [ key in `satellite${ number }Phase` ]: InterpolatorFn }
+      & { [ key in `satellite${ number }Opacity` ]: InterpolatorFn }
+
+    type AnimationSequenceItem = SlideshowSequenceItem<AnimationShape>
+
+    const burnToResonant: AnimationSequenceItem = { duration: 2, props: { helperText: constant(`Initiate Burn until ${ result.resonantOrbit.apsisLabel.slice(0, 2) } = ${ (result.resonantOrbit.otherApsisRadius - result.planetRadius).toLocaleString('en-us') }m`), ...burnToResonantOrbit, flameSize }, }
+    const burnToOrbit: AnimationSequenceItem = { duration: 2, props: { helperText: constant("Circularize"), ...burnToNormalOrbit, flameSize } }
+    const aimPrograde: AnimationSequenceItem = { duration: 1, props: { helperText: constant("Aim Prograde"), rocketRot: toPrograde, direction: constant("prograde") } }
+    const aimRetrograde: AnimationSequenceItem = { duration: 1, props: { helperText: constant("Aim Retrograde"), rocketRot: toRetrograde, direction: constant("retrograde") } }
     const timewarpSequence = sequencer([
       { range: [ 0, 0.3 ], fn: lerp([ 0, 5 ]) },
       { range: [ 0.3, 0.7 ], fn: lerp([ 5, 5 ]) },
       { range: [ 0.7, 1 ], fn: lerp([ 5, 0 ]) },
     ])
 
+    const slideshowSequenceRelaySteps: AnimationSequenceItem[] = []
+    // Build the n-relay count step-by-step animation
+    // 1 = | !drop!,
+    // 2 = | !drop!, aim, burn, wait, aim, burn, | !drop!
+    // 3 = | !drop!, aim, burn, wait, aim, burn, | !drop!, aim, burn, wait, aim, burn, | !drop!
+
+    for (let i = 1; i <= relayCount; i++) {
+      // console.log('i',i)
+      // Build the satellite orbit animations 
+      //      j1                         j2
+      // i1 = [0 ,          (2/3 | 4/3)] [_, _]
+      // i2 = [(2/3 | 4/3), (4/3 | 8/3)] [0, (2/3 | 4/3)]
+
+      // Add slideshow part
+      slideshowSequenceRelaySteps.push({
+        duration: 1, props: {
+          helperText: constant(`Drop your ${ ordinal(i) } payload`),
+          [ `satellite${ i }Scale` ]: easeOutBack,
+        }
+      })
+
+      if (i === relayCount) continue
+
+      const satelliteOrbitAnim: Partial<AnimationShape> = {}
+      for (let j = 1; j <= i; j++) {
+        const nominatorPart = isDiving ? (relayCount - 1) : (relayCount + 1)
+        const startPhase = ((i - j) * nominatorPart) / relayCount
+        const endPhase = ((i - j + 1) * nominatorPart) / relayCount
+        satelliteOrbitAnim[ `satellite${ j }Phase` ] = lerp([ startPhase, endPhase ], easeInOutCubic)
+      }
+
+      slideshowSequenceRelaySteps.push(
+        isDiving ? aimRetrograde : i === 1 ? undefined : aimPrograde,
+        burnToResonant,
+        {
+          duration: 4, props: {
+            helperText: constant("Wait full orbit"),
+            rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
+            ...satelliteOrbitAnim,
+            timeWarp: timewarpSequence,
+          }
+        },
+        isDiving ? aimPrograde : aimRetrograde,
+        burnToOrbit,
+      )
+
+    }
+
+
+
     const {
       stepToTimemark,
       totalDuration,
       fn,
       slideLength,
-    } = slideshowSequencer<{
-      semiMajorAxis: InterpolatorFn,
-      semiMinorAxis: InterpolatorFn,
-      rocketPhase: InterpolatorFn,
-      rocketRot: InterpolatorFn,
-      rocketOpacity: InterpolatorFn,
-      satellite1Scale: InterpolatorFn,
-      satellite1Phase: InterpolatorFn,
-      satellite1Opacity: InterpolatorFn,
-      satellite2Scale: InterpolatorFn,
-      satellite2Phase: InterpolatorFn,
-      satellite2Opacity: InterpolatorFn,
-      satellite3Scale: InterpolatorFn,
-      satellite3Phase: InterpolatorFn,
-      satellite3Opacity: InterpolatorFn,
-      helperText: InterpolatorFn<string>,
-      timeWarp: InterpolatorFn,
-      flameSize: InterpolatorFn,
-      direction: InterpolatorFn<"prograde" | "retrograde">,
-    }>([
+    } = slideshowSequencer<AnimationShape>([
       {
         duration: 2, props: {
           helperText: constant("The Orbit is going this way. ➡️"),
@@ -1286,49 +1337,56 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
           direction: constant("prograde")
         },
       },
-      {
-        duration: 1, props: {
-          helperText: constant("Drop your 1st payload"),
-          satellite1Scale: easeOutBack,
-        },
-      },
-      isDiving ? aimRetrograde : undefined,
-      burnToResonant,
-      {
-        duration: 4, props: {
-          helperText: constant("Wait full orbit"),
-          rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
-          satellite1Phase: lerp([ 0, isDiving ? 2 / 3 : 4 / 3 ], easeInOutCubic),
-          timeWarp: timewarpSequence,
-        }
-      },
-      isDiving ? aimPrograde : aimRetrograde,
-      burnToOrbit,
-      {
-        duration: 1, props: {
-          helperText: constant("Drop 2nd payload"),
-          satellite2Scale: easeOutBack,
-        }
-      },
-      isDiving ? aimRetrograde : aimPrograde,
-      burnToResonant,
-      {
-        duration: 4, props: {
-          helperText: constant("Wait full orbit"),
-          rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
-          satellite1Phase: lerp([ isDiving ? 2 / 3 : 4 / 3, isDiving ? 4 / 3 : 8 / 3 ], easeInOutCubic),
-          satellite2Phase: lerp([ 0, isDiving ? 2 / 3 : 4 / 3 ], easeInOutCubic),
-          timeWarp: timewarpSequence,
-        }
-      },
-      isDiving ? aimPrograde : aimRetrograde,
-      burnToOrbit,
-      {
-        duration: 1, props: {
-          helperText: constant("Drop 3rd payload"),
-          satellite3Scale: easeOutBack,
-        }
-      },
+
+      ...slideshowSequenceRelaySteps,
+
+      // {
+      //   duration: 1, props: {
+      //     helperText: constant("Drop your 1st payload"),
+      //     satellite1Scale: easeOutBack,
+      //   },
+      // },
+      // isDiving ? aimRetrograde : undefined,
+      // burnToResonant,
+      // {
+      //   duration: 4, props: {
+      //     helperText: constant("Wait full orbit"),
+      //     rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
+      //     satellite1Phase: lerp([ 0, isDiving ? 2 / 3 : 4 / 3 ], easeInOutCubic),
+      //     timeWarp: timewarpSequence,
+      //   }
+      // },
+      // isDiving ? aimPrograde : aimRetrograde,
+      // burnToOrbit,
+      // {
+      //   duration: 1, props: {
+      //     helperText: constant("Drop 2nd payload"),
+      //     satellite2Scale: easeOutBack,
+      //   }
+      // },
+      // isDiving ? aimRetrograde : aimPrograde,
+      // burnToResonant,
+      // {
+      //   duration: 4, props: {
+      //     helperText: constant("Wait full orbit"),
+      //     rocketPhase: lerp([ 0, 1 ], easeInOutCubic),
+      //     satellite1Phase: lerp([ isDiving ? 2 / 3 : 4 / 3, isDiving ? 4 / 3 : 8 / 3 ], easeInOutCubic),
+      //     satellite2Phase: lerp([ 0, isDiving ? 2 / 3 : 4 / 3 ], easeInOutCubic),
+      //     timeWarp: timewarpSequence,
+      //   }
+      // },
+      // isDiving ? aimPrograde : aimRetrograde,
+      // burnToOrbit,
+      // {
+      //   duration: 1, props: {
+      //     helperText: constant("Drop 3rd payload"),
+      //     satellite3Scale: easeOutBack,
+      //   }
+      // },
+
+
+
+
       {
         duration: 1, props: {
           helperText: constant("Done! 🎉"),
@@ -1340,39 +1398,44 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
 
     const tl = fn(time)
 
+    // console.log()
+
     return {
       slideLength,
       stepToTimemark,
       duration: totalDuration,
-      helperText: tl.helperText,
-      semiMajorAxis: tl.semiMajorAxis,
-      semiMinorAxis: tl.semiMinorAxis,
-      rocketPhase: tl.rocketPhase,
-      rocketRot: tl.rocketRot,
-      rocketOpacity: tl.rocketOpacity,
-      satellite: [
-        {
-          phase: tl.satellite1Phase,
-          opacity: tl.satellite1Opacity,
-          scale: tl.satellite1Scale
-        },
-        {
-          phase: tl.satellite2Phase,
-          opacity: tl.satellite2Opacity,
-          scale: tl.satellite2Scale
-        },
-        {
-          phase: tl.satellite3Phase,
-          opacity: tl.satellite3Opacity,
-          scale: tl.satellite3Scale
-        },
-      ],
-      timeWarp: tl.timeWarp,
-      flameSize: tl.flameSize,
-      direction: tl.direction
+      ...tl,
+      parts: tl,
+      // helperText: tl.helperText,
+      // semiMajorAxis: tl.semiMajorAxis,
+      // semiMinorAxis: tl.semiMinorAxis,
+      // rocketPhase: tl.rocketPhase,
+      // rocketRot: tl.rocketRot,
+      // rocketOpacity: tl.rocketOpacity,
+      // // satellite: [
+      // //   {
+      // //     phase: tl.satellite1Phase,
+      // //     opacity: tl.satellite1Opacity,
+      // //     scale: tl.satellite1Scale
+      // //   },
+      // //   {
+      // //     phase: tl.satellite2Phase,
+      // //     opacity: tl.satellite2Opacity,
+      // //     scale: tl.satellite2Scale
+      // //   },
+      // //   {
+      // //     phase: tl.satellite3Phase,
+      // //     opacity: tl.satellite3Opacity,
+      // //     scale: tl.satellite3Scale
+      // //   },
+      // // ],
+      // timeWarp: tl.timeWarp,
+      // flameSize: tl.flameSize,
+      // direction: tl.direction
     }
   })()
 
+  // console.log(timeline.parts[ 'satellite1Phase' ])
 
 
   return (<>
@@ -1485,7 +1548,24 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
           "border-zinc-400/50 border-dashed -z-10",
         )}
       >
-        {timeline.satellite.map((s, i) => {
+        {Array.from({ length: relayCount }, (_, i) => {
+          const phase = timeline.parts[ `satellite${ i + 1 }Phase` ]
+          const opacity = timeline.parts[ `satellite${ i + 1 }Opacity` ]
+          const scale = timeline.parts[ `satellite${ i + 1 }Scale` ]
+          // console.log("sa  tellite", i + 1, phase)
+          if (Number.isNaN(scale)) return null
+          return (
+            <VisViewportObjectAlongOrbit
+              key={i}
+              phase={phase}
+              className={`${ i }`}
+              style={{ opacity: opacity, scale: 2 * scale }}
+            >
+              <EmojioneSatellite className="absolute" />
+            </VisViewportObjectAlongOrbit>
+          )
+        })}
+        {/* {timeline.satellite.map((s, i) => {
           return (
             <VisViewportObjectAlongOrbit
               key={i}
@@ -1495,10 +1575,13 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
               <EmojioneSatellite className="absolute" />
             </VisViewportObjectAlongOrbit>
           )
-        })}
+        })} */}
       </VisViewportOrbit>
 
     </VisViewport>
+    <div className={cns.text.muted("text-sm")}>
+      Visualizing how to drop {relayCount} equi-distant satellites in body of {result.planetlabel} with initial altitude of {result.orbitHeight.toLocaleString('en-US')} meters
+    </div>
   </>)
 }
 
