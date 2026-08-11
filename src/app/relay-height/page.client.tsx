@@ -1154,17 +1154,17 @@ function TutorialSection(result: ReturnType<typeof getResult>) {
         <p className={cns.text.muted("text-sm")}>So what to do when I finished picking up my orbit height?</p>
       </header>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-20 [&_p]:text-sm [&_li]:text-sm [&_li]:my-1">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2 my-2">
             <img className="rounded-md max-w-40" src="https://preview.redd.it/ksp-relay-network-guide-v0-uv5s8cnlfyi71.png?width=594&format=png&auto=webp&s=69eba80d43235996448e92d0402fa4982287e4df" />
             <div>
-              <p>This tutorial assumes your satellite payload are on the same craft like the picture on the left</p>
+              <p>This tutorial assumes your satellite payloads are on the same craft like the picture on the left</p>
               <br />
               <p className={cns.text.muted("break-all")}>Source: https://www.reddit.com/r/KerbalSpaceProgram/comments/p9k3vu/ksp_relay_network_guide/</p>
             </div>
           </div>
           <p>After you planned your orbit, tl:dr</p>
-          <ol className="list-decimal pl-8">
+          <ol className="list-decimal pl-8 flex flex-col">
             <li>Bring your satellite carrier to circular orbit with altitude of <Green>{fixedNum(result.orbitHeight ?? NaN)}m</Green></li>
             <li>Drop your 1st satellite payload</li>
             <li>Burn <Green>{burnGrade}</Green> until your <Green>{result.resonantOrbit?.apsisLabel}</Green> reaches <Green>{((result.resonantOrbit?.otherApsisRadius ?? NaN) - (result.planetRadius ?? NaN)).toLocaleString('en-US')}m</Green></li>
@@ -1172,9 +1172,21 @@ function TutorialSection(result: ReturnType<typeof getResult>) {
             <li>Burn <Green>{oppositeGrade}</Green> until your <Green>{result.resonantOrbit?.apsisLabel}</Green> reaches back to <Green>{fixedNum(result.orbitHeight ?? NaN)}m</Green></li>
             <p>-- Repeat step 2 until all payload is deployed --</p>
             <li>Adjust each satellites orbit to make sure each have the same period</li>
-            <p>You can do this by clicking the orbit information UI (the purple tab on the bottom left GUI).</p>
-            <img src="/orbitinfo.png" className="my-4 rounded-lg" />
           </ol>
+          <h3>Tips</h3>
+          <ul className="list-disc pl-8 flex flex-col">
+            <li>
+              <p>Set the decoupler force to 0 to prevent your satellite's orbit getting ruined.</p>
+            </li>
+            <li>
+              <p>You can find the Period by clicking the orbit information UI (the purple tab on the bottom left GUI).</p>
+              <img src="/orbitinfo.png" className="my-2 rounded-lg max-w-80" />
+            </li>
+            <li>
+              <p>You can adjust the thrust limiter to give a more sensitive adjustments to as low as 0.5 when making sure the Period is the same for all satellites.</p>
+              <img src="/thrustlimiter.png" className="my-2 rounded-lg max-w-80" />
+            </li>
+          </ul>
         </div>
 
         <div className="flex flex-col gap-2">
