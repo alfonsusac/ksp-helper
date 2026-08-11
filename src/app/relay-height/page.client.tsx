@@ -1340,6 +1340,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
 
       ...slideshowSequenceRelaySteps,
 
+      // Manual
       // {
       //   duration: 1, props: {
       //     helperText: constant("Drop your 1st payload"),
@@ -1383,10 +1384,6 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
       //     satellite3Scale: easeOutBack,
       //   }
       // },
-
-
-
-
       {
         duration: 1, props: {
           helperText: constant("Done! 🎉"),
