@@ -12,11 +12,7 @@ export function getSignalStrengthDistanceMap(
     return null
   }
 
-  // console.log("planetData", planetData)
-
   const distanceMap = planetData.map.get(from)!.to
-
-  // console.log("distanceMap", distanceMap)
 
   const result: {
     label: string,
@@ -86,16 +82,12 @@ export function symmetrizePlanetDistanceMap(
         if (data) {
           tempLookup[ toPlanet ] = data
         } else {
-          // console.log(`Planet Distance: No data for distance between ${ fromPlanet } and ${ toPlanet }`)
           tempLookup[ toPlanet ] = null
         }
       }
     })
   })
 
-  // console.log(planets)
-
-  // console.log(newLookup)
   return newLookup
 }
 
