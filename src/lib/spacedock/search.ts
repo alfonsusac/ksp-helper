@@ -1,24 +1,24 @@
-import { spacedocsApi, type ModList, type PageQuery, type User, type UserMods } from "./spacedock"
+import { spacedockApi, type ModList, type PageQuery, type User, type UserMods } from "./spacedock"
 
 export function getSearchTypeaheadMod(query: {
   game_id: string,
   query?: string,
 }) {
-  return spacedocsApi("/api/typeahead/mod", { query })<ModList>()
+  return spacedockApi("/api/typeahead/mod", { query })<ModList>()
 }
 
 
 export function searchMod(query: PageQuery & {
   query?: string,
 }) {
-  return spacedocsApi("/api/search/mod", { query })<ModList>()
+  return spacedockApi("/api/search/mod", { query })<ModList>()
 }
 
 
 export function searchUser(query: PageQuery & {
   query?: string,
 }) {
-  return spacedocsApi("/api/search/user", { query })<(User & UserMods)[]>()
+  return spacedockApi("/api/search/user", { query })<(User & UserMods)[]>()
 }
 
 
@@ -31,7 +31,7 @@ export function browse(query: {
   order?: "desc",
   page?: number
 }) {
-  return spacedocsApi("/api/browse", { query })<{
+  return spacedockApi("/api/browse", { query })<{
     total: number
     count: number
     pages: number
@@ -46,17 +46,17 @@ export function browseNew(query: PageQuery & {
   game_version?: string, // friendly string
   game_version_id?: number,
 }) {
-  return spacedocsApi("/api/browse/new", { query })<ModList>()
+  return spacedockApi("/api/browse/new", { query })<ModList>()
 }
 
 
 export function browseTop(query: PageQuery & {
 }) {
-  return spacedocsApi("/api/browse/top", { query })<ModList>()
+  return spacedockApi("/api/browse/top", { query })<ModList>()
 }
 
 
 export function browseFeatured(query: PageQuery & {
 }) {
-  return spacedocsApi("/api/browse/featured", { query })<ModList>()
+  return spacedockApi("/api/browse/featured", { query })<ModList>()
 }

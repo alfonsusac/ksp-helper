@@ -1,8 +1,8 @@
 import { parseSetCookie } from "set-cookie-parser"
-import { clearSession, saveSession, spacedocsApi, type UpateImageForm, type UpdateImageErrors, type User, type UserMods, type UserRequiredError } from "./spacedock"
+import { clearSession, saveSession, spacedockApi, type UpateImageForm, type UpdateImageErrors, type User, type UserMods, type UserRequiredError } from "./spacedock"
 
 export function getUser(username: string) {
-  return spacedocsApi(`/api/user/${ username }`)<User & UserMods,
+  return spacedockApi(`/api/user/${ username }`)<User & UserMods,
     | 'User not found.'
     | 'User not public.'
   >()
@@ -13,7 +13,7 @@ export function changeUserPassword(username: string, form: {
   'new-password': string,
   'new-password-confirm': string,
 }) {
-  return spacedocsApi(`POST:AUTH:/api/user/${ username }/change-password`, { form })<
+  return spacedockApi(`POST:AUTH:/api/user/${ username }/change-password`, { form })<
     { error: false, reason: unknown },
     | UserRequiredError
     | 'You are not authorized to change this user\'s password.'
@@ -24,7 +24,7 @@ export function changeUserPassword(username: string, form: {
 export function deleteUser(username: string, form: {
   username: string,
 }) {
-  return spacedocsApi(`POST:AUTH:/api/user/${ username }/delete`, {
+  return spacedockApi(`POST:AUTH:/api/user/${ username }/delete`, {
     form, onFetch: async (res) => {
       // check if "session" cookie is deleted. If yes then delete log user out
       const setcookie = res.headers.getSetCookie()
@@ -44,7 +44,7 @@ export function deleteUser(username: string, form: {
 }
 
 export function updateUserBG(username: string, form: UpateImageForm) {
-  return spacedocsApi(`POST:AUTH:/api/username/${ username }/update-bg`, { form })<
+  return spacedockApi(`POST:AUTH:/api/username/${ username }/update-bg`, { form })<
     { path: undefined },
     | UserRequiredError
     | 'You are not authorized to edit this user\'s background'

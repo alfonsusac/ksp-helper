@@ -147,7 +147,7 @@ export const clearSession = async () => {
 
 
 // Wrapper
-export function spacedocsApi(path: `${ "POST:" | "" }${ "AUTH:" | "" }/${ string }`, opts?: {
+export function spacedockApi(path: `${ "POST:" | "" }${ "AUTH:" | "" }/${ string }`, opts?: {
   query?: Record<string, any>,
   form?: Record<string, FormPayload>,
   onFetch?: (request: Response) => Promise<void>,
@@ -208,7 +208,7 @@ export async function searchMod(query: {
   /** Which page of results to retrieve (1 indexed) [optional] */
   page?: number,
 }) {
-  return spacedocsApi('/api/search/mod', { query })<(Mod & ModVersion)[]>()
+  return spacedockApi('/api/search/mod', { query })<(Mod & ModVersion)[]>()
 }
 
 // Search Public Users
@@ -220,7 +220,7 @@ export async function searchUser(query: {
   /** page: Which page of results to retrieve (1 indexed) [optional] */
   page?: number
 }) {
-  return spacedocsApi('/api/search/user', { query })<(User & UserMods)[]>()
+  return spacedockApi('/api/search/user', { query })<(User & UserMods)[]>()
 }
 
 // Browse Mods
@@ -242,7 +242,7 @@ export async function browseMods(query: {
   /** Which count of mods to show per page. Valid values: 1-500. Default 30. [optional] */
   count?: number
 }) {
-  return spacedocsApi("/api/browse", { query })<BrowseResult & { result: (Mod & ModVersion)[] }>()
+  return spacedockApi("/api/browse", { query })<BrowseResult & { result: (Mod & ModVersion)[] }>()
 }
 
 // Browse Newly Mods
@@ -252,7 +252,7 @@ export async function browseNewMods(query: {
   /** Which page of results to retrieve (1 indexed) [optional] */
   page?: number,
 }) {
-  return spacedocsApi("/api/browse/new", { query })<BrowseResult & { result: (Mod & ModVersion)[] }>()
+  return spacedockApi("/api/browse/new", { query })<BrowseResult & { result: (Mod & ModVersion)[] }>()
 }
 
 // Browse Top Mods
@@ -262,7 +262,7 @@ export async function browseTopMods(query: {
   /** Which page of results to retrieve (1 indexed) [optional] */
   page?: number,
 }) {
-  return spacedocsApi("/api/browse/new", { query })<(Mod & ModVersion)[]>()
+  return spacedockApi("/api/browse/new", { query })<(Mod & ModVersion)[]>()
 }
 
 // Browse Featured Mods
@@ -272,7 +272,7 @@ export async function browseFeaturedMods(query: {
   /** Which page of results to retrieve (1 indexed) [optional] */
   page?: number,
 }) {
-  return spacedocsApi("/api/browse/featured", { query })<(Mod & ModVersion)[]>()
+  return spacedockApi("/api/browse/featured", { query })<(Mod & ModVersion)[]>()
 }
 
 
@@ -294,7 +294,7 @@ export async function browseFeaturedMods(query: {
 // GET /api/mod/<mod_id>
 // https://spacedock.info/api/mod/21
 export async function getMod(mod_id: number) {
-  return spacedocsApi(`/api/mod/${ mod_id }`)<
+  return spacedockApi(`/api/mod/${ mod_id }`)<
     (Mod & ModVersion & ModDescription),
     | "Mod not found."
     | "Mod not published."
@@ -305,7 +305,7 @@ export async function getMod(mod_id: number) {
 // GET /api/mod/<mod_id>/<"latest" | version>
 // https://spacedock.info/api/mod/21/latest
 export async function getModVersion(mod_id: number, version: number | 'latest') {
-  return spacedocsApi(`/api/mod/${ mod_id }/${ version }`)<
+  return spacedockApi(`/api/mod/${ mod_id }/${ version }`)<
     Version,
     | "Mod not found."
     | "Mod not published."
@@ -336,7 +336,7 @@ export async function createMod(form: {
   ckan?: "true" | "yes" | "on",
   zipball: File
 }) {
-  return spacedocsApi('POST:AUTH:/api/mod/create')<
+  return spacedockApi('POST:AUTH:/api/mod/create')<
     { url: string },
     | 'You are not logged in.'
     | 'Only users with public profiles may create mods.'
@@ -355,7 +355,7 @@ export async function updateMod(form: {
   'notify-followers': string,
   zipball: string
 }) {
-  return spacedocsApi('POST:AUTH:/api/mod/update', { form })<
+  return spacedockApi('POST:AUTH:/api/mod/update', { form })<
     { 'path': `/content/${ string }` },
     | 'You are not logged in.'
     | 'Mod not found.'
@@ -371,7 +371,7 @@ export async function updateMod(form: {
 export async function updateModBG(mod_id: number, form: {
   image: File
 }) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/update-bg`, { form })<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/update-bg`, { form })<
     { 'path': `/content/${ string }` },
     | 'You are not logged in.'
     | 'Mod not found.'
@@ -383,7 +383,7 @@ export async function updateModBG(mod_id: number, form: {
 // Update Default Mod Version Id
 // POST /api/mod/<int:mid>/set-default/<int:vid>
 export async function updateModDefaultVersion(mod_id: number, version_id: number) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/set-default/${ version_id }`)<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/set-default/${ version_id }`)<
     NoError,
     | 'The specified mod does not exist.'
     | 'You do not have permission to do this.'
@@ -402,7 +402,7 @@ export async function updateModDefaultVersion(mod_id: number, version_id: number
 export async function createPack(form: {
   name: string,
 }) {
-  return spacedocsApi(`POST:AUTH:/api/pack/create`, { form })<{ url: string },
+  return spacedockApi(`POST:AUTH:/api/pack/create`, { form })<{ url: string },
     | 'You are not logged in.'
     | 'Only users with public profiles may create mod packs.'
     | 'All fields are required.'
@@ -423,7 +423,7 @@ export async function createPack(form: {
 export async function grantUser(mod_id: number, form: {
   user: string
 }) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/grant`, { form })<NoError,
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/grant`, { form })<NoError,
     | 'Mod not found.'
     | 'Not enought rights'
     | 'The specified user does not exist.'
@@ -435,7 +435,7 @@ export async function grantUser(mod_id: number, form: {
 // Accept Grant
 // POST /api/mod/<mod_id>/accept_grant
 export async function acceptGrant(mod_id: number) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/grant`)<NoError,
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/grant`)<NoError,
     | 'You are not logged in.'
     | 'Mod not found.'
     | 'You do not have a pending authorship invite.'
@@ -445,7 +445,7 @@ export async function acceptGrant(mod_id: number) {
 // Deny Grant
 // POST /api/mod/<mod_id>/reject_grant
 export async function denyGrant(mod_id: string) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/reject_grant`)<NoError,
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/reject_grant`)<NoError,
     | 'You are not logged in.'
     | 'Mod not found.'
     | 'You do not have a pending authorship invite.'
@@ -457,7 +457,7 @@ export async function denyGrant(mod_id: string) {
 export async function revokeGrant(mod_id: string, form: {
   user: string
 }) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/revoke`)<NoError,
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/revoke`)<NoError,
     | 'You are not logged in.'
     | 'Mod not found.'
     | 'Not enought rights.'
@@ -487,7 +487,7 @@ export async function login(form: {
   username: string,
   password: string,
 }) {
-  return spacedocsApi('POST:/api/login',
+  return spacedockApi('POST:/api/login',
     {
       form,
       onFetch: async (res) => {
@@ -508,7 +508,7 @@ export async function login(form: {
 // GET /api/user/<username>
 // https://spacedock.info/api/user/Xaiier
 export async function getUser(username: string) {
-  return spacedocsApi(`/api/user/${ username }`)<NoError,
+  return spacedockApi(`/api/user/${ username }`)<NoError,
     | "User not found."
     | "User not public."
   >()
@@ -519,7 +519,7 @@ export async function getUser(username: string) {
 export async function updateUserBG(username: string, form: {
   image: File
 }) {
-  return spacedocsApi(`POST:AUTH:/api/user/${ username }/update-bg`, {
+  return spacedockApi(`POST:AUTH:/api/user/${ username }/update-bg`, {
     form,
   })<NoError,
     | 'You are not logged in.'

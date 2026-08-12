@@ -1,4 +1,4 @@
-import { spacedocsApi, type UpateImageForm, type UpdateImageErrors, type UserRequiredError } from "./spacedock"
+import { spacedockApi, type UpateImageForm, type UpdateImageErrors, type UserRequiredError } from "./spacedock"
 
 export type GameInfo = { // game_info()
   id: number
@@ -20,15 +20,15 @@ export type GameVersionInfo = { // game_version_info()
 }
 
 export async function getGames() {
-  return spacedocsApi("/api/games")<GameInfo[]>()
+  return spacedockApi("/api/games")<GameInfo[]>()
 }
 
 export async function getGameVersions(gameid: number) {
-  return spacedocsApi(`/api/${ gameid }/versions`)<GameVersionInfo[]>()
+  return spacedockApi(`/api/${ gameid }/versions`)<GameVersionInfo[]>()
 }
 
 export async function getGameNotifications(gameid: number) {
-  return spacedocsApi(`/api/${ gameid }/notifications`)<{
+  return spacedockApi(`/api/${ gameid }/notifications`)<{
     id: number
     name: string
     builds_url: string
@@ -39,7 +39,7 @@ export async function getGameNotifications(gameid: number) {
 
 export function updateGameBG(game_id: number, form: UpateImageForm) {
   // admin endpoint
-  return spacedocsApi(`POST:AUTH:/api/game/${ game_id }/update-bg`, {
+  return spacedockApi(`POST:AUTH:/api/game/${ game_id }/update-bg`, {
     form
   })<
     { path: undefined },
@@ -125,7 +125,7 @@ export function updateGameBG(game_id: number, form: UpateImageForm) {
 // Deprecated
 
 export function getkspversions() {
-  return spacedocsApi('/api/kspversions')<{
+  return spacedockApi('/api/kspversions')<{
     'error': true,
     'reason': 'This API call has been retired. Use /api/games to find the id of the game you want, then /api/<game_id>/versions to get its versions.'
   }>()

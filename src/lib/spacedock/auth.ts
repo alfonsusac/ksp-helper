@@ -1,11 +1,11 @@
 import { parseSetCookie } from "set-cookie-parser"
-import { saveSession, spacedocsApi, type NoError } from "./spacedock"
+import { saveSession, spacedockApi, type NoError } from "./spacedock"
 
 export function login(form: {
   username: string,
   password: string,
 }) {
-  return spacedocsApi('POST:/api/login',
+  return spacedockApi('POST:/api/login',
     {
       form,
       onFetch: async (res) => {

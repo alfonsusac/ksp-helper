@@ -1,4 +1,4 @@
-import { spacedocsApi, type Mod, type ModDescription, type ModSharedAuthors, type ModVersion, type UpateImageForm, type UpdateImageErrors, type UserRequiredError, type Version } from "./spacedock"
+import { spacedockApi, type Mod, type ModDescription, type ModSharedAuthors, type ModVersion, type UpateImageForm, type UpdateImageErrors, type UserRequiredError, type Version } from "./spacedock"
 
 type GetModError = "Mod not found." // _get_mod()
 type CheckModPublishedError = "Mod not published." // _check_mod_published()
@@ -8,7 +8,7 @@ type GetModPendingAuthorError = 'You do not have a pending authorship invite.' /
 
 
 export function getMod(mod_id: number) {
-  return spacedocsApi(`/api/mod/${ mod_id }`)<
+  return spacedockApi(`/api/mod/${ mod_id }`)<
     (Mod & ModVersion & ModDescription & ModSharedAuthors), // this is the only way to get sharedAuthors. Test: await getMod(1774)
     | "Mod not found."
     | "Mod not published. Authentication needed." // if not published and not logged in, can't see.
@@ -17,7 +17,7 @@ export function getMod(mod_id: number) {
 }
 
 export function getModVersion(mod_id: number, version: number | "latest" | "latest_version") {
-  return spacedocsApi(`/api/mod/${ mod_id }/${ version }`)<
+  return spacedockApi(`/api/mod/${ mod_id }/${ version }`)<
     Version,
     | GetModError
     | CheckModPublishedError
@@ -27,7 +27,7 @@ export function getModVersion(mod_id: number, version: number | "latest" | "late
 }
 
 export function getModKspAvc(mod_id: number) {
-  return spacedocsApi(`/api/ksp-avc/${ mod_id }`)<
+  return spacedockApi(`/api/ksp-avc/${ mod_id }`)<
     {
       NAME: string
       URL: string
@@ -47,7 +47,7 @@ export function getModKspAvc(mod_id: number) {
 }
 
 export function getModDownloadCounts(mod_id: number[]) {
-  return spacedocsApi(`POST:/api/download_counts`, {
+  return spacedockApi(`POST:/api/download_counts`, {
     form: { mod_id: mod_id.map(String) },
   })<{
     download_counts: {
@@ -59,7 +59,7 @@ export function getModDownloadCounts(mod_id: number[]) {
 
 
 export function updateModBG(mod_id: number, form: UpateImageForm) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/update-bg`, { form })<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/update-bg`, { form })<
     { path: undefined },
     | UserRequiredError
     | GetModError
@@ -71,7 +71,7 @@ export function updateModBG(mod_id: number, form: UpateImageForm) {
 export function grantModAccess(mod_id: number, form: {
   user: string // username
 }) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/grant`, { form })<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/grant`, { form })<
     { error: false },
     | GetModError
     | CheckModEditableError
@@ -82,7 +82,7 @@ export function grantModAccess(mod_id: number, form: {
 }
 
 export function acceptModGrant(mod_id: number,) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/accept_grant`)<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/accept_grant`)<
     { error: false },
     | UserRequiredError
     | GetModError
@@ -90,7 +90,7 @@ export function acceptModGrant(mod_id: number,) {
   >()
 }
 export function rejectModGrant(mod_id: number,) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/reject_grant`)<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/reject_grant`)<
     { error: false },
     | UserRequiredError
     | GetModError
@@ -101,7 +101,7 @@ export function rejectModGrant(mod_id: number,) {
 export function revokeModGrant(mod_id: number, form: {
   user: string // username
 }) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/revoke`, { form })<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/revoke`, { form })<
     { error: false },
     | UserRequiredError
     | GetModError
@@ -113,7 +113,7 @@ export function revokeModGrant(mod_id: number, form: {
 }
 
 export function setModDefaultVersion(mod_id: number, version_id: number) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/set-default/${ version_id }`)<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/set-default/${ version_id }`)<
     { error: false },
     | GetModError
     | CheckModEditableError
@@ -135,7 +135,7 @@ export function createMod(form: {
   zipball: File
 } & ({ game: string } | { 'game-id': string } | { 'game-short-name': string }) // must be active game
 ) {
-  return spacedocsApi(`POST:AUTH:/api/mod/create`, { form })<{
+  return spacedockApi(`POST:AUTH:/api/mod/create`, { form })<{
     url: string,
     id: number,
     name: string
@@ -162,7 +162,7 @@ export function updateMod(mod_id: number, form: {
   zipball?: File // required if the dzs are sent
   'notify-followers'?: 'true' | 'yes' | 'on' // default ''
 }) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/update`, { form })<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/update`, { form })<
     {
       url: string,
       id: number,
@@ -189,7 +189,7 @@ export function updateModEditVersion(mod_id: number, form: {
   dzchunkbyteoffset?: number // default 0
   zipball?: File // required if dztotalchunkcount is sent
 }) {
-  return spacedocsApi(`POST:AUTH:/api/mod/${ mod_id }/edit_version`, { form })<
+  return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/edit_version`, { form })<
     { url: string },
     | UserRequiredError
     | GetModError

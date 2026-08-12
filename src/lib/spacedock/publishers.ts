@@ -1,4 +1,4 @@
-import { spacedocsApi, type ModList } from "./spacedock"
+import { spacedockApi, type ModList } from "./spacedock"
 
 export type PublisherInfo = { // publisher_inf()
   id: number
@@ -13,7 +13,7 @@ export type PublisherInfo = { // publisher_inf()
 }
 
 export function getPublishers() {
-  return spacedocsApi("/api/publishers")<PublisherInfo>()
+  return spacedockApi("/api/publishers")<PublisherInfo>()
 }
 
 // https://discord.com/channels/603643254759489555/763685596556165121/1536804836769661049
