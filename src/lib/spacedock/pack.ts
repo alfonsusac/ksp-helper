@@ -2,16 +2,16 @@ import { spacedockApi, type UpateImageForm, type UpdateImageErrors, type UserReq
 
 export function updatePackBG(pack_id: number, form: UpateImageForm) {
   return spacedockApi(`POST:AUTH:/api/pack/${ pack_id }/update-bg`, { form })<
-    { path: undefined },
+    [ 200, { path: undefined } ],
     | UserRequiredError
-    | 'You are not authorized to edit this pack\'s background'
-    | (string & {})
+    | [ 403, 'You are not authorized to edit this pack\'s background' ]
+    | [ 200, (string & {}) ]
     | UpdateImageErrors
   >()
 }
 
 export function createPack(form: {
-  name: string,
+  name: string,// max 100
   game: number // game_id
 }) {
   return spacedockApi(`POST:AUTH:/api/pack/create`, {
@@ -19,11 +19,11 @@ export function createPack(form: {
       name: form.name,
       game: String(form.game)
     }
-  })<{ url: string }
+  })<[ 200, { url: string } ],
     | UserRequiredError
-    | 'Only users with public profiles may create mod packs.'
-    | 'All fields are required.'
-    | 'Please select a game.'
-    | 'Fields exceed maximum permissible length.' // name > 100
+    | [ 403, 'Only users with public profiles may create mod packs.' ]
+    | [ 400, 'All fields are required.' ]
+    | [ 400, 'Please select a game.' ]
+    | [ 400, 'Fields exceed maximum permissible length.' ] // name > 100
   >()
 }

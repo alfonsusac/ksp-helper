@@ -1,6 +1,9 @@
 import { parseSetCookie } from "set-cookie-parser"
 import { saveSession, spacedockApi, type NoError } from "./spacedock"
 
+
+// POST /api/login
+// "/api/login"
 export function login(form: {
   username: string,
   password: string,
@@ -14,9 +17,9 @@ export function login(form: {
         await saveSession(parsedSetCookie[ 'session' ].value)
       },
     },
-  )<NoError,
-    | 'Missing username or password'
-    | 'Username or password is incorrect'
-    | 'User is not confirmed'
+  )<[ 200, { error: false } ],
+    | [ 401, 'Missing username or password' ]
+    | [ 401, 'Username or password is incorrect' ]
+    | [ 403, 'User is not confirmed' ]
   >()
 }

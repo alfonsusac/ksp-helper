@@ -13,7 +13,7 @@ export type PublisherInfo = { // publisher_inf()
 }
 
 export function getPublishers() {
-  return spacedockApi("/api/publishers")<PublisherInfo>()
+  return spacedockApi("/api/publishers")<[ 200, PublisherInfo ]>()
 }
 
 // https://discord.com/channels/603643254759489555/763685596556165121/1536804836769661049

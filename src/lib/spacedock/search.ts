@@ -2,61 +2,77 @@ import { spacedockApi, type ModList, type PageQuery, type User, type UserMods } 
 
 export function getSearchTypeaheadMod(query: {
   game_id: string,
-  query?: string,
+  query?: string, // default ''
 }) {
-  return spacedockApi("/api/typeahead/mod", { query })<ModList>()
+  return spacedockApi("/api/typeahead/mod", { query })<[ 200, ModList ]>()
 }
 
+// Search
+// --------
 
-export function searchMod(query: PageQuery & {
-  query?: string,
+// GET /api/search/mod?query=<name>
+// "/api/search/mod"
+export function searchMod(query: PageQuery & { // page query default 1
+  query?: string, // default ''
 }) {
-  return spacedockApi("/api/search/mod", { query })<ModList>()
+  return spacedockApi("/api/search/mod", { query })<[ 200, ModList ]>()
 }
 
-
-export function searchUser(query: PageQuery & {
-  query?: string,
+// GET /api/search/user?query=<name>
+// "/api/search/user" 
+export function searchUser(query: { // page query default 1
+  query?: string, // default ''
+  page?: number // default 0
 }) {
-  return spacedockApi("/api/search/user", { query })<(User & UserMods)[]>()
+  return spacedockApi("/api/search/user", { query })<[ 200, (User & UserMods)[] ]>()
 }
 
-
+// GET /api/browse?page=<integer>&orderby=<string>&order=<string>&count=<integer>
+// "/api/browse"
 export function browse(query: {
-  count?: number,
-  game_id?: number, // id
-  game_version?: string // friendly string
-  game_version_id?: number // id
-  orderby?: "name" | "updated",
-  order?: "desc",
-  page?: number
+  count?: number, // default 30, range [1-500]
+  game_id?: number, // id                  priority2
+  game_version?: string // friendly string priority2 more specific
+  game_version_id?: number // id           priority1 (If game_version_id is present, game_id and game_version will be ignored.)
+  orderby?: "name" | "updated" | "created", // default "created"
+  order?: "desc" | "asc", // default "asc"
+  page?: number // default 1, min 1
 }) {
-  return spacedockApi("/api/browse", { query })<{
-    total: number
-    count: number
-    pages: number
-    page: number
-    result: ModList
-  }>()
+  return spacedockApi("/api/browse", { query })<
+    [ 200, {
+      total: number
+      count: number
+      pages: number
+      page: number
+      result: ModList
+    } ]
+  >()
 }
 
 
-export function browseNew(query: PageQuery & {
-  game_id?: number,
-  game_version?: string, // friendly string
-  game_version_id?: number,
+// Browse
+// --------
+
+// GET /api/browse/new?page=<integer>
+// "/api/browse/new"
+export function browseNew(query: PageQuery & { // page default 1, min 1
+  game_id?: number, //                      priority2   
+  game_version?: string, // friendly string priority2 more specific  
+  game_version_id?: number, //              priority1    
 }) {
-  return spacedockApi("/api/browse/new", { query })<ModList>()
+  return spacedockApi("/api/browse/new", { query })<[ 200, ModList ]>()
 }
 
-
-export function browseTop(query: PageQuery & {
+// GET /api/browse/top?page=<integer>
+// "/api/browse/top"
+export function browseTop(query: PageQuery & { // page default 1, min 1
 }) {
-  return spacedockApi("/api/browse/top", { query })<ModList>()
+  return spacedockApi("/api/browse/top", { query })<[ 200, ModList ]>()
 }
 
-
-export function browseFeatured(query: PageQuery & {
+// GET /api/browse/featured?page=<integer>
+// "/api/browse/featured"
+export function browseFeatured(query: PageQuery & { // page default 1, min 1
 }) {
-  return spacedockApi("/api/browse/featured", { query })<ModList>()
+  return spacedockApi("/api/browse/featured", { query })<[ 200, ModList ]>()
 }

@@ -19,32 +19,55 @@ export type GameVersionInfo = { // game_version_info()
   friendly_version: string,
 }
 
-export async function getGames() {
-  return spacedockApi("/api/games")<GameInfo[]>()
+
+// Deprecated
+// GET /api/kspversions
+// 
+export function getkspversions() {
+  return spacedockApi('/api/kspversions')<never,
+    [ 501, 'This API call has been retired. Use /api/games to find the id of the game you want, then /api/<game_id>/versions to get its versions.' ]
+  >()
 }
 
-export async function getGameVersions(gameid: number) {
-  return spacedockApi(`/api/${ gameid }/versions`)<GameVersionInfo[]>()
+// GET /api/<gameid>/versions
+// 
+export function getGameVersions(gameid: number) {
+  // ordered by id desc, returns 404 empty list if inactive or no game
+  return spacedockApi(`/api/${ gameid }/versions`)<
+    | [ 200, GameVersionInfo[] ]
+    | [ 404, [] ]
+  >()
 }
 
-export async function getGameNotifications(gameid: number) {
-  return spacedockApi(`/api/${ gameid }/notifications`)<{
-    id: number
-    name: string
-    builds_url: string
-    add_url: string
-    change_url: string
-  }[]>()
+// GET /api/<gameid>/notifications
+// 
+export function getGameNotifications(gameid: number) {
+  // returns 404 empty list if inactive or no game
+  return spacedockApi(`/api/${ gameid }/notifications`)<
+    | [ 200, {
+      id: number
+      name: string
+      builds_url: string
+      add_url: string
+      change_url: string
+    }[] ]
+    | [ 404, [] ]
+  >()
+}
+
+// 
+export function getGames() {
+  return spacedockApi("/api/games")<
+    [ 200, GameInfo[] ]
+  >()
 }
 
 export function updateGameBG(game_id: number, form: UpateImageForm) {
   // admin endpoint
-  return spacedockApi(`POST:AUTH:/api/game/${ game_id }/update-bg`, {
-    form
-  })<
-    { path: undefined },
+  return spacedockApi(`POST:AUTH:/api/game/${ game_id }/update-bg`, { form })<
+    [ 200, { path: undefined } ],
     | UserRequiredError
-    | (string & {})
+    | [ 200, (string & {}) ]
     | UpdateImageErrors
   >()
 }
@@ -122,11 +145,3 @@ export function updateGameBG(game_id: number, form: UpateImageForm) {
 // ]
 
 
-// Deprecated
-
-export function getkspversions() {
-  return spacedockApi('/api/kspversions')<{
-    'error': true,
-    'reason': 'This API call has been retired. Use /api/games to find the id of the game you want, then /api/<game_id>/versions to get its versions.'
-  }>()
-}

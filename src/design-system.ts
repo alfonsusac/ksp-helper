@@ -1,13 +1,13 @@
 import { cn } from "./ui/cn"
 
-const cnr = (...a: any[]) => (...b: any[]) => cn(...a, ...b)
+export const cnr = (...a: any[]) => (...b: any[]) => cn(...a, ...b)
 
 export const cns = {
   bg: cnr("           bg-white         dark:bg-zinc-900"),
   divider: cnr("      border-slate-200 dark:border-zinc-800"),
   dividerStrong: cnr("border-slate-300 dark:border-zinc-700"),
   text: {
-    base: cnr("font-medium font-mono text-base tracking-[0.03em]",
+    base: cnr("font-medium font-mono text-base tracking-[0.028em]",
       "               text-slate-700   dark:text-zinc-300",
     ),
     label: cnr("      text-slate-700/85    dark:text-zinc-300 text-sm"),
@@ -80,9 +80,10 @@ export const cns = {
   ),
   linkCard: (...c: any[]) => cn(
     "dark:hover:bg-zinc-800/25 ",
-    "transition-all duration-100",
+    "transition-all duration-75",
     "hover:shadow-lg",
     "hover:shadow-slate-500/10 dark:hover:shadow-zinc-950/50",
+    "hover:border-slate-300 dark:hover:border-zinc-700",
     cns.card(),
     cns.clickableUI(),
     "bg-slate-50 hover:bg-slate-50/50",
@@ -133,7 +134,7 @@ export const cns = {
         ...c
       ),
     ),
-    ghost: (...c: any) => cns.button.base("bg-transparent dark:bg-transparent opacity-70 hover:opacity-100", c),
+    ghost: (...c: any) => cns.button.base("bg-transparent dark:bg-transparent opacity-70 hover:opacity-80", c),
     subtle: (...c: any) => cns.button.base(
       "opacity-65 hover:opacity-100",
       "bg-slate-50 dark:bg-zinc-800",
