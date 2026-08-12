@@ -7,7 +7,7 @@ export const cns = {
   divider: cnr("      border-slate-200 dark:border-zinc-800"),
   dividerStrong: cnr("border-slate-300 dark:border-zinc-700"),
   text: {
-    base: cnr("font-medium font-mono text-base",
+    base: cnr("font-medium font-mono text-base tracking-[0.03em]",
       "               text-slate-700   dark:text-zinc-300",
     ),
     label: cnr("      text-slate-700/85    dark:text-zinc-300 text-sm"),
@@ -52,7 +52,7 @@ export const cns = {
     cns.text.base(),
     c,
   ),
-  pageTitle: cnr("text-xl tracking-tight font-semibold leading-6 mb-2"),
+  pageTitle: cnr("text-xl tracking-tighter font-semibold leading-6 mb-2"),
   pageDescription: (...c: any[]) => cn(cns.text.muted("font-semibold"), c),
 
   // Common Components

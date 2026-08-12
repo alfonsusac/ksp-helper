@@ -10,6 +10,7 @@ import { cns } from "@/design-system"
 const mono = JetBrains_Mono({
   variable: "--font-next-mono",
   subsets: [ "latin" ],
+  weight: 'variable'
 })
 
 const sans = Open_Sans({

@@ -103,27 +103,7 @@ export function RelayTutorial_Client() {
             }}
             itemClassName="p-1 w-auto grow"
           />
-          {/* <NumberInput
-            className="max-w-none"
-            initialValue={data.relayCount}
-            onValueChange={n => {
-              data.relayCount = n
-              setData({ ...data })
-            }}
-            validate={(n) => {
-              if (!Number.isInteger(n)) return "Can't have decimal"
-              if (n < 0) return "Can't be negative"
-              return undefined
-            }}
-            unit="m"
-          /> */}
         </InputBlock>
-        {/* <div className="grid grid-cols-[6rem_auto] gap-2">
-          <div />
-          <button className={cns.button.base()}>
-            Give me the visuals!
-          </button>
-        </div> */}
       </section>
 
       <section className="my-8">

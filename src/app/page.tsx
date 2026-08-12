@@ -10,12 +10,10 @@ export default function HomePage() {
     <main className={cns.page()}>
 
       <header className="flex flex-col gap-1">
-        <h1 className={"text-2xl"}>KSP Tools</h1>
+        <h1 className={cns.pageTitle("text-2xl")}>KSP Tools</h1>
         <p className={cns.text.muted()}>Tools to help play Kerbal Space Program</p>
       </header>
 
-
-      {/* <div className={cns.text.muted("pt-12")}>Tools I made</div> */}
 
       <div
         className="grid grid-cols-1 sm:grid-cols-2 gap-3">
