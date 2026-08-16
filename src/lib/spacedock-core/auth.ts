@@ -1,10 +1,13 @@
 import { parseSetCookie } from "set-cookie-parser"
 import { saveSession, spacedockApi, type NoError } from "./spacedock"
 
+export const SpacedockAuth = {
+  login
+}
 
 // POST /api/login
 // "/api/login"
-export function login(form: {
+function login(form: {
   username: string,
   password: string,
 }) {

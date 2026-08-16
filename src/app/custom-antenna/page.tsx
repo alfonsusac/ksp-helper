@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { CustomAntennaPage_Client } from "./page.client"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Manage Custom Celestial Body",
@@ -7,5 +8,11 @@ export const metadata: Metadata = {
 }
 
 export default function CustomAntennaPage() {
-  return (<CustomAntennaPage_Client />)
+  return <>
+    <Suspense>
+      <CustomAntennaPage_Client />
+    </Suspense>
+  </>
+
+
 }

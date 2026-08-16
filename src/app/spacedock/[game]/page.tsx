@@ -1,0 +1,64 @@
+import { cnr, cns } from "@/design-system"
+import { notFound } from "next/navigation"
+import { SpacedockNavbar } from "../_components/nav"
+import { getGames } from "../_data-cache/get-games"
+import { FeaturedModSection, NewestModSection } from "../_components/mod-list-row-variants"
+import { Footer } from "../_components/footer"
+
+export async function generateStaticParams() {
+  const games = await getGames()
+  const res = games.map(game => {
+    return [ game.id, game.name, game.short ]
+  }).flat().map(i => ({ game: String(i) }))
+  return res
+}
+
+const maxWidth = cnr("max-w-280 mx-auto w-full")
+
+export default async function GamePage(props: PageProps<'/spacedock/[game]'>) {
+  const params = await props.params
+  const gameparam = params.game
+  const games = await getGames()
+  const game = games.find(g => {
+    return g.id === Number(gameparam)
+      || g.short === gameparam
+      || g.name === gameparam
+  })
+  if (!game) return notFound()
+
+  return <div className={cns.page("gap-8 max-w-none")}>
+
+    <SpacedockNavbar className={maxWidth()} />
+
+    <section className={maxWidth("aspect-4/1 rounded-2xl")}>
+      <img src={game.background} className="aspect-4/1 overflow-hidden object-center object-cover rounded-2xl" style={{
+        objectPosition: `50% ${ game.bg_offset_y / 10 * -1 }%`
+      }} />
+    </section>
+
+    <section className={("flex flex-col")}>
+      <header className={maxWidth("flex flex-col gap-0")}>
+        <h1 className={cns.pageTitle("text-2xl font-bold")}>{game.name}</h1>
+        <p className={cns.text.muted()}>Browse mods from {game.name}</p>
+      </header>
+    </section>
+
+    <FeaturedModSection
+      maxWidth={maxWidth()}
+      gameid={game.id}
+      showUpdatedAt
+    />
+
+    <NewestModSection
+      maxWidth={maxWidth()}
+      gameid={game.id}
+      showUpdatedAt
+    />
+
+    <Footer maxWidth={maxWidth()} />
+  </div>
+
+}
+
+
+

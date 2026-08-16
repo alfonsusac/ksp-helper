@@ -1,16 +1,23 @@
 import { parseSetCookie } from "set-cookie-parser"
-import { clearSession, saveSession, spacedockApi, type UpateImageForm, type UpdateImageErrors, type User, type UserMods, type UserRequiredError } from "./spacedock"
+import { clearSession, spacedockApi, type UpateImageForm, type UpdateImageErrors, type User, type UserMods, type UserRequiredError } from "./spacedock"
+
+export const SpacedockUsers = {
+  getUser,
+  changeUserPassword,
+  deleteUser,
+  updateUserBG,
+}
 
 // GET /api/user/<username>
 // "/api/user/<username>"
-export function getUser(username: string) {
+function getUser(username: string) {
   return spacedockApi(`/api/user/${ username }`)<[ 200, User & UserMods ],
     | [ 404, 'User not found.' ]
     | [ 403, 'User not public.' ]
   >()
 }
 
-export function changeUserPassword(username: string, form: {
+function changeUserPassword(username: string, form: {
   'old-password': string,
   'new-password': string,
   'new-password-confirm': string,
@@ -28,7 +35,7 @@ export function changeUserPassword(username: string, form: {
   >()
 }
 
-export function deleteUser(username: string, form: {
+function deleteUser(username: string, form: {
   username: string,
 }) {
   return spacedockApi(`POST:AUTH:/api/user/${ username }/delete`, {
@@ -50,7 +57,7 @@ export function deleteUser(username: string, form: {
   >()
 }
 
-export function updateUserBG(username: string, form: UpateImageForm) {
+function updateUserBG(username: string, form: UpateImageForm) {
   return spacedockApi(`POST:AUTH:/api/username/${ username }/update-bg`, { form })<
     [ 200, { path: undefined } ],
     | UserRequiredError

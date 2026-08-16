@@ -1,7 +1,6 @@
 // https://github.com/KSP-SpaceDock/SpaceDock/blob/master/api.md
 
 import { cookies } from "next/headers"
-import { parseSetCookie } from "set-cookie-parser"
 
 export type BrowseResult = {
   total: number
@@ -62,7 +61,7 @@ export type Version = { // version_info()
   friendly_version: string
   game_version: string
   id: number
-  created: Date
+  created: string // 2017-04-30T21:34:59.423628+00:00
   download_path: string
   changelog: null | string
   downloads: number
@@ -77,13 +76,13 @@ export type Version = { // version_info()
 export type PageQuery = {
   page?: number, // default 1
 }
-export type UpdateImageErrors = 
-  | [400, 'This file type is not acceptable.']
-  | [400, 'Malware detected in upload']
+export type UpdateImageErrors =
+  | [ 400, 'This file type is not acceptable.' ]
+  | [ 400, 'Malware detected in upload' ]
 export type UpateImageForm = {
   image: File
 }
-export type UserRequiredError = [403, 'You are not logged in.'] // user_required()
+export type UserRequiredError = [ 403, 'You are not logged in.' ] // user_required()
 
 
 
@@ -100,7 +99,7 @@ const createParam = (params: Record<string, any>) => {
 }
 const spacedockURL = (path: string, params?: Record<string, any>) => {
   const url = `https://spacedock.info` + path + (params ? `?${ createParam(params) }` : "")
-  console.log(url)
+  // console.log(url)
   return url
 }
 type FormPayloadItemType = string | number | File
@@ -132,8 +131,8 @@ const newHeaderWithSessionCookie = (authCode?: string) => {
 // export type NoError = { error: false }
 // export type Result<Ok, Err extends [ number, string ]> = Error<Err> | Ok
 
-export type ResponseType<Status extends number, Payload> = { status?: Status, payload: Payload }
-export type Error<Status extends number, Reason extends string> = { status?: Status, payload: { error: true, reason: Reason } }
+export type ResponseType<Status extends number, Payload> = { status: Status, payload: Payload, meta: { url: string } }
+export type Error<Status extends number, Reason extends string> = { status: Status, payload: { error: true, reason: Reason } }
 export type Result<Ok extends [ number, any ], Err extends [ number, string ]> =
   | ResponseType<Ok[ 0 ], Ok[ 1 ]>
   | Error<Err[ 0 ], Err[ 1 ]>
@@ -167,12 +166,14 @@ export function spacedockApi(path: `${ "POST:" | "" }${ "AUTH:" | "" }/${ string
     const isAuth = path.split(':').includes("AUTH")
     const method = isPost ? "POST" : "GET"
     const realpath = path.split(':').at(-1) ?? ""
+    const url = spacedockURL(realpath, opts?.query)
+    const meta = { url, method }
 
     if (isAuth) {
       const session = await getSession()
-      if (!session) return not_authenticated
+      if (!session) return { ...not_authenticated, meta }
       const res = await fetch(
-        spacedockURL(realpath, opts?.query),
+        url,
         {
           method: method,
           headers: newHeaderWithSessionCookie(session.value),
@@ -181,10 +182,10 @@ export function spacedockApi(path: `${ "POST:" | "" }${ "AUTH:" | "" }/${ string
       )
       await opts?.onFetch?.(res)
       const json = await res.json()
-      return { status: res.status, payload: json } as Result<Ok, Err>
+      return { status: res.status, payload: json, meta } as Result<Ok, Err>
     }
     const res = await fetch(
-      spacedockURL(realpath, opts?.query),
+      url,
       {
         method: method,
         body: payloadToFormData(opts?.form)
@@ -192,7 +193,7 @@ export function spacedockApi(path: `${ "POST:" | "" }${ "AUTH:" | "" }/${ string
     )
     await opts?.onFetch?.(res)
     const json = await res.json()
-    return { status: res.status, payload: json } as Result<Ok, Err>
+    return { status: res.status, payload: json, meta } as Result<Ok, Err>
   }
 }
 

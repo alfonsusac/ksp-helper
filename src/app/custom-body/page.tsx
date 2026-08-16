@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { CustomPlanetsPage_Client } from "./page.client"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Manage Custom Celestial Body",
@@ -7,5 +8,7 @@ export const metadata: Metadata = {
 }
 
 export default function CustomPlanetsPage() {
-  return <CustomPlanetsPage_Client />
+  return <Suspense>
+    <CustomPlanetsPage_Client />
+  </Suspense>
 }

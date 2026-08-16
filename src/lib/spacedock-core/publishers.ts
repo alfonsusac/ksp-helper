@@ -12,7 +12,11 @@ export type PublisherInfo = { // publisher_inf()
   link: null
 }
 
-export function getPublishers() {
+export const SpacedockPublishers = {
+  getPublishers,
+}
+
+function getPublishers() {
   return spacedockApi("/api/publishers")<[ 200, PublisherInfo ]>()
 }
 

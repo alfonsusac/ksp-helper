@@ -65,7 +65,8 @@ export default function HomePage() {
         )
       })}
 
-      <div className={cns.text.muted("text-xs opacity-75 pt-0.5")}>Last Updated {new Date().toDateString()}</div>
+      {/* <div className={cns.text.muted("text-xs opacity-75 pt-0.5")}>Last Updated {new Date().toDateString()}</div> */}
+      <div className={cns.text.muted("text-xs opacity-75 pt-0.5")}>Last Updated <LastUpdatedPrerenderTime /></div>
 
       <div className="grow" />
 
@@ -75,6 +76,12 @@ export default function HomePage() {
       <Footer />
     </main>
   )
+}
+
+export function LastUpdatedPrerenderTime() {
+  return <>
+    {new Date().toDateString()}
+  </>
 }
 
 const communityCalculators: {

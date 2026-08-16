@@ -17,7 +17,9 @@ export const onRequestError: Instrumentation.onRequestError = async (
       thread_id: '1538230599423098911',
       content: {
         request,
-        context
+        context,
+        digest,
+        message,
       },
     }),
     headers: {

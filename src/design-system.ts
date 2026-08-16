@@ -10,8 +10,9 @@ export const cns = {
     base: cnr("font-medium font-mono text-base tracking-[0.028em]",
       "               text-slate-700   dark:text-zinc-300",
     ),
-    label: cnr("      text-slate-700/85    dark:text-zinc-300 text-sm"),
+    label: cnr("      text-slate-700/85   dark:text-zinc-300 text-sm"),
     muted: cnr("      text-slate-700/75   dark:text-zinc-400"),
+    faint: cnr("      text-slate-700/35     dark:text-zinc-400/35"),
     link: cnr(
       "text-slate-400/75             dark:text-zinc-500",
       "decoration-slate-300          dark:decoration-zinc-700",
@@ -28,11 +29,24 @@ export const cns = {
   input: {
     box: cnr(
       "rounded-md",
-      "border    border-slate-300 dark:border-zinc-700",
+      "border    ",
       // "shadow-sm shadow-slate-200 dark:shadow-zinc-950",
       "px-3 p-2 px-3",
-      "focus:outline-none",
+      // "focus:outline-none",
       "flex items-center text-start gap-2 min-w-30",
+      "autofill-all:[]",
+      "bg-white                  dark:bg-zinc-900",
+      "autofill-bg-slate-100     dark:autofill-bg-zinc-800",
+      "autofill-text-slate-700   dark:autofill-text-zinc-300",
+      "border-slate-300          dark:border-zinc-700",
+      "autofill-border-slate-400 dark:autofill-border-zinc-600",
+      "caret-slate-700           dark:caret-zinc-300",
+
+      "transition-all",
+      "outline-slate-200/50 dark:outline-zinc-800/50",
+      "hover:outline-4",
+      "focus:outline-4",
+      "focus:outline-slate-200 dark:focus:outline-zinc-800"
     ),
     errorBox: cnr(
       "border border-red-400 dark:border-red-500/50",
@@ -59,6 +73,8 @@ export const cns = {
 
   // surface: cnr("p-4 rounded-xl! flex bg-slate-50/75 dark:bg-zinc-950/25"),
   surface: cnr("my-0 first:pt-0"),
+
+  placeholder: cnr("bg-slate-50 dark:bg-zinc-800/10"),
 
   cardBorder: cnr("border    border-slate-200 dark:border-zinc-800"),
   // cardShadow: cnr("shadow-sm shadow-slate-100 dark:shadow-zinc-950"),
@@ -127,7 +143,7 @@ export const cns = {
         "flex items-center justify-center rounded-md gap-2",
         "px-2.5 py-2",
         "focus:outline-none",
-        "bg-slate-50            dark:bg-zinc-800/50",
+        "bg-slate-100            dark:bg-zinc-800/50",
         "hover:bg-slate-200/40  dark:hover:bg-zinc-700/50",
         "active:bg-slate-200/55 dark:active:bg-zinc-700/35",
         "disabled:opacity-25 disabled:pointer-events-none",
@@ -148,6 +164,13 @@ export const cns = {
   },
 
   popover: {
+    backdrop: () => cnr(
+      "fixed inset-0 min-h-dvh bg-black/20 dark:bg-black/65",
+      "transition-opacity duration-150",
+      "data-ending-style:opacity-0",
+      "data-starting-style:opacity-0",
+      "supports-[-webkit-touch-callout:none]:absolute"
+    ),
     base: (...c: any) => cns.text.base(
       cns.popover.bg(),
       cns.popover.transition(),
@@ -166,7 +189,7 @@ export const cns = {
       "data-ending-style:scale-[0.95]",
       "data-ending-style:opacity-0",
     ),
-    shadow: cnr("shadow-md shadow-slate-300/50  dark:shadow-zinc-950/50 dark:shadow-lg"),
+    shadow: cnr("shadow-md shadow-slate-600/15 dark:shadow-zinc-950/50 dark:shadow-lg"),
     border: cnr("border   border-slate-300/75 dark:border-zinc-700"),
     bg: cnr("             bg-white            dark:bg-zinc-900"),
     item: (...c: any) => cns.text.base(

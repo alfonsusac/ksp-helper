@@ -71,3 +71,61 @@ body {
     filter: blur(0.5px);
   }
 }
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  /* Replace #ffffff with your desired background color */
+  /* -webkit-box-shadow: 0 0 0px 1000px #333 inset !important; */
+  /* box-shadow: 0 0 0px 1000px #822 inset !important; */
+
+  /* color: white !important; */
+  
+  /* Use this to change the text color inside the autofilled input */
+  /* -webkit-text-fill-color: #fff !important; */
+}
+
+
+:is(:autofill, :-webkit-autofill, :-moz-autofill):-webkit-autofill:is(:is(*),:hover,:focus) {
+  /* border: 1px solid green; */
+  /* -webkit-text-fill-color: green; */
+  /* -webkit-box-shadow: 0 0 0 1000px #000 inset; */
+  /* transition: background-color 5000s ease-in-out 0s; */
+}
+
+@custom-variant autofill-all {
+  :is(:autofill, :-webkit-autofill, :-moz-autofill):-webkit-autofill:is(:is(*),:hover,:focus) {
+    @slot;
+  }
+}
+
+:is(input, textarea, select):is(:autofill, :-webkit-autofill, :-moz-autofill):is(:is(*),:hover,:focus) {
+  /* border: 1px solid green; */
+  border: 1px solid var(--autofill-border-color);
+  -webkit-text-fill-color: var(--autofill-text-color);
+  -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg-color) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+@utility autofill-text-* {
+  --autofill-text-color: --value(--color-*);
+}
+@utility autofill-bg-* {
+  --autofill-bg-color: --value(--color-*); 
+}
+@utility autofill-border-* {
+  --autofill-border-color: --value(--color-*);
+}
+
+
+input::-ms-reveal {
+  filter: invert(100%);
+  padding-left: calc(1 +1);
+}

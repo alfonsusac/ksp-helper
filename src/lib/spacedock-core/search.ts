@@ -1,6 +1,16 @@
 import { spacedockApi, type ModList, type PageQuery, type User, type UserMods } from "./spacedock"
 
-export function getSearchTypeaheadMod(query: {
+export const SpacedockSearch = {
+  getSearchTypeaheadMod,
+  searchMod,
+  searchUser,
+  browse,
+  browseNew,
+  browseTop,
+  browseFeatured,
+}
+
+function getSearchTypeaheadMod(query: {
   game_id: string,
   query?: string, // default ''
 }) {
@@ -12,7 +22,7 @@ export function getSearchTypeaheadMod(query: {
 
 // GET /api/search/mod?query=<name>
 // "/api/search/mod"
-export function searchMod(query: PageQuery & { // page query default 1
+function searchMod(query: PageQuery & { // page query default 1
   query?: string, // default ''
 }) {
   return spacedockApi("/api/search/mod", { query })<[ 200, ModList ]>()
@@ -20,7 +30,7 @@ export function searchMod(query: PageQuery & { // page query default 1
 
 // GET /api/search/user?query=<name>
 // "/api/search/user" 
-export function searchUser(query: { // page query default 1
+function searchUser(query: { // page query default 1
   query?: string, // default ''
   page?: number // default 0
 }) {
@@ -29,7 +39,7 @@ export function searchUser(query: { // page query default 1
 
 // GET /api/browse?page=<integer>&orderby=<string>&order=<string>&count=<integer>
 // "/api/browse"
-export function browse(query: {
+function browse(query: {
   count?: number, // default 30, range [1-500]
   game_id?: number, // id                  priority2
   game_version?: string // friendly string priority2 more specific
@@ -55,7 +65,7 @@ export function browse(query: {
 
 // GET /api/browse/new?page=<integer>
 // "/api/browse/new"
-export function browseNew(query: PageQuery & { // page default 1, min 1
+function browseNew(query: PageQuery & { // page default 1, min 1
   game_id?: number, //                      priority2   
   game_version?: string, // friendly string priority2 more specific  
   game_version_id?: number, //              priority1    
@@ -65,14 +75,18 @@ export function browseNew(query: PageQuery & { // page default 1, min 1
 
 // GET /api/browse/top?page=<integer>
 // "/api/browse/top"
-export function browseTop(query: PageQuery & { // page default 1, min 1
+function browseTop(query: PageQuery & { // page default 1, min 1
 }) {
   return spacedockApi("/api/browse/top", { query })<[ 200, ModList ]>()
 }
 
 // GET /api/browse/featured?page=<integer>
 // "/api/browse/featured"
-export function browseFeatured(query: PageQuery & { // page default 1, min 1
+function browseFeatured(query: PageQuery & { // page default 1, min 1
 }) {
   return spacedockApi("/api/browse/featured", { query })<[ 200, ModList ]>()
 }
+
+
+
+

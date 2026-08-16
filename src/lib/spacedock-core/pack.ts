@@ -1,6 +1,11 @@
 import { spacedockApi, type UpateImageForm, type UpdateImageErrors, type UserRequiredError } from "./spacedock"
 
-export function updatePackBG(pack_id: number, form: UpateImageForm) {
+export const SpacedockPacks = {
+  updatePackBG,
+  createPack,
+}
+
+function updatePackBG(pack_id: number, form: UpateImageForm) {
   return spacedockApi(`POST:AUTH:/api/pack/${ pack_id }/update-bg`, { form })<
     [ 200, { path: undefined } ],
     | UserRequiredError
@@ -10,7 +15,7 @@ export function updatePackBG(pack_id: number, form: UpateImageForm) {
   >()
 }
 
-export function createPack(form: {
+function createPack(form: {
   name: string,// max 100
   game: number // game_id
 }) {

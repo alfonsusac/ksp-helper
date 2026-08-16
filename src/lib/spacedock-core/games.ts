@@ -19,11 +19,18 @@ export type GameVersionInfo = { // game_version_info()
   friendly_version: string,
 }
 
+export const SpacedockGames = {
+  getkspversions,
+  getGameVersions,
+  getGameNotifications,
+  getGames,
+  updateGameBG
+} 
 
 // Deprecated
 // GET /api/kspversions
 // 
-export function getkspversions() {
+function getkspversions() {
   return spacedockApi('/api/kspversions')<never,
     [ 501, 'This API call has been retired. Use /api/games to find the id of the game you want, then /api/<game_id>/versions to get its versions.' ]
   >()
@@ -31,7 +38,7 @@ export function getkspversions() {
 
 // GET /api/<gameid>/versions
 // 
-export function getGameVersions(gameid: number) {
+function getGameVersions(gameid: number) {
   // ordered by id desc, returns 404 empty list if inactive or no game
   return spacedockApi(`/api/${ gameid }/versions`)<
     | [ 200, GameVersionInfo[] ]
@@ -41,7 +48,7 @@ export function getGameVersions(gameid: number) {
 
 // GET /api/<gameid>/notifications
 // 
-export function getGameNotifications(gameid: number) {
+function getGameNotifications(gameid: number) {
   // returns 404 empty list if inactive or no game
   return spacedockApi(`/api/${ gameid }/notifications`)<
     | [ 200, {
@@ -56,13 +63,21 @@ export function getGameNotifications(gameid: number) {
 }
 
 // 
-export function getGames() {
-  return spacedockApi("/api/games")<
+async function getGames() {
+  const res = await spacedockApi("/api/games")<
     [ 200, GameInfo[] ]
   >()
+
+  if (res.status === 200) {
+    res.payload.forEach(g => {
+      g.background = `https://spacedock.info/content/${ g.background }`
+    })
+  }
+
+  return res
 }
 
-export function updateGameBG(game_id: number, form: UpateImageForm) {
+function updateGameBG(game_id: number, form: UpateImageForm) {
   // admin endpoint
   return spacedockApi(`POST:AUTH:/api/game/${ game_id }/update-bg`, { form })<
     [ 200, { path: undefined } ],

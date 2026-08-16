@@ -5,10 +5,26 @@ type CheckModPublishedError = [ 403, "Mod not published." ] // _check_mod_publis
 type CheckModEditableError = [ 403, "Not enough rights." ] // _check_mod_editable()
 type GetModPendingAuthorError = [ 200, 'You do not have a pending authorship invite.' ] // _get_mod_pending_author
 
+export const SpacedockMods = {
+  getMod,
+  getModVersion,
+  getModKspAvc,
+  getModDownloadCounts,
+  updateModBG,
+  grantModAccess,
+  acceptModGrant,
+  rejectModGrant,
+  revokeModGrant,
+  setModDefaultVersion,
+  createMod,
+  updateMod,
+  updateModEditVersion,
+}
+
 
 // GET /api/mod/<mod_id>
 // "/api/mod/<int:mod_id>"
-export function getMod(mod_id: number) {
+function getMod(mod_id: number) {
   return spacedockApi(`/api/mod/${ mod_id }`)<
     [ 200, (Mod & ModVersion & ModDescription & ModSharedAuthors) ], // this is the only way to get accurate sharedAuthors. Test: await getMod(1774)
     | [ 404, "Mod not found." ]
@@ -19,7 +35,7 @@ export function getMod(mod_id: number) {
 
 // GET /api/mod/<mod_id>/latest
 // "/api/mod/<int:mod_id>/<version>"
-export function getModVersion(mod_id: number, version: number | "latest" | "latest_version") {
+function getModVersion(mod_id: number, version: number | "latest" | "latest_version") {
   return spacedockApi(`/api/mod/${ mod_id }/${ version }`)<
     [ 200, Version ],
     | GetModError
@@ -30,7 +46,7 @@ export function getModVersion(mod_id: number, version: number | "latest" | "late
 }
 
 // newly added in forked docs
-export function getModKspAvc(mod_id: number) {
+function getModKspAvc(mod_id: number) {
   return spacedockApi(`/api/ksp-avc/${ mod_id }`)<
     [ 200, {
       NAME: string
@@ -51,7 +67,7 @@ export function getModKspAvc(mod_id: number) {
 }
 
 // POST /api/download_counts
-export function getModDownloadCounts(mod_id: number[]) {
+function getModDownloadCounts(mod_id: number[]) {
   return spacedockApi(`POST:/api/download_counts`, {
     form: { mod_id: mod_id.map(String) },
   })<[ 200, {
@@ -64,7 +80,7 @@ export function getModDownloadCounts(mod_id: number[]) {
 
 
 // newly added in forked docs
-export function updateModBG(mod_id: number, form: UpateImageForm) {
+function updateModBG(mod_id: number, form: UpateImageForm) {
   return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/update-bg`, { form })<
     | [ 200, { path: string | undefined } ]
     | UserRequiredError
@@ -74,7 +90,7 @@ export function updateModBG(mod_id: number, form: UpateImageForm) {
   >()
 }
 
-export function grantModAccess(mod_id: number, form: {
+function grantModAccess(mod_id: number, form: {
   user: string // username
 }) {
   return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/grant`, { form })<
@@ -87,7 +103,7 @@ export function grantModAccess(mod_id: number, form: {
   >()
 }
 
-export function acceptModGrant(mod_id: number,) {
+function acceptModGrant(mod_id: number,) {
   return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/accept_grant`)<
     [ 200, { error: false } ],
     | UserRequiredError
@@ -95,7 +111,7 @@ export function acceptModGrant(mod_id: number,) {
     | GetModPendingAuthorError
   >()
 }
-export function rejectModGrant(mod_id: number,) {
+function rejectModGrant(mod_id: number,) {
   return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/reject_grant`)<
     [ 200, { error: false } ],
     | UserRequiredError
@@ -104,7 +120,7 @@ export function rejectModGrant(mod_id: number,) {
   >()
 }
 
-export function revokeModGrant(mod_id: number, form: {
+function revokeModGrant(mod_id: number, form: {
   user: string // username
 }) {
   return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/revoke`, { form })<
@@ -118,7 +134,7 @@ export function revokeModGrant(mod_id: number, form: {
   >()
 }
 
-export function setModDefaultVersion(mod_id: number, version_id: number) {
+function setModDefaultVersion(mod_id: number, version_id: number) {
   return spacedockApi(`POST:AUTH:/api/mod/${ mod_id }/set-default/${ version_id }`)<
     [ 200, { error: false } ],
     | GetModError
@@ -129,7 +145,7 @@ export function setModDefaultVersion(mod_id: number, version_id: number) {
 
 // POST /api/mod/create
 // '/api/mod/create'
-export function createMod(form: {
+function createMod(form: {
   name: string, // max(100)
   'short-description': string, // max(1000)
   description?: string,
@@ -168,7 +184,7 @@ export function createMod(form: {
 // POST /api/mod/<mod_id>/update
 // '/api/mod/<int:mod_id>/update'
 // "This is called by dropzone"
-export function updateMod(mod_id: number, form: {
+function updateMod(mod_id: number, form: {
   version: string, // friendly version
   'game-version': string, // game friendly version
   changelog?: string, // max 10000 chars, max changelog_html is 20000 chars
@@ -201,7 +217,7 @@ export function updateMod(mod_id: number, form: {
 
 // newly added in forked docs
 // "This is called by dropzone (sometimes)"
-export function updateModEditVersion(mod_id: number, form: {
+function updateModEditVersion(mod_id: number, form: {
   'version-id': number
   changelog?: string // max 10000 chars, max changelog_html is 20000 chars
   dztotalchunkcount?: number
