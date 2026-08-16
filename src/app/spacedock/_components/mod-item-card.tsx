@@ -3,6 +3,7 @@ import { cn } from "@/ui/cn"
 import Link from "next/link"
 import { InvisibleText } from "./commons"
 import { LucideDownload, MaterialSymbolsPackage2Sharp } from "@/ui/icons"
+import { relativeDate } from "@/lib/format-relative-date"
 
 export function ModItemCard(props: {
   mod?: {
@@ -80,7 +81,7 @@ export function ModItemCard(props: {
             }
             {props.showUpdatedAt &&
               <div className={cns.text.muted("text-sm leading-3")}>
-                {(props.mod ? new Date(props.mod.versions[0].created).toLocaleString() : undefined) ?? <InvisibleText />}
+                {(props.mod ? relativeDate(new Date(props.mod.versions[0].created)) : undefined) ?? <InvisibleText />}
               </div>
             }
           </div>
@@ -102,3 +103,11 @@ export function ModItemCard(props: {
     </div>
   )
 }
+
+const rtf = new Intl.RelativeTimeFormat("en", {
+  localeMatcher: "best fit", // other values: "lookup"
+  numeric: "always", // other values: "auto"
+  style: "long", // other values: "short" or "narrow"
+})
+
+// rtf.format()
