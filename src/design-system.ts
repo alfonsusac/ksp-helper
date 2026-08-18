@@ -20,6 +20,13 @@ export const cns = {
       "hover:decoration-slate-500/50 dark:hover:decoration-zinc-600",
       "underline underline-offset-3 ",
     ),
+    linkA: cnr(
+      "[&_a]:text-slate-500/75             [&_a]:dark:text-zinc-500",
+      "[&_a]:decoration-slate-300          [&_a]:dark:decoration-zinc-700",
+      "[&_a]:hover:text-slate-500          [&_a]:dark:hover:text-zinc-400",
+      "[&_a]:hover:decoration-slate-500/50 [&_a]:dark:hover:decoration-zinc-600",
+      "[&_a]:underline underline-offset-3 ",
+    ),
     link2: cnr(
       "text-slate-400/75             dark:text-zinc-500",
       "hover:text-slate-400          dark:hover:text-zinc-400",
@@ -27,6 +34,9 @@ export const cns = {
     green: cnr("text-emerald-600 dark:text-emerald-500"),
   },
   input: {
+    reset: cnr(
+      "outline-none",
+    ),
     box: cnr(
       "rounded-md",
       "border    ",
@@ -71,10 +81,20 @@ export const cns = {
 
   // Common Components
 
-  // surface: cnr("p-4 rounded-xl! flex bg-slate-50/75 dark:bg-zinc-950/25"),
   surface: cnr("my-0 first:pt-0"),
-
+  surface2: cnr("bg-slate-50 dark:bg-zinc-800/50"),
+  bgPrimary: cnr("bg-slate-700   dark:bg-zinc-300"),
+  listBullet: cnr("bg-slate-700   dark:bg-zinc-300"),
   placeholder: cnr("bg-slate-50 dark:bg-zinc-800/10"),
+  bgMuted: cnr("bg-slate-200 dark:bg-zinc-700"),
+
+  surface2card: (...c: any) => cns.surface2(
+    "p-5 rounded-xl",
+    cns.cardBorder(),
+    c
+  ),
+  
+
 
   cardBorder: cnr("border    border-slate-200 dark:border-zinc-800"),
   // cardShadow: cnr("shadow-sm shadow-slate-100 dark:shadow-zinc-950"),
@@ -150,6 +170,7 @@ export const cns = {
         ...c
       ),
     ),
+    selected: cnr("bg-slate-950 text-white dark:bg-zinc-700 pointer-events-none"),
     ghost: (...c: any) => cns.button.base("bg-transparent dark:bg-transparent opacity-70 hover:opacity-80", c),
     subtle: (...c: any) => cns.button.base(
       "opacity-65 hover:opacity-100",
@@ -197,6 +218,7 @@ export const cns = {
       cn(
         "rounded-md outline-hidden",
         "data-highlighted:bg-slate-100 dark:data-highlighted:bg-zinc-800",
+        "p-1",
         c,
       ),
     ),
@@ -251,6 +273,88 @@ export const cns = {
   cellGradient4: "oklch(76.5% 0.177 163.223)", // emerald-400
 
   planet: cnr("bg-slate-300 size-full rounded-full shadow-[inset_0.25rem_0_10px_#0045]"),
+
+  // Prose/Documents
+  docunment: cnr(
+    "[&_h1]:my-4",
+    "[&_h1]:text-2xl",
+
+    "[&_h2]:mt-8",
+    "[&_h2]:text-xl",
+    "dark:[&_h2]:opacity-50",
+    "[&_h1+h2]:mt-6",
+
+    "[&_h3]:mt-6",
+    "[&_h3]:text-lg",
+    "dark:[&_h3]:opacity-80",
+    "[&_h1+h3]:mt-4",
+
+
+
+    "[&>p]:my-4",
+
+    "[&_ul]:my-4",
+    "[&_ul>li]:before:content-['']",
+    "[&_ul>li]:before:inline-block",
+    "[&_ul>li]:before:size-1.5!",
+    "[&_ul>li]:before:rounded-lg",
+    "[&_ul>li]:before:bg-current",
+    "[&_ul>li]:before:opacity-25",
+    "[&_ul>li]:before:-ml-6",
+    "[&_ul>li]:before:mr-4",
+    "[&_ul]:pl-7",
+    "[&_ul]:ml-1",
+
+    "[&_ol]:my-4",
+    "[&_ol]:list-decimal",
+    "[&_ol]:list-decimal",
+    "[&_ol]:pl-7",
+    "[&_ol]:ml-1",
+    "[&_ol>li]:marker:text-current/50",
+
+    "[&_li]:my-1.5",
+    "[&_li>p]:inline",
+
+    "[&_img]:rounded-md",
+
+    "[&_hr]:border-current/25",
+
+    "[&_code]:px-1",
+    "[&_code]:bg-current/7",
+    "[&_code]:border",
+    "[&_code]:border-current/10",
+    "[&_code]:rounded-sm",
+    "[&_code]:text-current/75",
+
+    "[&_th]:border",
+    "[&_td]:border",
+
+    "[&_th]:border-current/15",
+    "[&_td]:border-current/15",
+
+    "[&_th]:p-2",
+    "[&_td]:p-2",
+
+    "[&_strong]:font-extrabold",
+
+    "[&_a]:text-slate-500/75             [&_a]:dark:text-zinc-500",
+    "[&_a]:decoration-slate-300          [&_a]:dark:decoration-zinc-700",
+    "[&_a]:hover:text-slate-500          [&_a]:dark:hover:text-zinc-400",
+    "[&_a]:hover:decoration-slate-500/50 [&_a]:dark:hover:decoration-zinc-600",
+    "[&_a]:underline underline-offset-3 ",
+
+    "[&_pre]:overflow-auto",
+    "[&_pre]:w-full",
+    "[&_pre]:p-3.5",
+    "[&_pre]:bg-current/5",
+    "[&_pre]:border",
+    "[&_pre]:border-current/7",
+    "[&_pre]:rounded-lg",
+    "[&_pre_code]:bg-transparent",
+    "[&_pre_code]:border-transparent",
+    "[&_pre_code]:p-0",
+    "w-full",
+  )
 
 }
 

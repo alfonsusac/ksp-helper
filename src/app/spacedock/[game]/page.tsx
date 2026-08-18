@@ -1,12 +1,13 @@
 import { cnr, cns } from "@/design-system"
 import { notFound } from "next/navigation"
 import { SpacedockNavbar } from "../_components/nav"
-import { getGames } from "../_data-cache/get-games"
 import { FeaturedModSection, NewestModSection } from "../_components/mod-list-row-variants"
 import { Footer } from "../_components/footer"
+import { SearchBox } from "../_components/search-box"
+import { SpacedockNext } from "../_data-cache/cached-functions"
 
 export async function generateStaticParams() {
-  const games = await getGames()
+  const games = await SpacedockNext.getGames()
   const res = games.map(game => {
     return [ game.id, game.name, game.short ]
   }).flat().map(i => ({ game: String(i) }))
@@ -18,7 +19,7 @@ const maxWidth = cnr("max-w-280 mx-auto w-full")
 export default async function GamePage(props: PageProps<'/spacedock/[game]'>) {
   const params = await props.params
   const gameparam = params.game
-  const games = await getGames()
+  const games = await SpacedockNext.getGames()
   const game = games.find(g => {
     return g.id === Number(gameparam)
       || g.short === gameparam
@@ -26,9 +27,7 @@ export default async function GamePage(props: PageProps<'/spacedock/[game]'>) {
   })
   if (!game) return notFound()
 
-  return <div className={cns.page("gap-8 max-w-none")}>
-
-    <SpacedockNavbar className={maxWidth()} />
+  return <div className="flex flex-col gap-16">
 
     <section className={maxWidth("aspect-4/1 rounded-2xl")}>
       <img src={game.background} className="aspect-4/1 overflow-hidden object-center object-cover rounded-2xl" style={{
@@ -40,6 +39,7 @@ export default async function GamePage(props: PageProps<'/spacedock/[game]'>) {
       <header className={maxWidth("flex flex-col gap-0")}>
         <h1 className={cns.pageTitle("text-2xl font-bold")}>{game.name}</h1>
         <p className={cns.text.muted()}>Browse mods from {game.name}</p>
+        <SearchBox className="mt-4" />
       </header>
     </section>
 
@@ -55,7 +55,6 @@ export default async function GamePage(props: PageProps<'/spacedock/[game]'>) {
       showUpdatedAt
     />
 
-    <Footer maxWidth={maxWidth()} />
   </div>
 
 }

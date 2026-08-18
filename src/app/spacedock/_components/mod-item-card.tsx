@@ -33,7 +33,7 @@ export function ModItemCard(props: {
       )}
     >
       <Link
-        href={`#`}
+        href={`/spacedock/mod/${props.mod?.id}`}
         className={cns.linkCard(
           "block overflow-hidden relative w-60 shrink-0 p-0",
         )}>

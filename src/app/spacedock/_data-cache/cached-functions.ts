@@ -1,3 +1,4 @@
+import { getDownloadURLFileSize } from "@/lib/get-download-url-size"
 import type { $$ } from "@/lib/parameter-util-type"
 import { Spacedock } from "@/lib/spacedock-core/package"
 import type { ResponseType } from "@/lib/spacedock-core/spacedock"
@@ -30,8 +31,41 @@ export const SpacedockNext = {
     if (res.status !== 200) throw new SpacedockNextError(`Error browsing mods.`, args, res)
     return res
   }),
-}
 
+  getGames: unstable_cache(async () => {
+    console.log("Fetching all games")
+    const res = await Spacedock.getGames()
+    if (res.status !== 200) throw new SpacedockNextError("Error fetching game list", undefined, res)
+    return res.payload
+  }),
+
+  findMod: unstable_cache(async (...args: $$<typeof Spacedock.getMod>) => {
+    console.log("Getting one mod")
+    const res = await Spacedock.getMod(...args)
+    if (res.status === 404) return null
+    if (res.status === 403 || res.status === 401) return "not published"
+    if (res.status !== 200) throw new SpacedockNextError("Error fetching mod", args, res)
+    return res.payload
+  }),
+
+  getUser: unstable_cache(async (...args: $$<typeof Spacedock.getUser>) => {
+    console.log("Fetching a user")
+    const res = await Spacedock.getUser(...args)
+    if (res.status === 403) return "private user"
+    if (res.status === 404) return null
+    if (res.status !== 200) throw new SpacedockNextError("Error fetching user", args, res)
+    return res.payload
+  }),
+
+
+
+
+
+  getDownloadURLFileSize: unstable_cache(async (path: string) => {
+    const bytes = await getDownloadURLFileSize('https://spacedock.info' + path)
+    return bytes
+  })
+}
 
 
 class SpacedockNextError extends Error {

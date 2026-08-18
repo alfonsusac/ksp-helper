@@ -1,14 +1,14 @@
 import { cnr, cns } from "@/design-system"
-import { IcBaselineDiscord, LucideArrowRight, LucideArrowUpRight, MdiGithub } from "@/ui/icons"
+import { IcBaselineDiscord, LucideArrowRight, MdiGithub } from "@/ui/icons"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
-import { SpacedockNavbar, registerLink } from "./_components/nav"
+import { registerLink } from "./_components/nav"
 import { InvisibleText } from "./_components/commons"
-import { getGames } from "./_data-cache/get-games"
 import { Spacedock } from "@/lib/spacedock-core/package"
-import { FeaturedModSection, TestModSection, TopModSection } from "./_components/mod-list-row-variants"
-import { Footer } from "./_components/footer"
+import { FeaturedModSection, TopModSection } from "./_components/mod-list-row-variants"
+import { SearchBox } from "./_components/search-box"
+import { SpacedockNext } from "./_data-cache/cached-functions"
 
 export const metadata: Metadata = {
   title: "SpaceDock",
@@ -20,10 +20,10 @@ const maxWidth = cnr("max-w-280 mx-auto w-full")
 export default function SpaceDockPage() {
 
   return (
-    <main className={cns.page("gap-24 max-w-none")}>
+    <div className="flex flex-col gap-16 pt-20">
 
       {/* Header */}
-      <SpacedockNavbar className={maxWidth()} hideLogo />
+      {/* <SpacedockNavbar hideLogo /> */}
 
       <section className={("flex flex-col items-center")}>
         <header className="flex flex-col gap-0 items-center">
@@ -31,18 +31,10 @@ export default function SpaceDockPage() {
           <p className={cns.text.muted()}>Unofficial spacedock wrapper to browse mods</p>
         </header>
 
-        <div className={cns.input.box("mt-8 p-1 flex items-center max-w-120 w-full self-center rounded-lg")}>
-          <input
-            className={cns.input.box("w-full border-none")}
-            placeholder="Search mods..."
-          />
-          <button className={cns.button.base("px-5")}>
-            Search
-          </button>
-        </div>
+        <SearchBox className="w-full self-center mt-8" />
       </section>
 
-      <section className={maxWidth("flex flex-col gap-4")}>
+      <section className={maxWidth("flex flex-col gap-4 pt-8 pb-6")}>
         <h2 className="text-xl">Games</h2>
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           <Suspense fallback={Array.from({ length: 6 }, (_, i) => <GameListItem key={i} />)}>
@@ -61,7 +53,6 @@ export default function SpaceDockPage() {
         showGameLabel
       />
 
-
       <section className={maxWidth("max-w-195 flex flex-col gap-4")}>
         <header className="flex flex-col gap-1">
           <h2 className={"text-xl grow"}>Get involed</h2>
@@ -70,7 +61,6 @@ export default function SpaceDockPage() {
           {[
             {
               href: registerLink,
-              // icon: <Image width={16} height={16} className="size-4 mb-0.5 shrink-0" src="https://spacedock.info/static/57x57.ico" alt="Spacedock Logo" />,
               icon: <img width={16} height={16} className="size-4 mb-0.5 shrink-0" src="https://spacedock.info/static/57x57.ico" alt="Spacedock Logo" />,
               title: "Register to Spacedock",
               desc: "Visit the spacedock.info website to register an account",
@@ -114,14 +104,13 @@ export default function SpaceDockPage() {
 
       </section>
 
-      <Footer maxWidth={maxWidth()} />
 
-    </main >
+    </div >
   )
 }
 
 async function GameList() {
-  const payload = await getGames()
+  const payload = await SpacedockNext.getGames()
   return <>
     {payload.map(game => {
       return <GameListItem key={game.id} game={game} />

@@ -65,6 +65,32 @@ export function NewestModSection(props: {
   />
 }
 
+
+export function RecentlyUpdatedModSection(props: {
+  maxWidth: string,
+  gameid?: number,
+  showGameLabel?: boolean
+  showUpdatedAt?: boolean,
+}) {
+  return <ModListRow
+    maxWidth={props.maxWidth}
+    title="RecentlyUpdatedModSection"
+    emptyLabel="No recently updated mods"
+    seeMore={{
+      href: props.gameid ? `/spacedocks/${ props.gameid }/updated` : `/spacedocks/updated`,
+      label: "See all recently updated mods"
+    }}
+    data={getNewMods({ trim: 8, game_id: props.gameid }).then(e => e.result)}
+    showGameLabel={props.showGameLabel}
+    showUpdatedAt={props.showUpdatedAt}
+  />
+}
+
+
+
+
+
+
 export function TestModSection() {
   return <ModListRow
     maxWidth={""}

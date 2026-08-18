@@ -32,7 +32,10 @@ export function FullWidthOverflowRow(props: {
 }) {
   return (
     <div className={cn("flex -mx-8 justify-center", props.className)}>
-      <div className="flex gap-2 overflow-scroll px-14 pb-8 ">
+      <div className={cn(
+        "flex gap-2 overflow-scroll pb-8",
+        // "px-14"
+      )}>
         {props.children}
       </div>
     </div>
@@ -63,7 +66,9 @@ export function ModListRow(props: {
       />}
     >
       <Suspense fallback={
-        <FullWidthOverflowRow>
+        <FullWidthOverflowRow
+          className={props.maxWidth}
+        >
           {Array.from({ length: 8 }, (_, i) => <ModItemCard key={i}
             showGameLabel={props.showGameLabel}
             showUpdatedAt={props.showUpdatedAt}
@@ -114,7 +119,9 @@ async function ModListElementArray(props: {
   </>
 
   return <>
-    <FullWidthOverflowRow>
+    <FullWidthOverflowRow
+      className={props.maxWidth}
+    >
       {list.map(mod => {
         return <ModItemCard key={mod.id} mod={mod}
           showGameLabel={props.showGameLabel}

@@ -31,7 +31,7 @@ export type Mod = { // mod_info()
   followers: number
   author: string
   default_version_id: number
-  shared_authors: unknown[], // unless specified/implemented, shared_authors alwyas return empty array.
+  shared_authors: unknown, // unless specified/implemented, shared_authors alwyas return empty array.
   background: null | string
   bg_offset_y: number | null
   license: License
@@ -132,7 +132,7 @@ const newHeaderWithSessionCookie = (authCode?: string) => {
 // export type Result<Ok, Err extends [ number, string ]> = Error<Err> | Ok
 
 export type ResponseType<Status extends number, Payload> = { status: Status, payload: Payload, meta: { url: string } }
-export type Error<Status extends number, Reason extends string> = { status: Status, payload: { error: true, reason: Reason } }
+export type Error<Status extends number, Reason extends string> = { status: Status, payload: { error: true, reason: Reason }, meta: { url: string } }
 export type Result<Ok extends [ number, any ], Err extends [ number, string ]> =
   | ResponseType<Ok[ 0 ], Ok[ 1 ]>
   | Error<Err[ 0 ], Err[ 1 ]>
