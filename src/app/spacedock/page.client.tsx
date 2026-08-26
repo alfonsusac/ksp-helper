@@ -28,7 +28,8 @@ export function LoginDialog(props: {
             "rounded-2xl",
             "p-7",
             "w-full max-w-180",
-            cns.popover.bg(),
+            // cns.popover.bg(),
+            
             // shadow,
             'transition-[scale,opacity] duration-100 ease-out',
             "data-ending-style:scale-[0.98] data-ending-style:opacity-0",
@@ -54,7 +55,7 @@ function LoginAndForgetSection(props: {
       <Dialog.Title className="text-lg">
         {!isForget ? "Login" : "Request Password Reset"}
       </Dialog.Title>
-      <Dialog.Description className={cns.text.muted("max-w-120")}>
+      <Dialog.Description className={cns.textMuted("max-w-120")}>
         {!isForget ? "Log in to your Spacedock account" : "Forgot your password? It's cool, happens to the best of us. We can help you reset it."}
       </Dialog.Description>
     </header>
@@ -66,12 +67,12 @@ function LoginAndForgetSection(props: {
       <div className="flex flex-col gap-2 max-w-80">
         <button
           onClick={() => setForget(!isForget)}
-          className={cns.button.base()} >
+          className={cns.buttonBase()} >
           {!isForget ? "I forgot my password" : "Log In"}
         </button>
         <Link // TODO: Make a dialog to alert user that they need to register on spacedock.info website
           href="https://spacedock.info/register"
-          className={cns.button.base()} >
+          className={cns.buttonBase()} >
           Create new account<LucideArrowUpRight />
         </Link>
         <p className="text-xs mt-4 text-pretty">
@@ -79,7 +80,7 @@ function LoginAndForgetSection(props: {
         </p>
         <Link // TODO: Make a dialog to alert user that they need to register on spacedock.info website
           href="https://discord.gg/yrSWpxCP"
-          className={cns.button.base()} >
+          className={cns.buttonBase()} >
           <IcBaselineDiscord />
           Support Discord <LucideArrowUpRight />
         </Link>
@@ -102,14 +103,14 @@ function LoginForm(props: {
       <InputBlock label="Username" row className="grid grid-cols-[5rem_auto]">
         <input
           name="username"
-          className={cns.input.box("")}
+          className={cns.inputBox("")}
         />
       </InputBlock>
       <InputBlock label="Password" row className="grid grid-cols-[5rem_auto]">
         <input
           name="password"
           type="password"
-          className={cns.input.box("")}
+          className={cns.inputBox("")}
         />
       </InputBlock>
       <div className="grid grid-cols-[5rem_auto] gap-2 justify-start">
@@ -124,7 +125,7 @@ function LoginForm(props: {
       <div className='grid grid-cols-[5rem_auto] gap-2 justify-start'>
         <div />
 
-        <Dialog.Close className={cns.button.base("px-12")}>
+        <Dialog.Close className={cns.buttonBase("px-12")}>
           Login
         </Dialog.Close>
       </div>
@@ -140,12 +141,12 @@ function ForgetPasswordForm(props: {
       <InputBlock label="Email" row className="grid grid-cols-[5rem_auto]">
         <input
           name="email"
-          className={cns.input.box("")}
+          className={cns.inputBox("")}
         />
       </InputBlock>
       <div className='grid grid-cols-[5rem_auto] gap-2 justify-start'>
         <div />
-        <Dialog.Close className={cns.button.base("px-12")}>
+        <Dialog.Close className={cns.buttonBase("px-12")}>
           Submit
         </Dialog.Close>
       </div>

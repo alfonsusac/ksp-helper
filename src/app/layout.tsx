@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inconsolata, Inter, JetBrains_Mono, Kode_Mono, Manro
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { cns } from "@/design-system"
+import { ClientDebugTool } from "./page.client.dev"
 
 
 
@@ -38,11 +39,12 @@ export default function RootLayout({
       lang="en"
       className={`${ sans.variable } ${ mono.variable } h-full antialiased`}
     >
-      <body className={cns.bg("min-h-full")}>
+      <body className={cns.base("min-h-full font-mono")}>
         <div className="root">
-          <div className={cns.text.base("flex flex-col items-center")}>
+          <div className={cns.base("flex flex-col items-center")}>
             <Analytics />
             {children}
+            <ClientDebugTool />
           </div>
         </div>
       </body>

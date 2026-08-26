@@ -45,7 +45,7 @@ export function SignalSymbol(props: {
 
 export function Divider(props: ComponentProps<"div">) {
   return (
-    <div {...props} className={cns.divider(
+    <div {...props} className={cn(
       "border-b border-l self-stretch",
       props.className
     )} />
@@ -54,7 +54,7 @@ export function Divider(props: ComponentProps<"div">) {
 
 export function HomeButton() {
   return (
-    <Link className={cns.button.ghost("w-fit -mx-3 -mt-3")} href="/">
+    <Link className={cns.buttonGhost("w-fit -mx-3 -mt-3")} href="/">
       <LucideHouse />
       Home
     </Link>
@@ -62,7 +62,7 @@ export function HomeButton() {
 }
 export function BackButton(props: { href: string }) {
   return (
-    <Link className={cns.button.ghost("w-fit -mx-3 -mt-3")} href={props.href}>
+    <Link className={cns.buttonGhost("w-fit -mx-3 -mt-3")} href={props.href}>
       <LucideArrowLeft />
       Back
     </Link>
@@ -74,12 +74,12 @@ export function BackButton(props: { href: string }) {
 
 export function Muted(props: ComponentProps<"span">) {
   return (
-    <span {...props} className={cns.text.muted(props.className)} />
+    <span {...props} className={cns.textMuted(props.className)} />
   )
 }
 export function Green(props: ComponentProps<"span">) {
   return (
-    <span {...props} className={cns.text.green(props.className)} />
+    <span {...props} className={cns.textGreen(props.className)} />
   )
 }
 

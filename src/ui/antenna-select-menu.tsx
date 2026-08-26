@@ -81,25 +81,25 @@ export function AntennaInput(props: {
                       <img
                         className="aspect-square object-contain"
                         src={antenna.image}
-                      /> : <EmojioneMonotoneSatelliteAntenna className={cns.text.muted("size-full p-2")} />
+                      /> : <EmojioneMonotoneSatelliteAntenna className={cns.textMuted("size-full p-2")} />
                     }
                   </div>
                   <div className="flex flex-col grow">
                     <div className="text-pretty leading-4 shrink-0">
                       {antenna.label}
                     </div>
-                    <div className={cns.text.muted("grow shrink-0 text-xs")}>
+                    <div className={cns.textMuted("grow shrink-0 text-xs")}>
                       {prettyNum(antenna.rating)} <span className="capitalize">({(antenna.type)})</span>
                     </div>
                     <div className="flex items-center shrink-0 text-base">
                       <div className="grow text-sm">{!!qty && `x${ qty }`}</div>
-                      <button className={cns.button.iconGhost("shrink-0", qty ? "" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
+                      <button className={cns.buttonGhost(cns.buttonIcon(), "shrink-0", qty ? "" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
                         <LucideX />
                       </button>
-                      <button className={cns.button.iconGhost("shrink-0", qty ? "" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(antenna.id)}>
+                      <button className={cns.buttonGhost(cns.buttonIcon(), "shrink-0", qty ? "" : "opacity-0 pointer-events-none")} onClick={() => removeAntenna(antenna.id)}>
                         <LucideMinus />
                       </button>
-                      <button className={cns.button.iconGhost("shrink-0")} onClick={() => addAntenna(antenna.id)} >
+                      <button className={cns.buttonGhost(cns.buttonIcon(), "shrink-0")} onClick={() => addAntenna(antenna.id)} >
                         <LucidePlus />
                       </button>
                     </div>
@@ -114,7 +114,7 @@ export function AntennaInput(props: {
       <Menu.Root>
         <Menu.Trigger
           render={
-            <button className={cns.button.ghost("text-sm justify-start")}>
+            <button className={cns.buttonGhost("text-sm justify-start")}>
               <LucidePlus />
               {/* <StreamlineWifiAntennaRemix className="size-4 mr-1" /> */}
               Add Antenna
@@ -144,14 +144,14 @@ export function AntennaInput(props: {
                                   <img
                                     className="aspect-square object-contain"
                                     src={antenna.image}
-                                  /> : <EmojioneMonotoneSatelliteAntenna className={cns.text.muted("size-9")} />
+                                  /> : <EmojioneMonotoneSatelliteAntenna className={cns.textMuted("size-9")} />
                                 }
                               </div>
                             </>}
                           </div>
                           <div className="flex flex-col">
                             <div>{antenna.label}</div>
-                            <div className={cns.text.muted("text-xs")}>
+                            <div className={cns.textMuted("text-xs")}>
                               {prettyNum(antenna.rating)}{' '}
                               <span>|{' '}
                                 {antenna.combinabilityExponent === 0 ?
@@ -169,7 +169,7 @@ export function AntennaInput(props: {
                 </div>
               })}
               {hiddenAntennas > 0 &&
-                <div className={cns.text.muted("text-xs opacity-70 px-2 max-w-100 mt-2")}>
+                <div className={cns.textMuted("text-xs opacity-70 px-2 max-w-100 mt-2")}>
                   {hiddenAntennas} hidden antenna(s).
                 </div>
               }

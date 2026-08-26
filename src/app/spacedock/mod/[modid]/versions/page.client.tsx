@@ -55,12 +55,12 @@ export function VersionPageClientSection(props: {
                 <div className={cns.bgMuted("size-3 rounded-full")} />
               </div>
               <div>
-                <p className={cns.text.muted("flex gap-2")}>
+                <p className={cns.textMuted("flex gap-2")}>
                   {new Date(v.created).toLocaleDateString()}
-                  <span className={cns.text.faint()}>|</span>
+                  <span className={cns.textFaint()}>|</span>
                   {relativeDate(v.created)}
-                  <span className={cns.text.faint()}>|</span>
-                  <span className={cns.text.faint()}>#{v.id}</span>
+                  <span className={cns.textFaint()}>|</span>
+                  <span className={cns.textFaint()}>#{v.id}</span>
                 </p>
                 <h2 className="text-xl flex gap-2 items-center">
                   {v.friendly_version} for {v.game_version}
@@ -71,7 +71,7 @@ export function VersionPageClientSection(props: {
                 <div dangerouslySetInnerHTML={{ __html: v.html }} className={cns.docunment(cns.surface2card("py-0 wrap-break-word"))}>
                 </div>
                 :
-                <div className={cns.text.faint(cns.surface2card("py-2"))}>
+                <div className={cns.textFaint(cns.surface2card("py-2"))}>
                   Changelog not provided
                 </div>
               }
@@ -79,13 +79,13 @@ export function VersionPageClientSection(props: {
                 <DownloadButton
                   downloadPath={v.download_path}
                 />
-                <div className={cns.text.muted()}>
+                <div className={cns.textMuted()}>
                   <Suspense fallback={<i>Loading Size...</i>}>
                     <SpacedockDownloadURLFileSizeClient sizePromise={v.sizePromise} />
                   </Suspense>
                 </div>
                 <div className={cns.bgMuted("size-1.5 rounded-full")} />
-                <div className={cns.text.muted()}>
+                <div className={cns.textMuted()}>
                   {v.downloads.toLocaleString()} Downloads
                 </div>
 
@@ -116,7 +116,7 @@ function SelectVersionFilterDropdown(props: {
         ))
       }}
     >
-      <Select.Trigger className={cns.input.box("min-w-50 rounded-xl", cns.surface2())}>
+      <Select.Trigger className={cns.inputBox("min-w-50 rounded-xl", cns.surface2())}>
         <Select.Value className="grow" >
           {(() => {
             if (selected.length === 0) return 'Game Versions'
@@ -148,7 +148,7 @@ function SelectVersionFilterDropdown(props: {
                   </Select.ItemIndicator>
                   <Select.ItemText className="col-start-2">
                     {v}
-                    <span className={cns.text.muted()}>{' '}
+                    <span className={cns.textMuted()}>{' '}
                       ({props.countMap.get(v)})
                     </span>
                   </Select.ItemText>

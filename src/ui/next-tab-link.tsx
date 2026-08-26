@@ -11,7 +11,7 @@ export function TabLink(props: ComponentProps<typeof Link>) {
   return <>
     <Link
       {...props}
-      className={cns.button.ghost(
+      className={cns.buttonGhost(
         "text-base",
         "font-semibold border border-transparent",
         isActive && [

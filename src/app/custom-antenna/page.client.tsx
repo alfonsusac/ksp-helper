@@ -33,7 +33,7 @@ export function CustomAntennaPage_Client() {
       <div className="flex flex-col gap-1">
 
         <div className="flex flex-col gap-8" key={refreshId}>
-          {settings.customAntennas.length === 0 && <div className={cns.text.muted("text-xs")}>No Custom Antenna Added</div>}
+          {settings.customAntennas.length === 0 && <div className={cns.textMuted("text-xs")}>No Custom Antenna Added</div>}
           {settings.customAntennas.map((a, i) => {
             return (
               <AntennaItem key={i}
@@ -50,7 +50,7 @@ export function CustomAntennaPage_Client() {
               />
             )
           })}
-          <button className={cns.button.base()} onClick={() => {
+          <button className={cns.buttonBase()} onClick={() => {
             settings.customAntennas.push({
               label: `New Antenna ${ settings.customAntennas.length }`,
               combinabilityExponent: 0.75,
@@ -152,14 +152,14 @@ function AntennaItem(props: {
       </div>
 
       {confirmDelete ? <div className="flex gap-2">
-        <button className={cns.button.base("mt-2 text-xs py-1.5 w-full")} onClick={props.onDelete}>
+        <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={props.onDelete}>
           Confirm Delete
         </button>
-        <button className={cns.button.base("mt-2 text-xs py-1.5 w-full")} onClick={() => setConfirmDelete(false)}>
+        <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={() => setConfirmDelete(false)}>
           Cancel Delete
         </button>
       </div> :
-        <button className={cns.button.base("mt-2 text-xs py-1.5")} onClick={() => setConfirmDelete(true)}>
+        <button className={cns.buttonBase("mt-2 text-xs py-1.5")} onClick={() => setConfirmDelete(true)}>
           Delete
         </button>
       }

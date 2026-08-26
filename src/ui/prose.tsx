@@ -17,7 +17,7 @@ export function WhatIsThisSection(props: {
 }) {
   return (
     <div className="flex flex-col gap-2 text-sm max-w-160">
-      <h2 className={cns.text.muted("text")}>
+      <h2 className={cns.textMuted("text")}>
         What is this?
       </h2>
       {props.descs.map((e, i) => {
@@ -33,7 +33,7 @@ export function WhatIsThisSection(props: {
         It can also be used to calculate the strength of the rating to calculate how many
         percent of science can be transmitted from a vessel.
       </div> */}
-      <h2 className={cns.text.muted("mt-2")}>
+      <h2 className={cns.textMuted("mt-2")}>
         Sources
       </h2>
       <ul className={"list-outside pl-4 list-disc"}>
@@ -48,7 +48,7 @@ export function WhatIsThisSection(props: {
         <CitationList title="Signal Strength vs Science Bonus (Redone)" href="https://docs.google.com/spreadsheets/d/1Wr7to96dpo56xZZxFquQo3WHYJjuv0ZZ9Vpc3BViSh8" />
         <CitationList title="Min and Max Distance between Planets" href="https://forum.kerbalspaceprogram.com/topic/100439-min-max-distances-betwen-planets/" /> */}
       </ul>
-      <h2 className={cns.text.muted("mt-2")}>
+      <h2 className={cns.textMuted("mt-2")}>
         Prior work
       </h2>
       <ul className={"list-outside pl-4 list-disc"}>

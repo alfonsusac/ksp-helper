@@ -9,7 +9,9 @@ export default function SpacedockLayout(props: LayoutProps<'/spacedock'>) {
 
     <SpacedockNavbar />
 
-    {props.children}
+    <div className="grow">
+      {props.children}
+    </div>
 
     <Footer />
 

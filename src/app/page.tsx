@@ -11,7 +11,7 @@ export default function HomePage() {
 
       <header className="flex flex-col gap-1">
         <h1 className={cns.pageTitle("text-2xl")}>KSP Tools</h1>
-        <p className={cns.text.muted()}>Tools to help play Kerbal Space Program</p>
+        <p className={cns.textMuted()}>Tools to help play Kerbal Space Program</p>
       </header>
 
 
@@ -39,8 +39,8 @@ export default function HomePage() {
                   <img src={o.thumb} />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <div className="leading-4">{o.title}{o.beta && <span className={cns.text.muted("ml-1 text-xs")}>beta</span>}</div>
-                  <div className={cns.text.muted("text-sm leading-3.5")}>{o.desc}</div>
+                  <div className="leading-4">{o.title}{o.beta && <span className={cns.textMuted("ml-1 text-xs")}>beta</span>}</div>
+                  <div className={cns.textMuted("text-sm leading-3.5")}>{o.desc}</div>
                 </div>
               </Link>
             )
@@ -49,15 +49,15 @@ export default function HomePage() {
       </div>
 
 
-      <header className={cns.text.base("pt-24 -mb-16")}>
+      <header className={cns.base("pt-24 -mb-16")}>
         Community Tools
-        <div className={cns.text.muted("")}>Web-based tools made by the KSP community</div>
+        <div className={cns.textMuted("")}>Web-based tools made by the KSP community</div>
       </header>
 
       {communityCalculators.map((g, gi) => {
         return (
           <Fragment key={gi}>
-            <div className={cns.text.base("text-sm opacity-75 mt-24")}>{g.title}</div>
+            <div className={cns.base("text-sm opacity-75 mt-24")}>{g.title}</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {g.items.map((p, pi) => <CommunityProjectLink key={pi} {...p} />)}
             </div>
@@ -65,8 +65,8 @@ export default function HomePage() {
         )
       })}
 
-      {/* <div className={cns.text.muted("text-xs opacity-75 pt-0.5")}>Last Updated {new Date().toDateString()}</div> */}
-      <div className={cns.text.muted("text-xs opacity-75 pt-0.5")}>Last Updated <LastUpdatedPrerenderTime /></div>
+      {/* <div className={cns.textMuted("text-xs opacity-75 pt-0.5")}>Last Updated {new Date().toDateString()}</div> */}
+      <div className={cns.textMuted("text-xs opacity-75 pt-0.5")}>Last Updated <LastUpdatedPrerenderTime /></div>
 
       <div className="grow" />
 
@@ -573,15 +573,15 @@ function CommunityProjectLink(props: {
         </div>
         <div className="flex flex-col gap-1">
           <div className="leading-4 capitalize text-sm text-pretty">{props.title}<LucideArrowUpRight className="inline align-[-0rem] opacity-50" /></div>
-          <div className="leading-4 text-sm opacity-75"><span className={cns.text.muted()}>by</span> {props.author}</div>
-          <div className={cns.text.muted("text-xs leading-3.5")}>{props.desc}</div>
-          {props.lastUpdated && <div className={cns.text.muted("text-xs opacity-50")}>Last Updated {props.lastUpdated}</div>}
+          <div className="leading-4 text-sm opacity-75"><span className={cns.textMuted()}>by</span> {props.author}</div>
+          <div className={cns.textMuted("text-xs leading-3.5")}>{props.desc}</div>
+          {props.lastUpdated && <div className={cns.textMuted("text-xs opacity-50")}>Last Updated {props.lastUpdated}</div>}
         </div>
       </Link>
-      <div className={cns.text.muted("flex gap-4 flex-wrap text-xs px-5")}>
-        {props.kspForum && <Link href={props.kspForum} className={cns.text.link2()}>KSP Forum Post<LucideArrowUpRight className="inline align-[-0rem] opacity-50" /></Link>}
-        {props.redditPost && <Link href={props.redditPost} className={cns.text.link2()}>Reddit Post<LucideArrowUpRight className="inline align-[-0rem] opacity-50" /></Link>}
-        {props.sourceCode && <Link href={props.sourceCode} className={cns.text.link2()}>Source Code<LucideArrowUpRight className="inline align-[-0rem] opacity-50" /></Link>}
+      <div className={cns.textMuted("flex gap-4 flex-wrap text-xs px-5")}>
+        {props.kspForum && <Link href={props.kspForum} className={cns.navigationLink()}>KSP Forum Post<LucideArrowUpRight className="inline align-[-0rem] opacity-50" /></Link>}
+        {props.redditPost && <Link href={props.redditPost} className={cns.navigationLink()}>Reddit Post<LucideArrowUpRight className="inline align-[-0rem] opacity-50" /></Link>}
+        {props.sourceCode && <Link href={props.sourceCode} className={cns.navigationLink()}>Source Code<LucideArrowUpRight className="inline align-[-0rem] opacity-50" /></Link>}
       </div>
     </div>
   )

@@ -21,9 +21,9 @@ export default function UtilLayout(props: LayoutProps<'/'>) {
               <Link
                 key={i}
                 href={e.href}
-                className={cns.button.ghost(
+                className={cns.buttonGhost(
                   "justify-start",
-                  pathname === e.href && cns.button.subtle("justify-start")
+                  pathname === e.href && cns.buttonSubtle("justify-start")
                 )}
               >
                 {e.label}

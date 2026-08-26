@@ -152,7 +152,7 @@ export default function AlphaMatteBGRemover() {
                 </div>
                 <img src={image.url} />
                 <DimensionData d={image.dimension} />
-                <button className={cns.button.base()} onClick={() => setImage(undefined)}>
+                <button className={cns.buttonBase()} onClick={() => setImage(undefined)}>
                   Remove Image
                 </button>
               </> :
@@ -163,7 +163,7 @@ export default function AlphaMatteBGRemover() {
         }
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <button className={cns.button.base("")} onClick={async () => {
+        <button className={cns.buttonBase("")} onClick={async () => {
           await convert(matteColors, blackImage?.file, whiteImage?.file, mode)
         }}>
           Convert

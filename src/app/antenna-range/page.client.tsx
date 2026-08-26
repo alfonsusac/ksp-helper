@@ -75,12 +75,12 @@ export function AntennaRange_Client() {
             {
               value: "ksc-ship", label: <div className="flex flex-col">
                 <div>KSC to Ship</div>
-                <div className={cns.text.muted("text-xs")}>Direct Mode</div>
+                <div className={cns.textMuted("text-xs")}>Direct Mode</div>
               </div>
             }, {
               value: "ship-ship", label: <div className="flex flex-col">
                 <div>Ship to Ship</div>
-                <div className={cns.text.muted("text-xs")}>Relay Mode</div>
+                <div className={cns.textMuted("text-xs")}>Relay Mode</div>
               </div>
             },
           ]}
@@ -110,14 +110,14 @@ export function AntennaRange_Client() {
             <LucideBadgeQuestionMark />
             <div>Reason why its zero</div>
           </div>
-          <div className={cns.error.text.muted("text-xs")}>
+          <div className={cns.errorTextMuted("text-xs")}>
             {zeroReason}
           </div>
         </div>
       }
 
       <header>
-        <div className={cns.text.muted("text-xs")}>Output</div>
+        <div className={cns.textMuted("text-xs")}>Output</div>
         <h2 className="text-lg">
           Result
         </h2>
@@ -233,7 +233,7 @@ function ResultSection(props: {
 
         <div className="flex sm:flex-col gap-x-8 gap-y-4 flex-wrap">
           <div className="">
-            <div className={cns.text.muted("")}>
+            <div className={cns.textMuted("")}>
               Maximum Antenna Range
             </div>
             <div className="text-2xl font-semibold">
@@ -245,31 +245,31 @@ function ResultSection(props: {
           </div>
 
           <div className="">
-            <div className={cns.text.muted("mb-2")}>
+            <div className={cns.textMuted("mb-2")}>
               Signal Strengths
             </div>
             <div className="grid grid-cols-[3rem_auto_2rem] gap-x-2">
-              <div className={cns.text.muted("text-end")}>{'≥'}95.5%</div>
+              <div className={cns.textMuted("text-end")}>{'≥'}95.5%</div>
               <div>{prettyNum(maximumRange * 0.0414).toLocaleString() + "m"}</div>
-              <div className={cns.button.iconGhost("size-5 p-1")}
+              <div className={cns.buttonGhost(cns.buttonIconSm())}
                 onClick={() => setD(maximumRange * 0.0414)}
               ><LucideArrowRight /></div>
 
-              <div className={cns.text.muted("text-end")}>~90%</div>
+              <div className={cns.textMuted("text-end")}>~90%</div>
               <div>{prettyNum(maximumRange * 0.19580).toLocaleString() + "m"}</div>
-              <div className={cns.button.iconGhost("size-5 p-1")}
+              <div className={cns.buttonGhost(cns.buttonIconSm())}
                 onClick={() => setD(maximumRange * 0.19580)}
               ><LucideArrowRight /></div>
 
-              <div className={cns.text.muted("text-end")}>~80%</div>
+              <div className={cns.textMuted("text-end")}>~80%</div>
               <div>{prettyNum(maximumRange * 0.28714).toLocaleString() + "m"}</div>
-              <div className={cns.button.iconGhost("size-5 p-1")}
+              <div className={cns.buttonGhost(cns.buttonIconSm())}
                 onClick={() => setD(maximumRange * 0.28714)}
               ><LucideArrowRight /></div>
 
-              <div className={cns.text.muted("text-end")}>~70%</div>
+              <div className={cns.textMuted("text-end")}>~70%</div>
               <div>{prettyNum(maximumRange * 0.36326).toLocaleString() + "m"}</div>
-              <div className={cns.button.iconGhost("size-5 p-1")}
+              <div className={cns.buttonGhost(cns.buttonIconSm())}
                 onClick={() => setD(maximumRange * 0.36326)}
               ><LucideArrowRight /></div>
             </div>
@@ -285,7 +285,7 @@ function ResultSection(props: {
         <Divider className="sm:hidden" />
 
         <div className="flex flex-col">
-          <div className={cns.text.muted("text-sm mb-2")}>
+          <div className={cns.textMuted("text-sm mb-2")}>
             Strengths by Distance + Science Bonus
           </div>
           <DistanceStrengthCalculator
@@ -297,7 +297,7 @@ function ResultSection(props: {
         </div>
         <Divider />
         <div>
-          <div className={cns.text.muted("text-sm mb-2")}>
+          <div className={cns.textMuted("text-sm mb-2")}>
             Will it reach?
           </div>
           <PlanetDistanceTableView maximumRange={maximumRange} mode={mode} planetData={planets} settings={props.settings} />
@@ -353,11 +353,11 @@ function BodyDetailInput(props: {
   return (
     <div className="flex flex-col gap-3">
       <header>
-        <div className={cns.text.muted("text-xs")}>Body {props.which + 1}</div>
+        <div className={cns.textMuted("text-xs")}>Body {props.which + 1}</div>
         <h2 className="text-lg -mb-0.5">
           {props.payload.type === "ksc" ? "KSC" : "Ship"}
         </h2>
-        <div className={cns.text.muted()}>Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier, props.antennas))}</div>
+        <div className={cns.textMuted()}>Power Rating: {prettyNum(getPowerPowerRating(props.payload, props.dsnModifier, props.antennas))}</div>
       </header>
       {
         props.payload.type === "ksc" ?
@@ -392,7 +392,7 @@ function BodyDetailInput(props: {
               />
               <div className="grow" />
               <button
-                className={cns.button.ghost("w-fit text-sm")}
+                className={cns.buttonGhost("w-fit text-sm")}
                 onClick={() => {
                   props.antennas.forEach(antenna => clearAntenna(antenna.id))
                 }}
@@ -448,7 +448,7 @@ function DistanceStrengthCalculator(props: {
       </div>
 
       <div className="flex gap-2 text-sm items-center">
-        <div className={cns.text.muted("text-xs font-normal pt-20 pr-2 capitalize")}>
+        <div className={cns.textMuted("text-xs font-normal pt-20 pr-2 capitalize")}>
           {props.mode}
         </div>
 
@@ -477,7 +477,7 @@ function DistanceStrengthCalculator(props: {
             onValueChange={(e) => setDistance(e)}
           />
         </div>
-        <div className={cns.text.muted("text-xs font-normal pt-20 pl-2")}>Max</div>
+        <div className={cns.textMuted("text-xs font-normal pt-20 pl-2")}>Max</div>
       </div >
     </div>
 
@@ -534,10 +534,10 @@ function PlanetDistanceTableView(props: {
                 ? <div className="pb-2">From KSC to my ship in:</div>
                 : <div className="pb-2">My other ship is in:</div>
             }
-            <div className={cns.text.muted("pb-2 place-self-center text-pretty max-w-34 text-center")}>
+            <div className={cns.textMuted("pb-2 place-self-center text-pretty max-w-34 text-center")}>
               Strength at Closest Distance
             </div>
-            <div className={cns.text.muted("pb-2 place-self-center text-pretty max-w-34 text-center")}>
+            <div className={cns.textMuted("pb-2 place-self-center text-pretty max-w-34 text-center")}>
               Strength at Furthest Distance
             </div>
             {result.map((row, i) => {
@@ -546,7 +546,7 @@ function PlanetDistanceTableView(props: {
 
               console.log(row)
               return <Fragment key={i}>
-                <div className={cns.text.muted("h-6")}>{row.label}</div>
+                <div className={cns.textMuted("h-6")}>{row.label}</div>
                 <PlanetDistanceStrengthCell strength={row.minStrength} />
                 <PlanetDistanceStrengthCell strength={row.maxStrength} />
               </Fragment>

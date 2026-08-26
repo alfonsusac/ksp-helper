@@ -37,7 +37,7 @@ export function RelayTutorial_Client() {
         <p>
           You can retrieve these values by using the relay-height tool here.
         </p>
-        <Link href="/relay-height" className={cns.button.base()}>
+        <Link href="/relay-height" className={cns.buttonBase()}>
           <LucideArrowRight />
           Get Relay Height Parameters
         </Link>
@@ -109,7 +109,7 @@ export function RelayTutorial_Client() {
       <section className="my-8">
         <div className="text-xl">tl:dr</div>
         <ol className="list-decimal pl-8 my-4">
-          <li>Bring your satellite to altitude of <span className={cns.text.green()}>{fixedNum(data.height)}m</span></li>
+          <li>Bring your satellite to altitude of <span className={cns.textGreen()}>{fixedNum(data.height)}m</span></li>
         </ol>
 
       </section>

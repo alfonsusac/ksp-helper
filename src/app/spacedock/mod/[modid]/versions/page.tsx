@@ -2,7 +2,6 @@ import { SpacedockNext } from "@/app/spacedock/_data-cache/cached-functions"
 import { marked } from "marked"
 import { notFound } from "next/navigation"
 import { VersionPageClientSection } from "./page.client"
-import { getDownloadURLFileSize } from "@/lib/get-download-url-size"
 
 export default async function ModPageVersionTab(props: PageProps<'/spacedock/mod/[modid]/versions'>) {
   const params = await props.params

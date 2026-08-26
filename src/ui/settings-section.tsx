@@ -82,7 +82,7 @@ export function getInitialGlobalSettings(): GlobalSettings {
 
 export function ResetSettingsIconButton(props: ComponentProps<"button">) {
   return (
-    <button {...props} className={cns.button.iconGhost(props.className)}>
+    <button {...props} className={cns.buttonGhost(cns.buttonIcon(), props.className)}>
       <LucideRotateCcw />
     </button>
   )
@@ -119,12 +119,12 @@ export function SettingsSection(props: {
   return <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
     <div className="flex flex-col gap-0.5">
 
-      <Link href={`/custom-body?back=${ path }`} className={cns.button.base()}>
+      <Link href={`/custom-body?back=${ path }`} className={cns.buttonBase()}>
         <LucideEarth />
         Manage Celestial Bodies
       </Link>
 
-      <Link href={`/custom-antenna?back=${ path }`} className={cns.button.base()}>
+      <Link href={`/custom-antenna?back=${ path }`} className={cns.buttonBase()}>
         <IcRoundSatelliteAlt />
         Manage Antennas
       </Link>
@@ -141,7 +141,7 @@ export function SettingsSection(props: {
               className="w-full justify-start"
               label={<div className="flex flex-col leading-4">
                 <div>{pkg.name}</div>
-                <div className={cns.text.muted("text-sm leading-5")}>
+                <div className={cns.textMuted("text-sm leading-5")}>
                   {[
                     !!antennaCount && `${ antennaCount } antennas`,
                     !!planetCount && `${ planetCount } planets`
@@ -194,7 +194,7 @@ export function SettingsSection(props: {
               ...props.settings,
               ...e
             })
-          }} className={cns.button.presetGroup("w-20 py-2")}>
+          }} className={cns.buttonPresetGroup("w-20 py-2")}>
             {e.label}
           </button>
         })}
@@ -252,7 +252,7 @@ export function SettingsSection(props: {
       </div> */}
 
       <button
-        className={cns.button.base("mt-4")}
+        className={cns.buttonBase("mt-4")}
         onClick={() => props.onSettingsChange(getInitialGlobalSettings())}
       >
         <LucideRotateCcw />

@@ -86,7 +86,7 @@ export default function ScreenToTransparent() {
           {image ? <>
             <img src={image.url} />
             <div>width: {image.dimension.w} | height: {image.dimension.h}</div>
-            <button className={cns.button.base()} onClick={() => { setImage(undefined) }}>
+            <button className={cns.buttonBase()} onClick={() => { setImage(undefined) }}>
               Remove Black Image
             </button>
           </> : <>
@@ -95,7 +95,7 @@ export default function ScreenToTransparent() {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <button className={cns.button.base("")} onClick={async () => convert(image?.file, mode)}>
+        <button className={cns.buttonBase("")} onClick={async () => convert(image?.file, mode)}>
           Convert
         </button>
         <CopyImageButton url={result?.url} />

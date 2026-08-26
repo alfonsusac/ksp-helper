@@ -38,7 +38,7 @@ export default async function GamePage(props: PageProps<'/spacedock/[game]'>) {
     <section className={("flex flex-col")}>
       <header className={maxWidth("flex flex-col gap-0")}>
         <h1 className={cns.pageTitle("text-2xl font-bold")}>{game.name}</h1>
-        <p className={cns.text.muted()}>Browse mods from {game.name}</p>
+        <p className={cns.textMuted()}>Browse mods from {game.name}</p>
         <SearchBox className="mt-4" />
       </header>
     </section>

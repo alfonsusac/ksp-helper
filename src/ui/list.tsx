@@ -8,8 +8,8 @@ export function CitationList(props: {
   return (
     <li className="my-2">
       <span className="">{props.title}</span>
-      {props.author ? <span className={cns.text.muted()}> by {props.author}</span> : ""}<br />
-      <a className={cns.text.link("break-all")}
+      {props.author ? <span className={cns.textMuted()}> by {props.author}</span> : ""}<br />
+      <a className={cns.articleLink("break-all")}
         href={props.href}
         target="_blank"
       >{props.href}</a>

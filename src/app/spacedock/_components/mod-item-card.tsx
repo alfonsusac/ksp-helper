@@ -63,7 +63,7 @@ export function ModItemCard(props: {
               alt={`Background image for ${ props.mod.name }`}
               className={cn("object-cover w-full h-full aspect-video")}
               src={`${ props.mod.background }`}
-            /> : <MaterialSymbolsPackage2Sharp className={cns.text.muted("opacity-25 size-1/2")} />
+            /> : <MaterialSymbolsPackage2Sharp className={cns.textMuted("opacity-25 size-1/2")} />
           }
         </div>
         <div className="flex gap-0">
@@ -71,16 +71,16 @@ export function ModItemCard(props: {
             <div className="line-clamp-1">
               {props.mod?.name ?? <InvisibleText />}
             </div>
-            <div className={cns.text.muted("text-sm leading-5")}>
+            <div className={cns.textMuted("text-sm leading-5")}>
               {props.mod?.author ?? <InvisibleText />}
             </div>
             {props.showGameLabel &&
-              <div className={cns.text.muted("text-sm leading-3")}>
+              <div className={cns.textMuted("text-sm leading-3")}>
                 {props.mod?.game ?? <InvisibleText />}
               </div>
             }
             {props.showUpdatedAt &&
-              <div className={cns.text.muted("text-sm leading-3")}>
+              <div className={cns.textMuted("text-sm leading-3")}>
                 {(props.mod ? relativeDate(new Date(props.mod.versions[0].created)) : undefined) ?? <InvisibleText />}
               </div>
             }
@@ -92,11 +92,12 @@ export function ModItemCard(props: {
       <Link
         title="Download"
         href={'https://spacedock.info' + props.mod?.versions[ 0 ].download_path}
-        className={cns.button.iconGhost(
+        className={cns.buttonGhost(
+          "button-icon",
           "absolute bottom-2 right-2 size-8 bg-green-500/50",
           "opacity-0 group-hover:opacity-100",
           "transition-opacity duration-100",
-          cns.text.muted()
+          cns.textMuted()
         )}>
         <LucideDownload className="size-full" />
       </Link>

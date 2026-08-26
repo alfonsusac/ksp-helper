@@ -51,7 +51,7 @@ export function ShareAppURLButton<T>(props: {
   return (
     <CopyButton
       value={generateShareURL(props.data)}
-      className={cns.button.base(props.className)}
+      className={cns.buttonBase(props.className)}
       label={<>
         <LucideShare2 />
         Share Setup</>}

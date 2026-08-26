@@ -73,7 +73,7 @@ export function PlanetSelectMenu(props: {
                         </div>
                         <div className="flex flex-col">
                           <div>{planet.id}</div>
-                          <div className={cns.text.muted("capitalize text-xs")}>{packageLabel}</div>
+                          <div className={cns.textMuted("capitalize text-xs")}>{packageLabel}</div>
                         </div>
                       </MenuItem>
                     </Fragment>)
@@ -82,7 +82,7 @@ export function PlanetSelectMenu(props: {
               </div>
             })}
             {hiddenPlanets > 0 &&
-              <div className={cns.text.muted("text-xs opacity-70 px-2 max-w-100 mt-2")}>
+              <div className={cns.textMuted("text-xs opacity-70 px-2 max-w-100 mt-2")}>
                 {hiddenPlanets} hidden planet(s).
               </div>
             }

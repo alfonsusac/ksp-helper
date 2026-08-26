@@ -93,7 +93,7 @@ export function RelayHeight_Client() {
 
         <div className={("flex flex-col gap-2 max-w-100")}>
 
-          <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Setup</p>
+          <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Setup</p>
           <div className={("flex flex-col gap-6")}>
 
             <InputBlock label="Celestial Body" row>
@@ -158,7 +158,7 @@ export function RelayHeight_Client() {
                 <div className="flex gap-px mt-1">
                   {[ 0.5, 0.75, 0.9, 0.95 ].map(e => {
                     return <button key={e}
-                      className={cns.button.presetGroup()}
+                      className={cns.buttonPresetGroup()}
                       onClick={() => changeTargetStrength(e)}
                     >
                       {e * 100}%
@@ -169,7 +169,7 @@ export function RelayHeight_Client() {
             </InputBlock>
             <Divider />
             <InputBlock label="Surface Vessel Antenna">
-              {result.notlandable ? <div className={cns.text.muted("text-xs")}>
+              {result.notlandable ? <div className={cns.textMuted("text-xs")}>
                 Surface not landable
               </div> :
                 <AntennaInput
@@ -609,20 +609,20 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
 
   return <div className="flex flex-col gap-2">
     <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4")}>
-      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Adjust Height</p>
+      <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Adjust Height</p>
       <div className="grid grid-cols-[2fr_3fr_2fr] col-span-2 text-base items-center">
         <div className="text-sm">
-          <p className={cns.text.muted()}>Min Height</p>
+          <p className={cns.textMuted()}>Min Height</p>
           <p className="">{prettyNum(props.minHeight ?? NaN).toLocaleString()}m</p>
         </div>
 
         <div className="text-sm text-center">
-          <p className={cns.text.muted()}>Orbit Height</p>
+          <p className={cns.textMuted()}>Orbit Height</p>
           <p className="">{prettyNum(props.orbitHeight ?? NaN).toLocaleString()}m</p>
         </div>
 
         <div className="text-sm text-end">
-          <p className={cns.text.muted()}>Max Height</p>
+          <p className={cns.textMuted()}>Max Height</p>
           <p className="">{prettyNum(props.maxHeight ?? NaN).toLocaleString()}m</p>
         </div>
       </div>
@@ -673,10 +673,10 @@ function OverrideHeight(props: ReturnType<typeof getResult> & {
       </InputBlock>
 
       <div className="grid grid-cols-2 gap-2">
-        <button className={cns.button.base()} onClick={() => props.onValueChange(val)}>
+        <button className={cns.buttonBase()} onClick={() => props.onValueChange(val)}>
           Set Height Override
         </button>
-        <button className={cns.button.base()} onClick={() => {
+        <button className={cns.buttonBase()} onClick={() => {
           props.onValueChange(undefined)
         }}>
           Clear Override
@@ -1017,28 +1017,28 @@ function DebugInformation(props: ReturnType<typeof getResult> & {
 }) {
   return (
     <div className={cn("grid grid-cols-2 gap-2 text-xs py-6 hidden lg:grid")}>
-      <p className={cns.text.muted("col-span-2 text-xs")}>Debug Informations</p>
+      <p className={cns.textMuted("col-span-2 text-xs")}>Debug Informations</p>
       <div className="contents leading-3.5">
-        <p className={cns.text.muted()}>Planet Radius</p>
-        <p className={cns.text.muted()}>{props.planetRadius ? prettyNum(props.planetRadius, "k", "m") : "-"}</p>
+        <p className={cns.textMuted()}>Planet Radius</p>
+        <p className={cns.textMuted()}>{props.planetRadius ? prettyNum(props.planetRadius, "k", "m") : "-"}</p>
 
-        <p className={cns.text.muted()}>Maximum Relay Range</p>
-        <p className={cns.text.muted()}>{prettyNum(props.maxRelayRange ?? NaN, "k", "m")}</p>
+        <p className={cns.textMuted()}>Maximum Relay Range</p>
+        <p className={cns.textMuted()}>{prettyNum(props.maxRelayRange ?? NaN, "k", "m")}</p>
 
-        <p className={cns.text.muted()}>Maximum Radius based on Relay to Relay (0% strength)</p>
-        <p className={cns.text.muted()}>{prettyNum(props.maxRadiusFromRelays ?? NaN, "k", "m")}</p>
+        <p className={cns.textMuted()}>Maximum Radius based on Relay to Relay (0% strength)</p>
+        <p className={cns.textMuted()}>{prettyNum(props.maxRadiusFromRelays ?? NaN, "k", "m")}</p>
 
-        <p className={cns.text.muted()}>Minimum Radius Based of Planet Radius</p>
-        <p className={cns.text.muted()}>{prettyNum(props.minRadiusBasedOnPlanet ?? NaN, "k", "m")}</p>
+        <p className={cns.textMuted()}>Minimum Radius Based of Planet Radius</p>
+        <p className={cns.textMuted()}>{prettyNum(props.minRadiusBasedOnPlanet ?? NaN, "k", "m")}</p>
 
-        <p className={cns.text.muted()}>Maximum Radius based on Relay to Vessel</p>
-        <p className={cns.text.muted()}>{prettyNum(props.maxRadiusFromVessel ?? NaN, "k", "m")}</p>
+        <p className={cns.textMuted()}>Maximum Radius based on Relay to Vessel</p>
+        <p className={cns.textMuted()}>{prettyNum(props.maxRadiusFromVessel ?? NaN, "k", "m")}</p>
 
-        <p className={cns.text.muted()}>Lowest Low Orbit Radius</p>
-        <p className={cns.text.muted()}>{(props.lowestLKO ?? NaN)}m</p>
+        <p className={cns.textMuted()}>Lowest Low Orbit Radius</p>
+        <p className={cns.textMuted()}>{(props.lowestLKO ?? NaN)}m</p>
 
-        <p className={cns.text.muted()}>Ideal / Midpoint orbits raw value</p>
-        <p className={cns.text.muted()}>{props.orbitRadius ?? NaN}m</p>
+        <p className={cns.textMuted()}>Ideal / Midpoint orbits raw value</p>
+        <p className={cns.textMuted()}>{props.orbitRadius ?? NaN}m</p>
       </div>
     </div>
 
@@ -1053,37 +1053,37 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
       {props.resonantOrbit && props.resonantOrbit.status !== "missing data" && <div
         className="col-span-2 grid grid-cols-[8rem_auto] gap-2"
       >
-        <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Resonant Orbit Information</p>
+        <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Resonant Orbit Information</p>
 
-        <p className={cns.text.base("text-sm")}>Orbit Altitude</p>
-        <p className={cns.text.green()}>{fixedNum(props.orbitHeight ?? NaN)}m</p>
+        <p className={cns.base("text-sm")}>Orbit Altitude</p>
+        <p className={cns.textGreen()}>{fixedNum(props.orbitHeight ?? NaN)}m</p>
 
-        <p className={cns.text.base("text-sm")}>Orbital Period</p>
-        <p className={cns.text.green()}>{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
+        <p className={cns.base("text-sm")}>Orbital Period</p>
+        <p className={cns.textGreen()}>{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
 
-        <p className={cns.text.base("text-sm")}>Resonant Period</p>
-        <p className={cns.text.green()}>{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
+        <p className={cns.base("text-sm")}>Resonant Period</p>
+        <p className={cns.textGreen()}>{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
 
-        <p className={cns.text.base("text-sm")}>{props.resonantOrbit.apsisLabel}</p>
-        <p className={cns.text.green()}>{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
+        <p className={cns.base("text-sm")}>{props.resonantOrbit.apsisLabel}</p>
+        <p className={cns.textGreen()}>{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
 
-        <p className={cns.text.base("text-sm")}>Injection Δv</p>
-        <p className={cns.text.green()}>{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
+        <p className={cns.base("text-sm")}>Injection Δv</p>
+        <p className={cns.textGreen()}>{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
 
-        <p className={cns.text.base("text-sm")}>Mode</p>
-        <p className={cns.text.green()}>{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
+        <p className={cns.base("text-sm")}>Mode</p>
+        <p className={cns.textGreen()}>{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
 
       </div>}
 
 
       <Divider className="col-span-2" />
 
-      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Between Each Relays</p>
+      <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Between Each Relays</p>
 
-      <p className={cns.text.base("text-sm")}>Distance</p>
+      <p className={cns.base("text-sm")}>Distance</p>
       <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN, "k", "m")}</p>
 
-      <p className={cns.text.base("text-sm")}>Relay Strength</p>
+      <p className={cns.base("text-sm")}>Relay Strength</p>
       <div className={"text-sm flex gap-4 items-center"}>
         <SignalStrengthItems size="sm" strength={props.relayStrength ?? NaN} />
       </div>
@@ -1091,12 +1091,12 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
 
       <Divider className="col-span-2" />
 
-      <p className={cns.text.muted("col-span-2 text-xs opacity-75")}>Vessel to Relay</p>
+      <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Vessel to Relay</p>
 
-      <p className={cns.text.base("text-sm")}>Distance</p>
+      <p className={cns.base("text-sm")}>Distance</p>
       <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN, "k", "m")}</p>
 
-      <p className={cns.text.base("text-sm")}>Relay Strength</p>
+      <p className={cns.base("text-sm")}>Relay Strength</p>
       <div className={"text-sm flex gap-4 items-center"}>
         <SignalStrengthItems size="sm" strength={props.vessel?.strength ?? NaN} />
       </div>
@@ -1116,8 +1116,8 @@ function WarningsSection(result: ReturnType<typeof getResult> & {
     <>
       {result.status === "impossible" && <>
         <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-          <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
-            <LucideTriangleAlert className={cns.error.text.base()} />
+          <div className={cns.errorTextBase("text-xs flex items-center gap-1 pb-1")}>
+            <LucideTriangleAlert className={cns.errorTextBase()} />
             warning
           </div>
           {result.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
@@ -1127,8 +1127,8 @@ function WarningsSection(result: ReturnType<typeof getResult> & {
       </>}
       {result.resonantOrbit?.status === "missing data" && <>
         <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-          <div className={cns.error.text.base("text-xs flex items-center gap-1 pb-1")}>
-            <LucideTriangleAlert className={cns.error.text.base()} />
+          <div className={cns.errorTextBase("text-xs flex items-center gap-1 pb-1")}>
+            <LucideTriangleAlert className={cns.errorTextBase()} />
             warning
           </div>
           Unable to calculate Resonant Orbit. The Gravitational Parameter for this planet is not provided.
@@ -1151,7 +1151,7 @@ function TutorialSection(result: ReturnType<typeof getResult>) {
         <h2 className="text-lg">
           Tutorial
         </h2>
-        <p className={cns.text.muted("text-sm")}>So what to do when I finished picking up my orbit height?</p>
+        <p className={cns.textMuted("text-sm")}>So what to do when I finished picking up my orbit height?</p>
       </header>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-20 [&_p]:text-sm [&_li]:text-sm [&_li]:my-1">
         <div className="flex flex-col gap-2">
@@ -1160,7 +1160,7 @@ function TutorialSection(result: ReturnType<typeof getResult>) {
             <div>
               <p>This tutorial assumes your satellite payloads are on the same craft like the picture on the left</p>
               <br />
-              <p className={cns.text.muted("break-all")}>Source: https://www.reddit.com/r/KerbalSpaceProgram/comments/p9k3vu/ksp_relay_network_guide/</p>
+              <p className={cns.textMuted("break-all")}>Source: https://www.reddit.com/r/KerbalSpaceProgram/comments/p9k3vu/ksp_relay_network_guide/</p>
             </div>
           </div>
           <p>After you planned your orbit, tl:dr</p>
@@ -1451,7 +1451,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
     <div className="flex gap-4 items-center">
       <button
         disabled={targetTime === 0}
-        className={cns.button.base("w-20")} onClick={() => {
+        className={cns.buttonBase("w-20")} onClick={() => {
           if (targetTime <= 0) return
           setTime(timeline.stepToTimemark[ targetTime ])
           setTargetTime(targetTime - 1)
@@ -1461,7 +1461,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
       </button>
       <button
         disabled={targetTime >= timeline.slideLength}
-        className={cns.button.base("w-20")} onClick={() => {
+        className={cns.buttonBase("w-20")} onClick={() => {
           if (targetTime >= timeline.duration) return
           setTime(timeline.stepToTimemark[ targetTime ])
           setTargetTime(targetTime + 1)
@@ -1475,7 +1475,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
       </div>
 
       <button
-        className={cns.button.base("w-20")} onClick={() => {
+        className={cns.buttonBase("w-20")} onClick={() => {
           setTime(0)
           setTargetTime(0)
         }}>
@@ -1588,7 +1588,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
       </VisViewportOrbit>
 
     </VisViewport>
-    <div className={cns.text.muted("text-sm")}>
+    <div className={cns.textMuted("text-sm")}>
       Visualizing how to drop {relayCount} equi-distant satellites in body of {result.planetlabel} with initial altitude of {result.orbitHeight.toLocaleString('en-US')} meters
     </div>
   </>)

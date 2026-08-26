@@ -33,7 +33,7 @@ export function SelectRow<const T extends SelectPayload>(props: {
         <BSelect.Label className="select-none">
           {props.label}
         </BSelect.Label>
-        <BSelect.Trigger className={cns.input.box()}>
+        <BSelect.Trigger className={cns.inputBox()}>
           <BSelect.Value className="grow text-start" />
           <BSelect.Icon>
             <LucideChevronDown />
@@ -80,7 +80,7 @@ export function CheckboxRow(props: {
   const id = useId()
   return (
     <label
-      className={cns.button.ghost('opacity-100', props.className)}
+      className={cns.buttonGhost('opacity-100', props.className)}
       htmlFor={id}>
       <input className="mb-0 cursor-pointer" type="checkbox" id={id} checked={props.value} onChange={e => props.onValueChange(e.currentTarget.checked)} />
       {props.label}
@@ -166,7 +166,7 @@ export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
 
 export function MenuHelperText(props: ComponentProps<"div">) {
   return (
-    <div {...props} className={cns.text.muted("text-sm pl-2", props.className)} />
+    <div {...props} className={cns.textMuted("text-sm pl-2", props.className)} />
   )
 }
 
@@ -220,9 +220,9 @@ export function GenericInput(props: ComponentProps<"input"> & InputComponentProp
     <div className="flex flex-col max-w-none grow">
       <UnitInputWrapper unit={unit}>
         <input {...rest}
-          className={cns.input.box(
+          className={cns.inputBox(
             "max-w-60",
-            (err || error) && cns.input.errorBox(),
+            (err || error) && cns.inputBoxError(),
             rest.className
           )}
           value={val}
@@ -248,10 +248,10 @@ export function GenericInput(props: ComponentProps<"input"> & InputComponentProp
         />
       </UnitInputWrapper>
 
-      {err && <div className={cns.error.text.muted("text-xs")}>
+      {err && <div className={cns.errorTextMuted("text-xs")}>
         {err}
       </div>}
-      {props.error && <div className={cns.error.text.muted("text-xs")}>
+      {props.error && <div className={cns.errorTextMuted("text-xs")}>
         {props.error}
       </div>}
     </div>
@@ -322,7 +322,7 @@ export function InputWrapper(props: {
       <div className="flex gap-2 items-center">
         {props.children}
       </div>
-      {props.error && <p className={cns.error.text.base("text-xs mt-1")}>
+      {props.error && <p className={cns.errorTextBase("text-xs mt-1")}>
         {props.error}
       </p>}
     </div>
@@ -338,7 +338,7 @@ export function UnitInputWrapper(props: {
     <div className="grid grid-cols-[auto_1rem] gap-2 items-center">
       {props.children}
       {props.unit ?
-        <div className={cns.text.muted()}>{props.unit}</div> : null
+        <div className={cns.textMuted()}>{props.unit}</div> : null
       }
     </div>
   )
@@ -382,7 +382,7 @@ export function TextInputBlock(props: {
       <GenericInput
         validate={() => undefined}
         className={cn(
-          props.error && cns.input.errorBox()
+          props.error && cns.inputBoxError()
         )}
         initialValue={props.value}
         onValueChange={props.onChange}
@@ -406,7 +406,7 @@ export function InputBlock(props: {
   if (props.row) {
     return (
       <div className={cns.surface("flex gap-2", props.className)}>
-        <label className={cns.text.label("h-10 flex items-center")}>{props.label}</label>
+        <label className={cns.textLabel("h-10 flex items-center")}>{props.label}</label>
         {props.children}
       </div>
     )
@@ -414,7 +414,7 @@ export function InputBlock(props: {
 
   return (
     <div className={cns.surface("flex flex-col gap-1.5", props.className)}>
-      <label className={cns.text.label()}>{props.label}</label>
+      <label className={cns.textLabel()}>{props.label}</label>
       {props.children}
     </div>
   )

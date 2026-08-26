@@ -103,7 +103,7 @@ export function DimensionData(props: { d: FileData[ 'dimension' ] }) {
 export function CopyImageButton(props: { url?: string }) {
   if (!props.url) return null
   return (
-    <button className={cns.button.base("")} onClick={async () => {
+    <button className={cns.buttonBase("")} onClick={async () => {
       // thanks gpt
       if (!props.url) return null
       const response = await fetch(props.url)

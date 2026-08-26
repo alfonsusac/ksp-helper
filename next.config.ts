@@ -8,12 +8,18 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: process.env.NODE_ENV === "development" ? '100mb' : '1mb',
     },
+    lightningCssFeatures: {
+      exclude: [
+        'light-dark'
+      ]
+    }
   },
   images: {
     remotePatterns: [
       new URL("https://spacedock.info/**")
     ]
-  }
+  },
+
 }
 
 export default nextConfig

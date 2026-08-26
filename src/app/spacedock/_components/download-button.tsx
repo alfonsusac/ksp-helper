@@ -11,7 +11,7 @@ export function DownloadButton(props: {
     <a
       title="Download"
       href={'https://spacedock.info' + props.downloadPath}
-      className={cns.button.base("text-base p-2 px-5", props.className)}
+      className={cns.buttonBase("text-base p-2 px-5", props.className)}
     >
       <LucideDownload />
       Download

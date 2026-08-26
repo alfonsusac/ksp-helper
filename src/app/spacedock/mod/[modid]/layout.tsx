@@ -40,13 +40,13 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
     <div>
 
       <div className="flex mb-3 gap-3 text-sm">
-        <Link href={`/spacedock/${ mod.game_id }`} className={cns.text.link2()}>
+        <Link href={`/spacedock/${ mod.game_id }`} className={cns.navigationLink()}>
           {mod.game}
         </Link>
-        <div className={cns.text.faint()}>
+        <div className={cns.textFaint()}>
           {'>'}
         </div>
-        <div className={cns.text.muted()}>
+        <div className={cns.textMuted()}>
           {mod.id} - {mod.name}
         </div>
       </div>
@@ -66,10 +66,10 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
           <h1 className="justify-end text-xl tracking-tight font-bold">
             {mod.name}
           </h1>
-          <p className={cns.text.muted("text-base pt-2")}>
+          <p className={cns.textMuted("text-base pt-2")}>
             {mod.short_description}
           </p>
-          <div className={cns.text.muted("flex items-baseline gap-4 pt-0.5 pt-3")}>
+          <div className={cns.textMuted("flex items-baseline gap-4 pt-0.5 pt-3")}>
             <span>
               <LucideDownload className="inline mr-1.5 align-[-0.1rem]" />
               {mod.downloads.toLocaleString()} <span className="">Downloads</span></span>
@@ -83,7 +83,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
           <DownloadButton
             downloadPath={mod.versions[0].download_path}
           />
-          <button className={cns.button.base("text-base p-2 px-5")}>
+          <button className={cns.buttonBase("text-base p-2 px-5")}>
             Follow
           </button>
         </div>
@@ -91,10 +91,10 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
       <section className="flex mt-4 -mb-2">
         <div className={("flex gap-1 border-b-0 rounded-b-none")}>
-          <TabLink href={`/spacedock/mod/${ mod.id }`} className={cns.button.ghost("text-base")}>
+          <TabLink href={`/spacedock/mod/${ mod.id }`} className={cns.buttonGhost("text-base")}>
             Description
           </TabLink>
-          <TabLink href={`/spacedock/mod/${ mod.id }/versions`} className={cns.button.ghost("text-base")}>
+          <TabLink href={`/spacedock/mod/${ mod.id }/versions`} className={cns.buttonGhost("text-base")}>
             Versions
           </TabLink>
         </div>
@@ -110,7 +110,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
         <div className="flex flex-col gap-2">
 
           <div className={cns.surface2card("w-full flex flex-col gap-1")}>
-            <div className={cns.text.muted()}>
+            <div className={cns.textMuted()}>
               Authors
             </div>
             <div className="-mx-2 -mb-2">
@@ -124,7 +124,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
           </div>
 
           <div className={cns.surface2card("w-full flex flex-col gap-1")}>
-            <div className={cns.text.muted()}>
+            <div className={cns.textMuted()}>
               Links
             </div>
             <div className="-mx-2 -mb-2">
@@ -149,8 +149,8 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
           <div className={cns.surface2card("w-full flex flex-col gap-3 text-sm")}>
             <div className="flex items-baseline gap-2">
-              <LucideScale className={cardButtonIcon(cns.text.muted("self-start shrink-0"))} />
-              <div className={cns.text.muted("shrink-0")}>
+              <LucideScale className={cardButtonIcon(cns.textMuted("self-start shrink-0"))} />
+              <div className={cns.textMuted("shrink-0")}>
                 License:
               </div>
               <div className="wrap-break-word">
@@ -159,8 +159,8 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
 
             <div className="flex items-center gap-2">
-              <LucideCalendar className={cardButtonIcon(cns.text.muted())} />
-              <div className={cns.text.muted()}>
+              <LucideCalendar className={cardButtonIcon(cns.textMuted())} />
+              <div className={cns.textMuted()}>
                 Published:
               </div>
               <div className="break-all">
@@ -169,8 +169,8 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
 
             <div className="flex items-center gap-2">
-              <LucideCalendarArrowUp className={cardButtonIcon(cns.text.muted())} />
-              <div className={cns.text.muted()}>
+              <LucideCalendarArrowUp className={cardButtonIcon(cns.textMuted())} />
+              <div className={cns.textMuted()}>
                 Updated:
               </div>
               <div className="break-all">
@@ -187,7 +187,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 }
 
 
-const cardButton = cnr(cns.button.ghost("flex gap-2 items-center justify-start p-2"))
+const cardButton = cnr(cns.buttonGhost("flex gap-2 items-center justify-start p-2"))
 const cardButtonIcon = cnr("size-4")
 
 async function AuthorRow(props: {

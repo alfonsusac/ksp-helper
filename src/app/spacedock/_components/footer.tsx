@@ -13,16 +13,16 @@ export function Footer(props: {
           <div className="font-semibold text-xl">
             ./spacedock
           </div>
-          <div className={cns.text.muted("text-sm text-pretty max-w-50")}>
+          <div className={cns.textMuted("text-sm text-pretty max-w-50")}>
             Unofficial spacedock wrapper to browse mods
           </div>
         </div>
         <div>
-          <Link href="https://github.com/alfonsusac/ksp-helper/tree/main" target="_black" className={cns.text.link2("flex items-center text-sm")}>
+          <Link href="https://github.com/alfonsusac/ksp-helper/tree/main" target="_black" className={cns.navigationLink("flex items-center text-sm")}>
             Source Code <LucideArrowUpRight />
           </Link>
         </div>
-        <div className={cns.text.muted('text-sm max-w-60')}>
+        <div className={cns.textMuted('text-sm max-w-60')}>
           This website is not affiliated with spacedock.info
         </div>
       </div>
@@ -44,7 +44,7 @@ export function Footer(props: {
               { label: "Markdown Guide", href: "https://spacedock.info/markdown" },
             ].map((e, i) => {
               return (<Link key={i} href={e.href} target="_black"
-                className={cns.text.link2("text-sm flex items-center")}
+                className={cns.navigationLink("text-sm flex items-center")}
               >
                 {e.label} <LucideArrowUpRight />
               </Link>)

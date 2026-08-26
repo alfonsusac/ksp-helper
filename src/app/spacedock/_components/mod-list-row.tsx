@@ -94,7 +94,7 @@ async function ModListRow_SeeMoreButton(props: {
 }) {
   const list = await props.data
   if (list.length === 0) return <></>
-  return <Link href={props.href} className={cns.button.base("self-end w-fit px-4")}>
+  return <Link href={props.href} className={cns.buttonBase("self-end w-fit px-4")}>
     {props.label} <LucideArrowRight />
   </Link>
 }
@@ -110,7 +110,7 @@ async function ModListElementArray(props: {
 
   if (list.length === 0) return <>
     <div className={cn("grid grid-cols-1 grid-rows-1 place-items-center w-full rounded-lg", props.maxWidth, cns.placeholder())}>
-      <div className={cns.text.faint("col-start-1 row-start-1")}>{props.emptyLabel}</div>
+      <div className={cns.textFaint("col-start-1 row-start-1")}>{props.emptyLabel}</div>
       <ModItemCard className={cn("grow w-full col-start-1 row-start-1 opacity-0 animate-none")}
         showGameLabel={props.showGameLabel}
         showUpdatedAt={props.showUpdatedAt}

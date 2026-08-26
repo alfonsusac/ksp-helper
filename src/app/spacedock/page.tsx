@@ -28,7 +28,7 @@ export default function SpaceDockPage() {
       <section className={("flex flex-col items-center")}>
         <header className="flex flex-col gap-0 items-center">
           <h1 className={cns.pageTitle("text-5xl font-bold")}>./spacedock</h1>
-          <p className={cns.text.muted()}>Unofficial spacedock wrapper to browse mods</p>
+          <p className={cns.textMuted()}>Unofficial spacedock wrapper to browse mods</p>
         </header>
 
         <SearchBox className="w-full self-center mt-8" />
@@ -90,10 +90,10 @@ export default function SpaceDockPage() {
                   {e.icon}
                   {e.title}
                 </div>
-                <div className={cns.text.muted("text-sm grow")}>
+                <div className={cns.textMuted("text-sm grow")}>
                   {e.desc}
                 </div>
-                <div className={cns.text.muted("text-sm flex gap-1 items-center group-hover:contrast-200")}>
+                <div className={cns.textMuted("text-sm flex gap-1 items-center group-hover:contrast-200")}>
                   {e.cta} <LucideArrowRight />
                 </div>
               </Link>
@@ -146,7 +146,7 @@ function GameListItem({ game }: {
       </div>
       <div className="-mx-3 -mb-2 p-2 px-2.5 leading-4">
         {game?.name}<br />
-        <span className={cns.text.muted("text-sm")}>
+        <span className={cns.textMuted("text-sm")}>
           {game ?
             <Suspense fallback={"Loading..."}>
               <GameItemCount game_id={game.id} />
