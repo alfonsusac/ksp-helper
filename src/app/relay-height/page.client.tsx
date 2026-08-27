@@ -610,7 +610,7 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
   return <div className="flex flex-col gap-2">
     <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4")}>
       <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Adjust Height</p>
-      <div className="grid grid-cols-[2fr_3fr_2fr] col-span-2 text-base items-center">
+      <div className="grid grid-cols-[2fr_3fr_2fr] col-span-2 items-center">
         <div className="text-sm">
           <p className={cns.textMuted()}>Min Height</p>
           <p className="">{prettyNum(props.minHeight ?? NaN).toLocaleString()}m</p>
@@ -1055,22 +1055,22 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
       >
         <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Resonant Orbit Information</p>
 
-        <p className={cns.base("text-sm")}>Orbit Altitude</p>
+        <p className={cn("text-sm")}>Orbit Altitude</p>
         <p className={cns.textGreen()}>{fixedNum(props.orbitHeight ?? NaN)}m</p>
 
-        <p className={cns.base("text-sm")}>Orbital Period</p>
+        <p className={cn("text-sm")}>Orbital Period</p>
         <p className={cns.textGreen()}>{prettyPeriod(props.resonantOrbit.orbitalPeriod).formatted}</p>
 
-        <p className={cns.base("text-sm")}>Resonant Period</p>
+        <p className={cn("text-sm")}>Resonant Period</p>
         <p className={cns.textGreen()}>{prettyPeriod(props.resonantOrbit.resonantPeriod).formatted}</p>
 
-        <p className={cns.base("text-sm")}>{props.resonantOrbit.apsisLabel}</p>
+        <p className={cn("text-sm")}>{props.resonantOrbit.apsisLabel}</p>
         <p className={cns.textGreen()}>{(props.resonantOrbit.otherApsisRadius - props.planetRadius).toLocaleString('en-US')}m</p>
 
-        <p className={cns.base("text-sm")}>Injection Δv</p>
+        <p className={cn("text-sm")}>Injection Δv</p>
         <p className={cns.textGreen()}>{props.resonantOrbit.injectioDeltaV.toLocaleString('en-US')}m</p>
 
-        <p className={cns.base("text-sm")}>Mode</p>
+        <p className={cn("text-sm")}>Mode</p>
         <p className={cns.textGreen()}>{props.resonantOrbit.mode === "diving" ? "Diving (Burn Retrograde)" : "Peaking (Burn Prograde)"}</p>
 
       </div>}
@@ -1080,10 +1080,10 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
 
       <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Between Each Relays</p>
 
-      <p className={cns.base("text-sm")}>Distance</p>
+      <p className={cn("text-sm")}>Distance</p>
       <p className="">{prettyNum(props.distanceBetweenRelays ?? NaN, "k", "m")}</p>
 
-      <p className={cns.base("text-sm")}>Relay Strength</p>
+      <p className={cn("text-sm")}>Relay Strength</p>
       <div className={"text-sm flex gap-4 items-center"}>
         <SignalStrengthItems size="sm" strength={props.relayStrength ?? NaN} />
       </div>
@@ -1093,10 +1093,10 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
 
       <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Vessel to Relay</p>
 
-      <p className={cns.base("text-sm")}>Distance</p>
+      <p className={cn("text-sm")}>Distance</p>
       <p className="">{prettyNum(props.distanceFromVesselToRelay ?? NaN, "k", "m")}</p>
 
-      <p className={cns.base("text-sm")}>Relay Strength</p>
+      <p className={cn("text-sm")}>Relay Strength</p>
       <div className={"text-sm flex gap-4 items-center"}>
         <SignalStrengthItems size="sm" strength={props.vessel?.strength ?? NaN} />
       </div>

@@ -11,45 +11,128 @@
 /*                            color  error  fg     muted */
 
 @theme {
-  --color-base:                 light-dark(        var(--color-white),                     var(--color-zinc-900)             );
-  --color-divider:              light-dark(        var(--color-slate-200),                 var(--color-zinc-800)             );
-  --color-divider-strong:       light-dark(        var(--color-slate-300),                 var(--color-zinc-700)             );
-  --color-fg-base:              light-dark(        var(--color-slate-700),                 var(--color-zinc-300)             );
-  --color-fg-label:             light-dark(--alpha(var(--color-slate-700)   /  85%),       var(--color-zinc-300)             );
-  --color-fg-muted:             light-dark(--alpha(var(--color-slate-700)   /  75%),       var(--color-zinc-400)             );
-  --color-fg-faint:             light-dark(--alpha(var(--color-slate-700)   /  35%), --alpha(var(--color-zinc-400)    /  35%));
-  --color-border:               light-dark(--alpha(var(--color-slate-200)   / 100%), --alpha(var(--color-zinc-800)    / 100%));
+  --color-bg: light-dark(var(--color-slate-100), var(--color-zinc-900));
 
-  /* Links */
-  --color-fg-link:              light-dark(--alpha(var(--color-slate-500)   /  75%), --alpha(var(--color-zinc-500)    / 100%));
-  --color-fg-link-hover:        light-dark(--alpha(var(--color-slate-600)   / 100%), --alpha(var(--color-zinc-400)    / 100%));
-  --color-fg-underline:         light-dark(--alpha(var(--color-slate-300)   / 100%), --alpha(var(--color-zinc-700)    / 100%));
-  --color-fg-underline-hover:   light-dark(--alpha(var(--color-slate-500)   /  50%), --alpha(var(--color-zinc-600)    / 100%));
-  
-  /* Colored */
-  --color-fg-green:             light-dark(--alpha(var(--color-emerald-600) / 100%), --alpha(var(--color-emerald-500) / 100%));
-  
-  /* Input */
-  --color-stroke:               light-dark(--alpha(var(--color-slate-300)   / 100%), --alpha(var(--color-zinc-700)    / 100%));
-  --color-stroke-wide-hover:    light-dark(--alpha(var(--color-slate-200)   /  50%), --alpha(var(--color-zinc-800)    /  50%));
-  --color-stroke-wide-focus:    light-dark(--alpha(var(--color-slate-200)   / 100%), --alpha(var(--color-zinc-800)    / 100%));
-  --color-surface-autofill:     light-dark(--alpha(var(--color-slate-100)   / 100%), --alpha(var(--color-zinc-800)    / 100%));
-  --color-stroke-autofill:      light-dark(--alpha(var(--color-slate-400)   / 100%), --alpha(var(--color-zinc-600)    / 100%));
+  --color-fg:      light-dark(var(--color-slate-600), var(--color-zinc-300));
+  --color-fg2:     light-dark(var(--color-slate-500), var(--color-zinc-400));
+  --color-fg3:     light-dark(var(--color-slate-400), var(--color-zinc-500));
+  --color-fgGreen: light-dark(var(--color-emerald-600), var(--color-emerald-500));
+  --color-error:   light-dark(var(--color-red-500), var(--color-red-400));
+  --color-error2:   light-dark(var(--color-red-400), var(--color-red-500));
 
-  /* Error */   
+  --color-border:  --alpha(var(--color-fg) / 25%);
+  --color-border2: --alpha(var(--color-fg2) / 25%);
+  --color-border3: --alpha(var(--color-fg3) / 25%);
+
+  --color-surface: light-dark(var(--color-white), --alpha(var(--color-zinc-800) / 50%));
+  --color-surface-border: light-dark(var(--color-border3), --alpha(var(--color-border3) / 50%));
+
+  --color-input: light-dark(var(--color-white), --alpha(var(--color-zinc-950) / 30%));
+}
+
+
+/* Base */
+@utility base-bg           { @apply bg-bg }
+@utility base-text         { @apply text-fg font-medium font-mono tracking-[0.01em] }
+@utility base              { @apply base-bg base-text }
+
+
+/* Typography */
+@utility text-muted        { @apply text-fg2 }
+@utility text-faint        { @apply text-fg3 }
+@utility text-green        { @apply text-fgGreen }
+
+
+/* Interactions */
+@utility clickable         { @apply cursor-pointer }
+@utility clickableUI       { @apply select-none cursor-pointer }
+
+
+/* Links */
+@utility link-text         { @apply text-fg2/80 hover:text-fg/90 }
+@utility link-article      { @apply link-text link-underline clickable }
+@utility link-navigation   { @apply link-text clickable }
+@utility link-underline    { @apply underline underline-offset-3 
+                                    decoration-fg2/20 hover:decoration-fg2/60 }
+
+/* Strokes */
+@utility divider           { @apply border-border3 }
+@utility divider-mid       { @apply border-border2 }
+@utility divider-strong    { @apply border-border }
+
+
+
+/* Inputs */
+@theme {
   --color-input-error-border:   light-dark(--alpha(var(--color-red-400)     / 100%), --alpha(var(--color-red-500)     /  50%));
-  --color-error-border:         light-dark(--alpha(var(--color-red-300)     / 100%), --alpha(var(--color-red-500)     /  20%));
-  --color-error-bg:             light-dark(--alpha(var(--color-red-50)      / 100%), --alpha(var(--color-red-500)     /  10%));
-  --color-error-text-base:      light-dark(--alpha(var(--color-red-600)     / 100%), --alpha(var(--color-red-400)     / 100%));
-  --color-error-text-muted:     light-dark(--alpha(var(--color-red-500)     / 100%), --alpha(var(--color-red-400)     /  75%));
+}
 
-  /* Card */
-  --color-card-bg:              light-dark(--alpha(var(--color-white)       / 100%), --alpha(var(--color-zinc-800)    /   0%));
-  --color-card-bg-hover:        light-dark(--alpha(var(--color-slate-50)    /  50%), --alpha(var(--color-zinc-800)    /  25%));
-  --color-card-border-hover:    light-dark(--alpha(var(--color-slate-300)   / 100%), --alpha(var(--color-zinc-700)    / 100%));      
-  --color-card-shadow:          light-dark(--alpha(var(--color-slate-500)   /  10%), --alpha(var(--color-zinc-950)    /  50%));
+/* TODO: make autofill reset styles */
+/* TODO: caution for focus-within? */
+@utility input-reset        { @apply outline-none }
+@utility input-border-error { @apply border border-input-error-border}
+@utility input-box          { @apply /* Outer Ring */
+                                     transition-[outline,border] duration-50
+                                     outline outline-transparent hover:outline-border3/50 hover:outline-4 focus:outline-4
+                                     focus:outline-border3/60 focus:border-border
 
-  /* Button */
+                                     /* Autofill */
+                                     autofill-text-blue-500! autofill-border-blue-500!
+
+                                     /* Layout */
+                                     flex items-center gap-2 min-w-30 rounded-md
+                                     px-3 p-2
+                                     bg-input caret-fg text-start
+                                     border-border3 border
+                                     shadow-fg3/15 dark:shadow-black/10  shadow-inner
+                                     placeholder:text-fg3/50
+                                     placeholder:italic
+                            }
+@utility input-box-error    { @apply border 
+                                     border-error2 dark:border-error2/50
+                                     hover:outline-error2/20
+                                     focus:border-error2 dark:focus:border-error2/50
+                                     focus:outline-error2/20
+                            }
+@utility input-label        { @apply text-fg2 text-sm }
+@utility input-group        { @apply flex flex-col gap-1 }
+
+/* @utility input-box2         { @apply  } */
+
+
+/* Errors */
+@utility error-text       { @apply text-error }
+@utility error-text-muted { @apply text-error/75 }
+@utility error-border     { @apply border-error/15 }
+@utility error-bg         { @apply bg-error/7 }
+@utility error-card       { @apply card error-border error-bg error-text }
+
+/* Page */
+@utility page             { @apply base p-8 flex flex-col gap-4 max-w-200 w-screen min-h-screen }
+@utility page-title       { @apply text-xl tracking-tighter font-semibold leading-6 mb-2 }
+@utility page-description { @apply text-muted font-semibold }
+
+
+
+/* Card */
+@utility card-border      { @apply border border-border }
+@utility card-shadow      { @apply shadow-none }
+@utility card-bg          { @apply bg-white    dark:bg-transparent }
+@utility card-bg2         { @apply bg-slate-50 dark:bg-zinc-800/50 }
+@utility card-padding     { @apply p-2 px-3 }
+@utility card-rounded     { @apply rounded-md }
+@utility card-clickable   { @apply clickableUI }
+@utility card             { @apply card-border card-shadow card-bg card-padding card-rounded }
+
+@utility link-card        { @apply card card-clickable transition-all duration-75 hover:shadow-lg 
+                            hover:shadow-slate-500/10 dark:hover:shadow-zinc-950/50
+                            hover:border-slate-300 dark:hover:border-zinc-700
+                            hover:bg-slate-50/50 dark:hover:bg-zinc-800/25 }
+
+@utility info-card        { @apply card-border card-bg2 p-5 rounded-xl }
+
+/* Button */
+@theme {
   --color-button-base:          light-dark(--alpha(var(--color-slate-200)   / 100%), --alpha(var(--color-zinc-800)    /  50%));
   --color-button-base-hover:    light-dark(--alpha(var(--color-slate-300)   /  80%), --alpha(var(--color-zinc-700)    /  50%));
   --color-button-base-active:   light-dark(--alpha(var(--color-slate-300)   /  95%), --alpha(var(--color-zinc-700)    /  40%));
@@ -57,83 +140,9 @@
   --color-button-subtle:        light-dark(--alpha(var(--color-slate-200)   /  50%), --alpha(var(--color-zinc-800)    /  25%));
   --color-button-subtle-hover:  light-dark(--alpha(var(--color-slate-200)   /  80%), --alpha(var(--color-zinc-700)    /  25%));
   --color-button-subtle-active: light-dark(--alpha(var(--color-slate-200)   / 100%), --alpha(var(--color-zinc-700)    /  17%));
-
-  /* Popover */
-  --color-popover-shadow:       light-dark(--alpha(var(--color-slate-600)   /  15%), --alpha(var(--color-zinc-950)    /  50%));   
-  --color-popover-border:       light-dark(--alpha(var(--color-slate-300)   /  75%), --alpha(var(--color-zinc-700)    / 100%));   
-  --color-popover-backdrop:     light-dark(--alpha(var(--color-black)       /  20%), --alpha(var(--color-black)       /  65%));   
 }
-
-/* Interactions */
-@utility clickable   { @apply cursor-pointer }
-@utility clickableUI { @apply select-none cursor-pointer }
-
-/* Base */
-@utility base             { @apply base-surface base-text base-border }
-@utility base-surface     { @apply bg-base }
-@utility base-text        { @apply text-fg-base font-medium font-mono tracking-[0.028em] }
-@utility base-border      { @apply border-divider }
-
-/* Links */
-@utility link-article     { @apply link-text link-underline clickable }
-@utility link-navigation  { @apply link-text clickable }
-@utility link-text        { @apply text-fg-link hover:text-fg-link-hover }
-@utility link-underline   { @apply underline underline-offset-3 
-                            decoration-fg-underline hover:decoration-fg-underline-hover }
-
-/* Typography */
-@utility typo-label       { @apply text-fg-label text-sm }
-@utility typo-muted       { @apply text-fg-muted }
-@utility typo-faint       { @apply text-fg-faint }
-@utility typo-green       { @apply text-fg-green }
-
-/* Strokes */
-@utility border-strong    { @apply border-divider-strong }
-
-/* Inputs */
-@utility input-reset        { @apply outline-none  }
-@utility input-bg           { @apply bg-base }
-@utility input-text         { @apply caret-fg-base text-start }
-@utility input-shape        { @apply flex items-center  gap-2 min-w-30 rounded-md }
-@utility input-padding      { @apply px-3 p-2 }
-@utility input-border       { @apply border border-stroke }
-@utility input-border-error { @apply border border-input-error-border}
-@utility input-autofill     { @apply autofill-text-fg-base autofill-border-stroke-autofill }
-@utility input-outer        { @apply transition-all hover:outline-4 focus:outline-4
-                                     outline-stroke-wide-hover focus:outline-stroke-wide-focus }
-@utility input-box          { @apply input-border input-padding 
-                                     input-outer input-shape 
-                                     input-bg input-text }
-
-/* Errors */
-@utility error-border     { @apply border-error-border }
-@utility error-bg         { @apply bg-error-bg }
-@utility error-text       { @apply text-error-text-base }
-@utility error-text-muted { @apply text-error-text-muted }
-@utility error-card       { @apply card error-border error-bg error-text }
-
-/* Page */
-@utility page             { @apply base p-8 flex flex-col gap-4 max-w-200 w-screen min-h-screen }
-@utility page-title       { @apply text-xl tracking-tighter font-semibold leading-6 mb-2 }
-@utility page-description { @apply typo-muted font-semibold }
-
-/* Card */
-@utility card-border      { @apply border border-border }
-@utility card-shadow      { @apply shadow-none }
-@utility card-bg          { @apply bg-card-bg }
-@utility card-padding     { @apply p-2 px-3 }
-@utility card-rounded     { @apply rounded-md }
-@utility card-clickable   { @apply clickableUI }
-@utility card             { @apply card-border card-shadow card-bg card-padding card-rounded }
-
-@utility link-card        { @apply card card-clickable transition-all duration-75
-                            hover:shadow-lg hover:shadow-card-shadow
-                            hover:border-card-border-hover
-                            hover:bg-card-bg-hover }
-
-/* Button */
                             /* Todo: Focus outline color */
-@utility button-common    { @apply clickableUI text-sm text-fg-base flex items-center justify-center
+@utility button-common    { @apply clickableUI text-sm text-fg flex items-center justify-center
                             rounded-md gap-2 px-2.5 py-2 focus:outline-none disabled:pointer-events-none }
 @utility button-base      { @apply button-common bg-button-base   hover:bg-button-base-hover   active:bg-button-base-active   disabled:opacity-25  }
 @utility button-subtle    { @apply button-common bg-button-subtle hover:bg-button-subtle-hover active:bg-button-subtle-active disabled:opacity-25 }
@@ -143,16 +152,35 @@
 @utility button-icon      { @apply p-0 size-7 }
 @utility button-icon-lg   { @apply p-0 size-8 text-lg }
 
+
+
 /* Popover */
 @utility popover-base       { @apply base outline-hidden }
 @utility popover-rounded    { @apply rounded-lg }
-@utility popover-bg         { @apply bg-base }
-@utility popover-border     { @apply border border-popover-border }
-@utility popover-shadow     { @apply shadow-popover-shadow shadow-md dark:shadow-lg }
+@utility popover-bg         { @apply bg-bg }
+@utility popover-border     { @apply border-slate-300/75 dark:border-zinc-700 border }
+@utility popover-shadow     { @apply shadow-slate-600/15 dark:shadow-zinc-950/50 shadow-md dark:shadow-lg }
 @utility popover-transition { @apply transition-[scale,opacity] duration-75 ease-out 
-                              data-starting-style:scale-[0.95] data-starting-style:opacity-0
-                              data-ending-style:scale-[0.95]   data-ending-style:opacity-0 }
+                                     data-starting-style:scale-[0.95] data-starting-style:opacity-0
+                                     data-ending-style:scale-[0.95]   data-ending-style:opacity-0 }
 @utility popover-backdrop   { @apply fixed inset-0 min-h-dvh
-                              bg-popover-backdrop transition-opacity opacity-150
-                              data-ending-style:opacity-0 data-starting-style:opacity-0
-                              supports-[-webkit-touch-callout:none]:absolute }
+                                     bg-black/20 dark:bg-black/65
+                                     transition-opacity opacity-150
+                                     data-ending-style:opacity-0 data-starting-style:opacity-0
+                                     supports-[-webkit-touch-callout:none]:absolute }
+@utility popover-menu-item  { @apply clickableUI rounded-md outline-hidden 
+                                     data-highlighted:bg-slate-100 dark:data-highlighted:bg-zinc-800 
+                                     p-1 }
+
+                                     
+
+/* Tab */
+@utility tab-container         { @apply bg-slate-100/20 dark:bg-zinc-950/50
+                                        border-slate-200/50 dark:border-zinc-800
+                                        flex self-start gap-1 border rounded-xl }
+@utility tab-item              { @apply p-2 rounded-md px-3 w-40 border border-transparent
+                                        flex items-center gap-2 clickableUI }
+@utility tab-item-selected     { @apply bg-white dark:bg-zinc-800 
+                                        border-slate-200 dark:border-zinc-700/50  border 
+                                        shadow-slate-200 dark:shadow-zinc-950 shadow-sm }
+@utility tab-item-not-selected { @apply hover:bg-slate-200/75 dark:hover:bg-zinc-800/50 }

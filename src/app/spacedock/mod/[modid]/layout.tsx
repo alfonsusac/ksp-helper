@@ -109,7 +109,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
         <div className="flex flex-col gap-2">
 
-          <div className={cns.surface2card("w-full flex flex-col gap-1")}>
+          <div className={cns.infoCard("w-full flex flex-col gap-1")}>
             <div className={cns.textMuted()}>
               Authors
             </div>
@@ -123,7 +123,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
           </div>
 
-          <div className={cns.surface2card("w-full flex flex-col gap-1")}>
+          <div className={cns.infoCard("w-full flex flex-col gap-1")}>
             <div className={cns.textMuted()}>
               Links
             </div>
@@ -147,7 +147,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
           </div>
 
-          <div className={cns.surface2card("w-full flex flex-col gap-3 text-sm")}>
+          <div className={cns.infoCard("w-full flex flex-col gap-3 text-sm")}>
             <div className="flex items-baseline gap-2">
               <LucideScale className={cardButtonIcon(cns.textMuted("self-start shrink-0"))} />
               <div className={cns.textMuted("shrink-0")}>

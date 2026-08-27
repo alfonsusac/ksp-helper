@@ -15,7 +15,7 @@ export function LoginDialog(props: {
   return <Dialog.Root>
     <Dialog.Trigger render={props.children} />
     <Dialog.Portal>
-      <Dialog.Backdrop className={cns.popover.backdrop()} />
+      <Dialog.Backdrop className={cns.popoverBackdrop()} />
       <Dialog.Viewport>
         <Dialog.Popup className={cn(
           "fixed inset-0",
@@ -23,7 +23,7 @@ export function LoginDialog(props: {
           "p-4",
           "pointer-events-none",
         )}>
-          <div className={cns.popover.base(
+          <div className={cns.popoverBase(
             "pointer-events-auto",
             "rounded-2xl",
             "p-7",

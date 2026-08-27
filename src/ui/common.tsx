@@ -46,6 +46,7 @@ export function SignalSymbol(props: {
 export function Divider(props: ComponentProps<"div">) {
   return (
     <div {...props} className={cn(
+      cns.divider(),
       "border-b border-l self-stretch",
       props.className
     )} />

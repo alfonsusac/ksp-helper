@@ -16,7 +16,7 @@ export function TabLink(props: ComponentProps<typeof Link>) {
         "font-semibold border border-transparent",
         isActive && [
           "pointer-events-none",
-          cns.surface2card(),
+          cns.infoCard(),
           "opacity-100"
         ],
         "py-2 px-4",

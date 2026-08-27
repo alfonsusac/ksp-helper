@@ -1,4 +1,5 @@
 import { cns } from "@/design-system"
+import { cn } from "@/ui/cn"
 import { Divider } from "@/ui/common"
 import { Footer } from "@/ui/footer"
 import { LucideArrowUpRight } from "@/ui/icons"
@@ -49,7 +50,7 @@ export default function HomePage() {
       </div>
 
 
-      <header className={cns.base("pt-24 -mb-16")}>
+      <header className={cn("pt-24 -mb-16")}>
         Community Tools
         <div className={cns.textMuted("")}>Web-based tools made by the KSP community</div>
       </header>
@@ -57,7 +58,7 @@ export default function HomePage() {
       {communityCalculators.map((g, gi) => {
         return (
           <Fragment key={gi}>
-            <div className={cns.base("text-sm opacity-75 mt-24")}>{g.title}</div>
+            <div className={cn("text-sm opacity-75 mt-24")}>{g.title}</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {g.items.map((p, pi) => <CommunityProjectLink key={pi} {...p} />)}
             </div>

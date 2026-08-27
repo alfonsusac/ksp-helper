@@ -39,7 +39,7 @@ export function VersionPageClientSection(props: {
       />
     </div>
 
-    <section className={cns.surface2card("wrap-break-word min-w-0")}>
+    <section className={cns.infoCard("wrap-break-word min-w-0")}>
       <div className="flex flex-col gap-2 wrap-break-word">
         {versions
           .filter(v => {
@@ -64,14 +64,14 @@ export function VersionPageClientSection(props: {
                 </p>
                 <h2 className="text-xl flex gap-2 items-center">
                   {v.friendly_version} for {v.game_version}
-                  {props.default_version_id === v.id && <span className={cns.surface2card("text-xs p-1 px-2 inline-block text-current/75")}>Default</span>}
+                  {props.default_version_id === v.id && <span className={cns.infoCard("text-xs p-1 px-2 inline-block text-current/75")}>Default</span>}
                 </h2>
               </div>
               {v.html ?
-                <div dangerouslySetInnerHTML={{ __html: v.html }} className={cns.docunment(cns.surface2card("py-0 wrap-break-word"))}>
+                <div dangerouslySetInnerHTML={{ __html: v.html }} className={cns.docunment(cns.infoCard("py-0 wrap-break-word"))}>
                 </div>
                 :
-                <div className={cns.textFaint(cns.surface2card("py-2"))}>
+                <div className={cns.textFaint(cns.infoCard("py-2"))}>
                   Changelog not provided
                 </div>
               }
@@ -135,13 +135,13 @@ function SelectVersionFilterDropdown(props: {
           sideOffset={4}
           alignItemWithTrigger={false}
         >
-          <Select.Popup className={cns.popover.base("min-w-50")}>
+          <Select.Popup className={cns.popoverBase("min-w-50")}>
             <Select.List className={cn("relative p-0.5 overflow-y-auto max-h-[var(--available-height)]")}>
               {versionList.map((v) => {
                 return <Select.Item
                   key={v}
                   value={v}
-                  className={cns.popover.item("grid grid-cols-[1.5rem_auto] items-center")}
+                  className={cns.popoverItem("grid grid-cols-[1.5rem_auto] items-center")}
                 >
                   <Select.ItemIndicator className="col-start-1">
                     <LucideCheck />

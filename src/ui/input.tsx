@@ -7,12 +7,12 @@ import { Menu } from '@base-ui/react/menu'
 import { cns } from "@/design-system"
 import { ResetSettingsIconButton } from "./settings-section"
 
-export type SelectPayload = {
+export type ValueLabelArray = {
   value: string,
   label: ReactNode
 }[]
 
-export function SelectRow<const T extends SelectPayload>(props: {
+export function SelectRow<const T extends ValueLabelArray>(props: {
   data: T,
   value: T[ number ][ 'value' ],
   onValueChange: (value: T[ number ][ 'value' ]) => void,
@@ -44,14 +44,14 @@ export function SelectRow<const T extends SelectPayload>(props: {
           <BSelect.Positioner className={cn(
             "outline-hidden select-none z-10"
           )} sideOffset={4}>
-            <BSelect.Popup className={cns.popover.base("min-w-40")}>
+            <BSelect.Popup className={cns.popoverBase("min-w-40")}>
               <BSelect.List className={cn("relative p-0.5 overflow-y-auto max-h-[var(--available-height)]")}>
                 {props.data.map(({ label, value }) => (
                   <BSelect.Item
                     key={value}
                     value={value}
-                    className={cns.popover.item(
-                      cns.popover.selectItemLayout(),
+                    className={cns.popoverItem(
+                      cns.popoverSelectItemLayout(),
                       "grid grid-cols-[0.5rem_1fr] items-center gap-2",
                       "p-1 text",
                     )}
@@ -88,20 +88,20 @@ export function CheckboxRow(props: {
   )
 }
 
-export function TabSelectRow<const T extends SelectPayload>(props: {
+export function TabSelectRow<const T extends ValueLabelArray>(props: {
   items: T,
   value: T[ number ][ 'value' ],
   onValueChange: (value: T[ number ][ 'value' ]) => void,
   itemClassName?: string,
 }) {
   return (
-    <div className={cns.tab.base()}>
+    <div className={cns.tabBase()}>
       {props.items.map((e, i) => {
         const selected = props.value === e.value
         return (
           <div key={i}
             onClick={() => props.onValueChange(e.value)}
-            className={cns.tab.itemBase(selected, props.itemClassName)}>
+            className={cns.tabItem(selected)(props.itemClassName)}>
             <div className={cn(
               "size-4 grid place-items-center p-0.5 shrink-0",
               selected ? "opacity-100" : "opacity-0"
@@ -131,14 +131,14 @@ export function Slider(props: {
       onValueCommitted={props.onValueCommitted}
       className={cn("group", props.className)} value={props.value} min={props.min} max={props.max} onValueChange={props.onValueChange} step={props.step} thumbAlignment="edge">
       <BSlider.Control className="flex w-full touch-none items-center py-0 select-none">
-        <BSlider.Track className={cns.slider.track(
+        <BSlider.Track className={cns.sliderTrack(
           "h-1 w-full select-none rounded-lg h-1.5"
         )}>
-          <BSlider.Indicator className={cns.slider.indicator(
+          <BSlider.Indicator className={cns.sliderIndicator(
             "select-none rounded-lg"
           )} />
           <BSlider.Thumb
-            className={cns.slider.thumb(
+            className={cns.sliderThumb(
               "size-3 rounded-full select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ",
               "hover:cursor-pointer"
             )}
@@ -153,7 +153,7 @@ export function Slider(props: {
 
 export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
   return (
-    <Menu.Popup {...props} className={cns.popover.base(
+    <Menu.Popup {...props} className={cns.popoverBase(
       "p-2",
       "text-base",
       "flex flex-col gap-2",
@@ -174,7 +174,7 @@ export function MenuItem(props: ComponentProps<typeof Menu[ 'Item' ]>) {
   return (
     <Menu.Item
       {...props}
-      className={cns.popover.item(
+      className={cns.popoverItem(
         "p-2 px-3",
         "flex gap-2 items-center",
         props.className
@@ -406,7 +406,7 @@ export function InputBlock(props: {
   if (props.row) {
     return (
       <div className={cns.surface("flex gap-2", props.className)}>
-        <label className={cns.textLabel("h-10 flex items-center")}>{props.label}</label>
+        <label className={cns.inputLabel("h-10 flex items-center")}>{props.label}</label>
         {props.children}
       </div>
     )
@@ -414,7 +414,7 @@ export function InputBlock(props: {
 
   return (
     <div className={cns.surface("flex flex-col gap-1.5", props.className)}>
-      <label className={cns.textLabel()}>{props.label}</label>
+      <label className={cns.inputLabel()}>{props.label}</label>
       {props.children}
     </div>
   )

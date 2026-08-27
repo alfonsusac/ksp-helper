@@ -91,7 +91,7 @@ export function AntennaInput(props: {
                     <div className={cns.textMuted("grow shrink-0 text-xs")}>
                       {prettyNum(antenna.rating)} <span className="capitalize">({(antenna.type)})</span>
                     </div>
-                    <div className="flex items-center shrink-0 text-base">
+                    <div className="flex items-center shrink-0">
                       <div className="grow text-sm">{!!qty && `x${ qty }`}</div>
                       <button className={cns.buttonGhost(cns.buttonIcon(), "shrink-0", qty ? "" : "opacity-0 pointer-events-none")} onClick={() => clearAntenna(antenna.id)}>
                         <LucideX />

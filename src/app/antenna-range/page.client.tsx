@@ -587,7 +587,7 @@ function PlanetDistanceStrengthCell(props: {
       {props.strength === null ? <></> : Math.round(props.strength * 100) + "%"}
       {props.strength !== null &&
         <>
-          <Divider className={cns.dividerFaded()} />
+          <Divider className={cns.dividerMid()} />
           <SignalSymbol barClassname={cns.graphBarScience2()} />
           <div className={cns.textScience("text-[0.9em]")}>
             +{scienceBonus.bonus}%

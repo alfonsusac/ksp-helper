@@ -1,11 +1,9 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Inconsolata, Inter, JetBrains_Mono, Kode_Mono, Manrope, Open_Sans, Roboto_Mono, Space_Mono, Ubuntu_Mono } from "next/font/google"
+import { JetBrains_Mono, Open_Sans } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
+import { cn } from "@/ui/cn"
 import { cns } from "@/design-system"
-import { ClientDebugTool } from "./page.client.dev"
-
-
 
 
 const mono = JetBrains_Mono({
@@ -37,14 +35,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${ sans.variable } ${ mono.variable } h-full antialiased`}
+      className={cn(
+        `${ sans.variable } ${ mono.variable } h-full antialiased`,
+      )}
     >
-      <body className={cns.base("min-h-full font-mono")}>
+      <body className={cn(
+        cns.base(),
+        "min-h-full font-mono",
+        "base",
+      )}>
         <div className="root">
-          <div className={cns.base("flex flex-col items-center")}>
+          <div className={"flex flex-col items-center"}>
             <Analytics />
             {children}
-            <ClientDebugTool />
           </div>
         </div>
       </body>

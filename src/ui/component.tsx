@@ -7,15 +7,18 @@ export function component<T extends
   component: T & HasClassName<T>,
   props?: {
     class?: string | string[],
-  }
+  },
+  displayName?: string,
 ) {
-  const Comp = component
-  return (p: ComponentProps<T>) => {
+  const comp = (p: ComponentProps<T>) => {
     return createElement(component, {
       ...p,
       className: cn(props?.class, p.className)
     })
   }
+  comp.displayName = displayName
+
+  return comp
 }
 
 type HasClassName<T extends React.ElementType> =

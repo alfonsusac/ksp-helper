@@ -6,16 +6,17 @@ export const cnr = (...a: any[]) => (...b: any[]) => cn(...a, ...b)
 export const cns = ({
   // Primitives
   base: cnr('base'),
-  dividerStrong: cnr('border-strong'),
-  textLabel: cnr('typo-label'),
-  textMuted: cnr('typo-muted'),
-  textFaint: cnr('typo-faint'),
-  textGreen: cnr("typo-green"),
+  textMuted: cnr('text-muted'),
+  textFaint: cnr('text-faint'),
+  textGreen: cnr("text-green"),
+  divider: cnr('divider'),
+  dividerStrong: cnr('divider-strong'),
+  dividerMid: cnr("divider-mid"),
 
   articleLink: cnr('link-article'),
   navigationLink: cnr('link-navigation',),
-  textLinkA: cnr("[&_a]:link-article"),
 
+  inputLabel: cnr('input-label'),
   inputReset: cnr("input-reset"),
   inputBox: cnr("input-box"),
   inputBoxError: cnr("input-border-error"),
@@ -31,45 +32,20 @@ export const cns = ({
 
   // Common Components
   surface: cnr("my-0 first:pt-0"),
-  surface2: cnr("   bg-slate-50   dark:bg-zinc-800/50"),
-  bgPrimary: cnr("  bg-slate-700  dark:bg-zinc-300"),
-  listBullet: cnr(" bg-slate-700  dark:bg-zinc-300"),
-  placeholder: cnr("bg-slate-50   dark:bg-zinc-800/10"),
-  bgMuted: cnr("    bg-slate-200  dark:bg-zinc-700"),
-
-  surface2card: (...c: any) => cns.surface2("p-5 rounded-xl", "card-border", c),
+  surface2: cnr("bg-card-bg2"),
+  listBullet: cnr(" bg-slate-700    dark:bg-zinc-300"),
+  placeholder: cnr("bg-slate-100/60 dark:bg-zinc-800/20"),
+  bgMuted: cnr("    bg-slate-200    dark:bg-zinc-700"),
 
   card: cnr("card"),
   errorCard: cnr("error-card"),
   linkCard: cnr("link-card"),
+  infoCard: cnr("info-card"),
 
   clickableUI: cnr("select-none cursor-pointer"),
 
-  tab: {
-    base: (...c: any[]) => cn(
-      cns.tab.containerBg(),
-      cns.tab.containerBorder(),
-      "p-1 flex self-start gap-1 border rounded-xl",
-      c
-    ),
-    containerBg: cnr("             bg-slate-100          dark:bg-zinc-950/50"),
-    containerBorder: cnr("         border-slate-200/50   dark:border-zinc-800"),
-    itemBase: (selected: boolean, ...c: any[]) => cn(
-      "p-2 rounded-md px-3 w-40 border border-transparent",
-      "flex items-center gap-2",
-      "select-none cursor-pointer",
-      selected ? [
-        cns.tab.selectedBg(),
-        cns.tab.selectedBorder(),
-        cns.tab.selectedShadow(),
-      ] : cns.tab.itemHoverBg(),
-      c,
-    ),
-    selectedBg: cnr("              bg-white              dark:bg-zinc-800"),
-    selectedBorder: cnr("border    border-slate-200      dark:border-zinc-700/50"),
-    selectedShadow: cnr("shadow-sm shadow-slate-200      dark:shadow-zinc-950"),
-    itemHoverBg: cnr("             hover:bg-slate-200/75 dark:hover:bg-zinc-800/50"),
-  },
+  tabBase: cnr("tab-container"),
+  tabItem: (sel: boolean) => cnr("tab-item", sel ? "tab-item-selected" : "tab-item-not-selected"),
 
   buttonBase: cnr("button-base"),
   buttonSubtle: cnr("button-subtle"),
@@ -79,47 +55,33 @@ export const cns = ({
   buttonIconLg: cnr("button-icon-lg"),
   buttonPresetGroup: cnr("button-subtle", "text-xs p-1 px-1.5 rounded-xs first:rounded-l-lg last:rounded-r-lg w-10 shrink-0"),
 
-  popover: {
-    backdrop: cnr("popover-backdrop"),
-    base: cnr(
-      "popover-base",
-      "popover-rounded",
-      "popover-bg",
-      "popover-border",
-      "popover-transition",
-      "popover-shadow",
-    ),
-    item: (...c: any) => cns.base(
-      cns.clickableUI(),
-      cn(
-        "rounded-md outline-hidden",
-        "data-highlighted:bg-slate-100 dark:data-highlighted:bg-zinc-800",
-        "p-1",
-        c,
-      ),
-    ),
-    selectItemLayout: cnr(
-      "grid grid-cols-[0.5rem_1fr]",
-      "items-center gap-2",
-    )
-  },
+  popoverBackdrop: cnr("popover-backdrop"),
+  popoverBase: cnr(
+    "popover-base",
+    "popover-rounded",
+    "popover-bg",
+    "popover-border",
+    "popover-transition",
+    "popover-shadow",
+  ),
+  popoverItem: cnr("popover-menu-item"),
+  popoverSelectItemLayout: cnr(
+    "grid grid-cols-[0.5rem_1fr]",
+    "items-center gap-2",
+  ),
 
-  slider: {
-    track: cnr("    bg-slate-200 dark:bg-zinc-800"),
-    indicator: cnr(
-      "bg-slate-400 dark:bg-zinc-400",
-      "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"
-    ),
-    thumb: cnr(
-      "bg-slate-400 dark:bg-zinc-400",
-      "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"
-    ),
-  },
+  sliderTrack: cnr("bg-slate-200 dark:bg-zinc-800"),
+  sliderIndicator: cnr(
+    "bg-slate-400 dark:bg-zinc-400",
+    "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"),
+  sliderThumb: cnr(
+    "bg-slate-400 dark:bg-zinc-400",
+    "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"
+  ),
+
 
 
   // Specials
-
-
   bgScience: cnr("       bg-blue-200     dark:bg-blue-500"),
   textScience: cnr("     text-blue-500   dark:text-blue-400"),
 
@@ -136,9 +98,9 @@ export const cns = ({
 
   graphBarScience: cnr(" bg-blue-200/50  dark:bg-blue-400/20"),
 
-  // cell table
 
-  dividerFaded: cnr("    border-slate-600/30 dark:border-zinc-400/20"),
+
+  // cell table
   graphBarScience2: cnr("bg-blue-500/20      dark:bg-blue-400/50"),
 
   cellNoData: cnr("      bg-slate-100        dark:bg-zinc-900"),

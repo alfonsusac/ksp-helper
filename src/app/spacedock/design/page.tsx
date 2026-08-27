@@ -1,10 +1,13 @@
 "use client"
 
 import { cns } from "@/design-system"
-import { component } from "@/lib/component"
+import { component } from "@/ui/component"
 import { cn } from "@/ui/cn"
+import { SignalSymbol } from "@/ui/common"
 import { LucideArrowRight, LucideArrowUpRight, LucideCalendar } from "@/ui/icons"
+import { Slider } from "@/ui/input"
 import type { ReactNode } from "react"
+import { Lorem } from "../_components/commons"
 
 export default function DesignSystemPage() {
   return (
@@ -14,7 +17,7 @@ export default function DesignSystemPage() {
       <Section>
         <h2>Color Palette</h2>
 
-        <Row className="gap-8">
+        <Flex className="gap-8">
           <Group>
             <h3>slate</h3>
             <Grid>
@@ -31,8 +34,6 @@ export default function DesignSystemPage() {
               <ColorPaletteItem bgColor="bg-slate-950" />
             </Grid>
           </Group>
-
-
           <Group>
             <h3>zinc</h3>
             <Grid>
@@ -49,119 +50,132 @@ export default function DesignSystemPage() {
               <ColorPaletteItem bgColor="bg-zinc-950" />
             </Grid>
           </Group>
-        </Row>
+        </Flex>
+      </Section>
+
+
+      <Section>
+        <h2>Color Tokens</h2>
+
+        <SurfaceTester>
+          <Group className="gap-3 p-4 border border-transparent">
+            <p className="text-fg line-clamp-3">fg<br /><a className="link-article inline-flex gap-2 self-start">Vercel</a> <Lorem /></p>
+            <hr className="border-border" />
+            <p className="text-fg2 line-clamp-3">fg2<br /><Lorem /></p>
+            <hr className="border-border2" />
+            <p className="text-fg3 line-clamp-3">fg3<br /><Lorem /></p>
+            <hr className="border-border3" />
+
+            <a className="link-navigation inline-flex gap-2 self-start">Source Code <LucideArrowUpRight /></a>
+            <br />
+            <Group className="px-2 gap-5">
+              <div className="input-group">
+                <label className="input-label" >Username</label>
+                <input className="input-box" placeholder="Placeholder..." name="username" autoComplete="username" />
+              </div>
+              <div className="input-group group">
+                <label className="input-label">Password</label>
+                <input className="input-box input-box-error" value="Input value text" onChange={() => {}} />
+                <p className={cns.errorTextMuted("text-sm")}>Something went wrong</p>
+              </div>
+            </Group>
+            <div className={cns.errorCard()} >
+              <p className={cns.errorTextBase()}>Warning</p>
+              <p className={cns.errorTextMuted()}>Something went wrong</p>
+            </div>
+          </Group>
+        </SurfaceTester>
 
       </Section>
+
+
       <Section>
-        <h2>Color Semantics</h2>
+        <h2>Component Dump</h2>
 
-        <Group className="gap-0" >
+        <Group>
+          <Flex className="items-baseline gap-4 flex-wrap">
+            <p>Hello World</p>
+            <hr className={cns.divider("h-auto self-stretch border-l")} />
+            <p>Mid Divider</p>
+            <hr className={cns.dividerMid("h-auto self-stretch border-l")} />
+            <p>Stronger Divider</p>
+            <hr className={cns.dividerStrong("h-auto self-stretch border-l")} />
+            <SignalSymbol />
+            <SignalSymbol strength={0.1} />
+            <SignalSymbol strength={0.3} />
+            <SignalSymbol strength={0.6} />
+            <SignalSymbol strength={0.9} />
+            <SignalSymbol barClassname={cns.bgScience()} />
+            <p className={cns.inputLabel()}>Text Label</p>
+            <p className={cns.textFaint()}>No Mods Found</p>
+            <p className={cns.textGreen()}>Kerbal Space Program</p>
 
-          <ColorSemanticItemBase>
-            {/* <div></div> */}
-            <Light className="rounded-t-lg py-4" />
-            <Dark className="rounded-t-lg py-4" />
-          </ColorSemanticItemBase>
-
-          <ColorSemanticItem />
-          <ColorSemanticItem
-            example={<hr className="border-divider mt-2" />}
-          />
-          <ColorSemanticItem
-            example={<p className="text-fg-base">Hello World</p>}
-          />
-          <ColorSemanticItem
-            example={<p className="text-fg-label">Hello World</p>}
-          />
-          <ColorSemanticItem
-            example={<p className="text-fg-muted">Hello World</p>}
-          />
-          <ColorSemanticItem
-            example={<p className="text-fg-faint">No mods found</p>}
-          />
-          <ColorSemanticItem
-            example={<p className="text-fg-green">Kerbal Space Program</p>}
-          />
-          <ColorSemanticItem
-            example={<p className={cns.articleLink("wrap-anywhere")}>Hello World <LucideArrowUpRight className="inline" /></p>}
-          />
-          <ColorSemanticItem
-            example={<p className={cns.navigationLink("flex")}>Source Code <LucideArrowUpRight /></p>}
-          />
-          <ColorSemanticItem
-            example={<input className={cns.inputBox()} name="username" />}
-          />
-          <ColorSemanticItem
-            example={
-              <>
-                <div className={cns.card()} >
-                  <p className={cns.base()}>Hello World</p>
-                  <p className={cns.textMuted()}>This is a card</p>
-                </div>
-              </>
-            }
-          />
-          <ColorSemanticItem
-            example={
-              <>
-                <div className={cns.card()} >
-                  <p className={cns.base()}>Hello World</p>
-                  <p className={cns.textMuted()}>This is a card</p>
-                </div>
-              </>
-            }
-          />
-          <ColorSemanticItem
-            example={
-              <div className={cns.errorCard()} >
-                <p className={cns.errorTextBase()}>Warning</p>
-                <p className={cns.errorTextMuted()}>Something went wrong</p>
-              </div>
-            }
-          />
-          <ColorSemanticItem
-            example={
-              <div className="grid gap-2 grid-cols-3">
-                <button className={cns.buttonBase()}>Login <LucideArrowRight/> </button>
-                <button className={cns.buttonSubtle()}><LucideArrowRight /> Subtle</button>
-                <button className={cns.buttonGhost()}>Register <LucideArrowRight /></button>
-                <button className={cns.buttonBase()} disabled>Next</button>
-                <button className={cns.buttonSubtle()} disabled>Prev</button>
-                <button className={cns.buttonGhost()} disabled>Back</button>
-                <div className="flex gap-2">
-                  <button className={cns.buttonBase(cns.buttonIconSm())}><LucideCalendar /></button>
-                  <button className={cns.buttonSubtle(cns.buttonIconSm())}><LucideCalendar /></button>
-                  <button className={cns.buttonGhost(cns.buttonIconSm())}><LucideCalendar /></button>
-                </div>
-                <div className="flex gap-2">
-                  <button className={cns.buttonBase(cns.buttonIcon())}><LucideCalendar /></button>
-                  <button className={cns.buttonSubtle(cns.buttonIcon())}><LucideCalendar /></button>
-                  <button className={cns.buttonGhost(cns.buttonIcon())}><LucideCalendar /></button>
-                </div>
-                <div className="flex gap-2">
-                  <button className={cns.buttonBase(cns.buttonIconLg())}><LucideCalendar /></button>
-                  <button className={cns.buttonSubtle(cns.buttonIconLg())}><LucideCalendar /></button>
-                  <button className={cns.buttonGhost(cns.buttonIconLg())}><LucideCalendar /></button>
-                </div>
-              </div>
-            }
-          />
-
-          <ColorSemanticItem
-            example={
-              <div className={cns.popover.base("p-8 my-8")} >
-                Hello World from Popover
-              </div>
-            }
-          />
-
-          {/* Bottom Part lol */}
-          <ColorSemanticItemBase>
-            <Light className="rounded-b-lg py-4" />
-            <Dark className="rounded-b-lg py-4" />
-          </ColorSemanticItemBase>
+            <p className={cns.articleLink("wrap-anywhere")}>Hello World <LucideArrowUpRight className="inline" /></p>
+            <p className={cns.navigationLink("flex")}>Source Code <LucideArrowUpRight /></p>
+          </Flex>
         </Group>
+        <Group>
+          <Flex className="items-baseline gap-4 flex-wrap">
+            <input className={cns.inputBox()} name="username" />
+            <input className={cns.inputBox(cns.inputBoxError())} name="username" />
+            <Slider
+              className="grow"
+              min={0} max={1}
+              value={0.7}
+              onValueChange={function (n: number): void { }}
+            />
+          </Flex>
+        </Group>
+        <Group>
+          <Flex className="items-baseline gap-4 flex-wrap">
+            <div className={cns.card()} >
+              <p className={cns.base()}>Hello World</p>
+              <p className={cns.textMuted()}>This is a card</p>
+            </div>
 
+
+
+            <div className={cns.placeholder("p-8 rounded-md")} ><p className={cns.textFaint()}>Placeholder...</p></div>
+            <div className={cns.infoCard()} ><p>Info card by @alfonsusac</p></div>
+            <div className={cns.linkCard()} ><p>Link card to @alfonsusac</p></div>
+
+            <div className={cns.popoverBase("p-8")} >
+              Hello World from Popover
+            </div>
+          </Flex>
+        </Group>
+        <Group>
+          <Flex className="items-baseline gap-4 flex-wrap">
+            <div className={cns.tabBase()}>
+              <div className={cns.tabItem(false)()}>Apple</div>
+              <div className={cns.tabItem(true)()}>Banana</div>
+            </div>
+
+            <div className="grid gap-2 grid-cols-3">
+              <button className={cns.buttonBase()}>Login <LucideArrowRight /> </button>
+              <button className={cns.buttonSubtle()}><LucideArrowRight /> Subtle</button>
+              <button className={cns.buttonGhost()}>Register <LucideArrowRight /></button>
+              <button className={cns.buttonBase()} disabled>Next</button>
+              <button className={cns.buttonSubtle()} disabled>Prev</button>
+              <button className={cns.buttonGhost()} disabled>Back</button>
+              <div className="flex gap-2">
+                <button className={cns.buttonBase(cns.buttonIconSm())}><LucideCalendar /></button>
+                <button className={cns.buttonSubtle(cns.buttonIconSm())}><LucideCalendar /></button>
+                <button className={cns.buttonGhost(cns.buttonIconSm())}><LucideCalendar /></button>
+              </div>
+              <div className="flex gap-2">
+                <button className={cns.buttonBase(cns.buttonIcon())}><LucideCalendar /></button>
+                <button className={cns.buttonSubtle(cns.buttonIcon())}><LucideCalendar /></button>
+                <button className={cns.buttonGhost(cns.buttonIcon())}><LucideCalendar /></button>
+              </div>
+              <div className="flex gap-2">
+                <button className={cns.buttonBase(cns.buttonIconLg())}><LucideCalendar /></button>
+                <button className={cns.buttonSubtle(cns.buttonIconLg())}><LucideCalendar /></button>
+                <button className={cns.buttonGhost(cns.buttonIconLg())}><LucideCalendar /></button>
+              </div>
+            </div>
+          </Flex>
+        </Group>
       </Section>
     </div>
   )
@@ -169,11 +183,12 @@ export default function DesignSystemPage() {
 
 const Section = component("section", { class: cn("my-16") })
 const Group = component("div", { class: cn("my-4 flex flex-col gap-2") })
-const Row = component("div", { class: cn("flex gap-2") })
+const Flex = component("div", { class: cn("flex gap-2") })
 const Grid = component("div", { class: cn("grid gap-2") })
 
 
-const TokenCardBase = component("div", { class: cn("shrink-0 size-5 rounded-sm bg-transparent border border-stroke/50") })
+const TokenCardBase = component("div", { class: cn("shrink-0 size-5 rounded-sm bg-transparent border border-border/50") })
+
 
 function ColorPaletteItem(props: { bgColor: string }) {
   const color = props.bgColor.replaceAll('bg-', '')
@@ -194,40 +209,58 @@ const Viewport = component("div", {
     "overflow-hidden wrap-break-word",
   )
 })
-const Light = component(Viewport, { class: cn("scheme-light") })
-const Dark = component(Viewport, { class: cn("scheme-dark") })
+// const Light = component(Viewport, { class: cn("scheme-light") })
+// const Dark = component(Viewport, { class: cn("scheme-dark") })
 
-function ColorSemanticItem(props: {
-  example?: ReactNode,
-}) {
-  return <>
-    <ColorSemanticItemBase>
-      <LightDarkExample>
-        {props.example}
-      </LightDarkExample>
-    </ColorSemanticItemBase>
-  </>
-}
+// function ColorSemanticItem(props: {
+//   example?: ReactNode,
+// }) {
+//   return <>
+//     <ColorSemanticItemBase>
+//       <LightDarkExample>
+//         {props.example}
+//       </LightDarkExample>
+//     </ColorSemanticItemBase>
+//   </>
+// }
 
-function TokenItem(props: {
-  token: string,
-  className: string,
-}) {
-  return <>
-    <div className="grid grid-cols-[1.4rem_auto] items-center">
-      <TokenCardBase className={cn(props.className, "size-4")} />
-      {props.token}
-    </div>
-  </>
-}
+// function TokenItem(props: {
+//   token: string,
+//   className: string,
+// }) {
+//   return <>
+//     <div className="grid grid-cols-[1.4rem_auto] items-center">
+//       <TokenCardBase className={cn(props.className, "size-4")} />
+//       {props.token}
+//     </div>
+//   </>
+// }
 
-function LightDarkExample(props: {
+// function LightDarkExample(props: {
+//   children?: ReactNode
+// }) {
+//   return (
+//     <>
+//       <Light>{props.children}</Light>
+//       <Dark>{props.children}</Dark>
+//     </>
+//   )
+// }
+
+
+function SurfaceTester(props: {
   children?: ReactNode
 }) {
   return (
-    <>
-      <Light>{props.children}</Light>
-      <Dark>{props.children}</Dark>
-    </>
+    <Group className="gap-8">
+      <Flex className="gap-4">
+        <Group className="gap-3 p-4 border border-transparent">
+          {props.children}
+        </Group>
+        <Group className="bg-surface border border-surface-border p-4 rounded-xl gap-3">
+          {props.children}
+        </Group>
+      </Flex>
+    </Group>
   )
 }
