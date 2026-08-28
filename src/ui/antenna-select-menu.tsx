@@ -8,6 +8,7 @@ import { Menu } from "@base-ui/react"
 import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { cn } from "./cn"
 import type { GlobalSettings } from "./settings-section"
+import { Divider } from "./common"
 
 export function AntennaInput(props: {
   value: AntennaPayload,
@@ -149,13 +150,14 @@ export function AntennaInput(props: {
                               </div>
                             </>}
                           </div>
-                          <div className="flex flex-col">
-                            <div>{antenna.label}</div>
+                          <div className="flex flex-col gap-1">
+                            <div className="text-sm leading-3.5">{antenna.label}</div>
                             <div className={cns.textMuted("text-xs")}>
-                              {prettyNum(antenna.rating)}{' '}
-                              <span>|{' '}
+                              {prettyNum(antenna.rating)}
+                              <div className="h-full border-l border-border inline mx-2 " />
+                              <span>
                                 {antenna.combinabilityExponent === 0 ?
-                                  <span className="opacity-50">non-combinable</span> :
+                                  <span className="text-faint">non-combinable</span> :
                                   antenna.combinabilityExponent > 0.75 ?
                                     "very combinable" : "combinable"
                                 }

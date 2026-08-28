@@ -116,7 +116,7 @@ function SelectVersionFilterDropdown(props: {
         ))
       }}
     >
-      <Select.Trigger className={cns.inputBox("min-w-50 rounded-xl", cns.surface2())}>
+      <Select.Trigger className={cns.inputBox("min-w-50 rounded-xl")}>
         <Select.Value className="grow" >
           {(() => {
             if (selected.length === 0) return 'Game Versions'
@@ -135,7 +135,7 @@ function SelectVersionFilterDropdown(props: {
           sideOffset={4}
           alignItemWithTrigger={false}
         >
-          <Select.Popup className={cns.popoverBase("min-w-50")}>
+          <Select.Popup className={cns.popoverSurface("min-w-50")}>
             <Select.List className={cn("relative p-0.5 overflow-y-auto max-h-[var(--available-height)]")}>
               {versionList.map((v) => {
                 return <Select.Item

@@ -1,6 +1,6 @@
 import { cnr, cns } from "@/design-system"
 import { notFound } from "next/navigation"
-import { SpacedockNavbar } from "../_components/nav"
+import { SpacedockNavbar } from "../_components/navbar"
 import { FeaturedModSection, NewestModSection } from "../_components/mod-list-row-variants"
 import { Footer } from "../_components/footer"
 import { SearchBox } from "../_components/search-box"

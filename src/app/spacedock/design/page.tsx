@@ -5,11 +5,16 @@ import { component } from "@/ui/component"
 import { cn } from "@/ui/cn"
 import { SignalSymbol } from "@/ui/common"
 import { LucideArrowRight, LucideArrowUpRight, LucideCalendar } from "@/ui/icons"
-import { Slider } from "@/ui/input"
-import type { ReactNode } from "react"
+import { SelectRow, Slider, TabSelectRow } from "@/ui/input"
+import { useState, type ReactNode } from "react"
 import { Lorem } from "../_components/commons"
+import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 
 export default function DesignSystemPage() {
+
+  const [ slider, setSlider ] = useState(0.75)
+  const [ select, setSelect ] = useState<"apple" | "banana">("apple")
+
   return (
     <div>
       <h1>Design System</h1>
@@ -59,6 +64,9 @@ export default function DesignSystemPage() {
 
         <SurfaceTester>
           <Group className="gap-3 p-4 border border-transparent">
+
+
+
             <p className="text-fg line-clamp-3">fg<br /><a className="link-article inline-flex gap-2 self-start">Vercel</a> <Lorem /></p>
             <hr className="border-border" />
             <p className="text-fg2 line-clamp-3">fg2<br /><Lorem /></p>
@@ -75,81 +83,38 @@ export default function DesignSystemPage() {
               </div>
               <div className="input-group group">
                 <label className="input-label">Password</label>
-                <input className="input-box input-box-error" value="Input value text" onChange={() => {}} />
+                <input className="input-box input-box-error" value="Input value text" onChange={() => { }} />
                 <p className={cns.errorTextMuted("text-sm")}>Something went wrong</p>
               </div>
+              <div className={cns.inputBox("flex")}>
+                <input className="input-reset input-reset-padding grow" />
+                kg
+              </div>
+              <div className={cns.inputBox("flex")}>
+                <input className="input-reset input-reset-padding grow" />
+                <button className={"button-base -my-1 -mr-2"}>
+                  Search
+                </button>
+              </div>
+              <Slider
+                className="grow"
+                min={0} max={1} step={0.01}
+                value={slider}
+                onValueChange={setSlider}
+              />
             </Group>
             <div className={cns.errorCard()} >
               <p className={cns.errorTextBase()}>Warning</p>
               <p className={cns.errorTextMuted()}>Something went wrong</p>
             </div>
-          </Group>
-        </SurfaceTester>
+            <button className="button-base"> Retry</button>
+            <button className="button-base" disabled>Retry</button>
 
-      </Section>
+            <button className="button-subtle">Settings</button>
+            <button className="button-subtle" disabled>Settings</button>
 
-
-      <Section>
-        <h2>Component Dump</h2>
-
-        <Group>
-          <Flex className="items-baseline gap-4 flex-wrap">
-            <p>Hello World</p>
-            <hr className={cns.divider("h-auto self-stretch border-l")} />
-            <p>Mid Divider</p>
-            <hr className={cns.dividerMid("h-auto self-stretch border-l")} />
-            <p>Stronger Divider</p>
-            <hr className={cns.dividerStrong("h-auto self-stretch border-l")} />
-            <SignalSymbol />
-            <SignalSymbol strength={0.1} />
-            <SignalSymbol strength={0.3} />
-            <SignalSymbol strength={0.6} />
-            <SignalSymbol strength={0.9} />
-            <SignalSymbol barClassname={cns.bgScience()} />
-            <p className={cns.inputLabel()}>Text Label</p>
-            <p className={cns.textFaint()}>No Mods Found</p>
-            <p className={cns.textGreen()}>Kerbal Space Program</p>
-
-            <p className={cns.articleLink("wrap-anywhere")}>Hello World <LucideArrowUpRight className="inline" /></p>
-            <p className={cns.navigationLink("flex")}>Source Code <LucideArrowUpRight /></p>
-          </Flex>
-        </Group>
-        <Group>
-          <Flex className="items-baseline gap-4 flex-wrap">
-            <input className={cns.inputBox()} name="username" />
-            <input className={cns.inputBox(cns.inputBoxError())} name="username" />
-            <Slider
-              className="grow"
-              min={0} max={1}
-              value={0.7}
-              onValueChange={function (n: number): void { }}
-            />
-          </Flex>
-        </Group>
-        <Group>
-          <Flex className="items-baseline gap-4 flex-wrap">
-            <div className={cns.card()} >
-              <p className={cns.base()}>Hello World</p>
-              <p className={cns.textMuted()}>This is a card</p>
-            </div>
-
-
-
-            <div className={cns.placeholder("p-8 rounded-md")} ><p className={cns.textFaint()}>Placeholder...</p></div>
-            <div className={cns.infoCard()} ><p>Info card by @alfonsusac</p></div>
-            <div className={cns.linkCard()} ><p>Link card to @alfonsusac</p></div>
-
-            <div className={cns.popoverBase("p-8")} >
-              Hello World from Popover
-            </div>
-          </Flex>
-        </Group>
-        <Group>
-          <Flex className="items-baseline gap-4 flex-wrap">
-            <div className={cns.tabBase()}>
-              <div className={cns.tabItem(false)()}>Apple</div>
-              <div className={cns.tabItem(true)()}>Banana</div>
-            </div>
+            <button className="button-ghost">Activate</button>
+            <button className="button-ghost" disabled>Activate</button>
 
             <div className="grid gap-2 grid-cols-3">
               <button className={cns.buttonBase()}>Login <LucideArrowRight /> </button>
@@ -173,6 +138,68 @@ export default function DesignSystemPage() {
                 <button className={cns.buttonSubtle(cns.buttonIconLg())}><LucideCalendar /></button>
                 <button className={cns.buttonGhost(cns.buttonIconLg())}><LucideCalendar /></button>
               </div>
+            </div>
+            <SelectRow
+              data={[
+                { label: "Apple", value: "apple" },
+                { label: "Banana", value: "banana" },
+              ]}
+              label="Fruit"
+              onValueChange={setSelect}
+              value={select}
+            />
+            <TabSelectRow
+              items={[
+                { label: "Apple", value: "apple" },
+                { label: "Banana", value: "banana" },
+              ]}
+              onValueChange={setSelect}
+              value={select}
+            />
+            <div className={cns.card()}>
+              Normal Card
+            </div>
+            <div className={cns.linkCard()}>
+              Link Card
+            </div>
+            <div className={cns.infoCard()}>
+              Info Card
+            </div>
+
+
+          </Group>
+        </SurfaceTester>
+
+      </Section>
+
+
+      <Section>
+        <h2>Component Dump</h2>
+
+        <Group>
+          <Flex className="items-baseline gap-4 flex-wrap">
+            <SignalSymbol />
+            <SignalSymbol strength={0.1} />
+            <SignalSymbol strength={0.3} />
+            <SignalSymbol strength={0.6} />
+            <SignalSymbol strength={0.9} />
+            <SignalSymbol barClassname={cns.bgScience()} />
+          </Flex>
+        </Group>
+
+        <Group>
+          <Flex className="items-baseline gap-4 flex-wrap">
+            <div className={cns.card()} >
+              <p>Hello World</p>
+              <p className={cns.textMuted()}>This is a card</p>
+            </div>
+
+            <div className={cns.placeholder("p-8 rounded-md")} ><p className={cns.textFaint()}>Placeholder...</p></div>
+            <div className={cns.infoCard()} ><p>Info card by @alfonsusac</p></div>
+            <div className={cns.linkCard()} ><p>Link card to @alfonsusac</p></div>
+
+            <div className={cns.popoverSurface("p-8")} >
+              Hello World from Popover
             </div>
           </Flex>
         </Group>
@@ -209,43 +236,6 @@ const Viewport = component("div", {
     "overflow-hidden wrap-break-word",
   )
 })
-// const Light = component(Viewport, { class: cn("scheme-light") })
-// const Dark = component(Viewport, { class: cn("scheme-dark") })
-
-// function ColorSemanticItem(props: {
-//   example?: ReactNode,
-// }) {
-//   return <>
-//     <ColorSemanticItemBase>
-//       <LightDarkExample>
-//         {props.example}
-//       </LightDarkExample>
-//     </ColorSemanticItemBase>
-//   </>
-// }
-
-// function TokenItem(props: {
-//   token: string,
-//   className: string,
-// }) {
-//   return <>
-//     <div className="grid grid-cols-[1.4rem_auto] items-center">
-//       <TokenCardBase className={cn(props.className, "size-4")} />
-//       {props.token}
-//     </div>
-//   </>
-// }
-
-// function LightDarkExample(props: {
-//   children?: ReactNode
-// }) {
-//   return (
-//     <>
-//       <Light>{props.children}</Light>
-//       <Dark>{props.children}</Dark>
-//     </>
-//   )
-// }
 
 
 function SurfaceTester(props: {
@@ -257,7 +247,7 @@ function SurfaceTester(props: {
         <Group className="gap-3 p-4 border border-transparent">
           {props.children}
         </Group>
-        <Group className="bg-surface border border-surface-border p-4 rounded-xl gap-3">
+        <Group className="info-card p-4 rounded-xl gap-3">
           {props.children}
         </Group>
       </Flex>

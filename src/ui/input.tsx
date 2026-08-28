@@ -44,7 +44,7 @@ export function SelectRow<const T extends ValueLabelArray>(props: {
           <BSelect.Positioner className={cn(
             "outline-hidden select-none z-10"
           )} sideOffset={4}>
-            <BSelect.Popup className={cns.popoverBase("min-w-40")}>
+            <BSelect.Popup className={cns.popoverSurface("min-w-40")}>
               <BSelect.List className={cn("relative p-0.5 overflow-y-auto max-h-[var(--available-height)]")}>
                 {props.data.map(({ label, value }) => (
                   <BSelect.Item
@@ -153,7 +153,7 @@ export function Slider(props: {
 
 export function MenuPopup(props: ComponentProps<typeof Menu[ 'Popup' ]>) {
   return (
-    <Menu.Popup {...props} className={cns.popoverBase(
+    <Menu.Popup {...props} className={cns.popoverSurface(
       "p-2",
       "text-base",
       "flex flex-col gap-2",

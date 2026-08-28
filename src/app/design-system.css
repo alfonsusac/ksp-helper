@@ -18,16 +18,22 @@
   --color-fg3:     light-dark(var(--color-slate-400), var(--color-zinc-500));
   --color-fgGreen: light-dark(var(--color-emerald-600), var(--color-emerald-500));
   --color-error:   light-dark(var(--color-red-500), var(--color-red-400));
-  --color-error2:   light-dark(var(--color-red-400), var(--color-red-500));
+  --color-error2:  light-dark(var(--color-red-400), --alpha(var(--color-red-500) / 100%));
 
   --color-border:  --alpha(var(--color-fg) / 25%);
-  --color-border2: --alpha(var(--color-fg2) / 25%);
-  --color-border3: --alpha(var(--color-fg3) / 25%);
+  --color-border2: light-dark(--alpha(var(--color-slate-300) / 75%), --alpha(var(--color-zinc-600) / 50%));
+  --color-border3: light-dark(var(--color-slate-300), --alpha(var(--color-zinc-700) / 50%));
+  --color-border4: light-dark(color-mix(in oklch, var(--color-slate-200), var(--color-contrast) 13%) , --alpha(var(--color-zinc-700) / 50%));
+  --color-border5: --alpha(var(--color-border4)/50%);
 
-  --color-surface: light-dark(var(--color-white), --alpha(var(--color-zinc-800) / 50%));
+  --color-surface: light-dark(var(--color-white), color-mix(in oklab, var(--color-bg), var(--color-fg3) 9%));
+  --color-surface2: light-dark(var(--color-white), color-mix(in oklab, var(--color-bg), var(--color-fg3) 15%));
   --color-surface-border: light-dark(var(--color-border3), --alpha(var(--color-border3) / 50%));
 
   --color-input: light-dark(var(--color-white), --alpha(var(--color-zinc-950) / 30%));
+
+  --color-contrast: light-dark(#5078B5, #B5B5CF) /* Retrieved by Color-Dodging 600 value in Figma */
+
 }
 
 
@@ -61,43 +67,49 @@
 @utility divider-strong    { @apply border-border }
 
 
-
-/* Inputs */
-@theme {
-  --color-input-error-border:   light-dark(--alpha(var(--color-red-400)     / 100%), --alpha(var(--color-red-500)     /  50%));
+@custom-variant focus-within-and-hover {
+  &:focus-within { 
+    @slot;
+    &:hover {
+      @slot;
+    }
+  }
 }
-
 /* TODO: make autofill reset styles */
-/* TODO: caution for focus-within? */
-@utility input-reset        { @apply outline-none }
-@utility input-border-error { @apply border border-input-error-border}
-@utility input-box          { @apply /* Outer Ring */
+@utility input-reset         { @apply outline-none }
+@utility input-reset-padding { @apply -mx-3 px-3 -my-2 py-2 }
+@utility input-box           { @apply /* Outer Ring */
                                      transition-[outline,border] duration-50
-                                     outline outline-transparent hover:outline-border3/50 hover:outline-4 focus:outline-4
-                                     focus:outline-border3/60 focus:border-border
+                                     outline outline-transparent 
+
+                                     focus-within-and-hover:outline-4
+                                     focus-within-and-hover:outline-border4/50 
+                                     focus-within-and-hover:border-border3
+
+                                     hover:outline-border4/50 
+                                     hover:outline-4 
 
                                      /* Autofill */
                                      autofill-text-blue-500! autofill-border-blue-500!
 
                                      /* Layout */
-                                     flex items-center gap-2 min-w-30 rounded-md
+                                     flex items-center gap-2 min-w-30 rounded-lg
                                      px-3 p-2
                                      bg-input caret-fg text-start
                                      border-border3 border
-                                     shadow-fg3/15 dark:shadow-black/10  shadow-inner
                                      placeholder:text-fg3/50
                                      placeholder:italic
                             }
 @utility input-box-error    { @apply border 
                                      border-error2 dark:border-error2/50
                                      hover:outline-error2/20
-                                     focus:border-error2 dark:focus:border-error2/50
-                                     focus:outline-error2/20
+
+                                     focus-within-and-hover:border-error2 
+                                     dark:focus-within-and-hover:border-error2/50
+                                     focus-within-and-hover:outline-error2/20
                             }
 @utility input-label        { @apply text-fg2 text-sm }
 @utility input-group        { @apply flex flex-col gap-1 }
-
-/* @utility input-box2         { @apply  } */
 
 
 /* Errors */
@@ -115,38 +127,65 @@
 
 
 /* Card */
-@utility card-border      { @apply border border-border }
+@utility card-border      { @apply border border-border5 }
 @utility card-shadow      { @apply shadow-none }
-@utility card-bg          { @apply bg-white    dark:bg-transparent }
-@utility card-bg2         { @apply bg-slate-50 dark:bg-zinc-800/50 }
+@utility card-bg          { @apply bg-surface }
+/* @utility card-bg2         { @apply bg-slate-50 dark:bg-zinc-800/50 } */
 @utility card-padding     { @apply p-2 px-3 }
 @utility card-rounded     { @apply rounded-md }
 @utility card-clickable   { @apply clickableUI }
 @utility card             { @apply card-border card-shadow card-bg card-padding card-rounded }
 
-@utility link-card        { @apply card card-clickable transition-all duration-75 hover:shadow-lg 
+@utility link-card        { @apply card card-clickable transition-all duration-75 hover:shadow-lg
                             hover:shadow-slate-500/10 dark:hover:shadow-zinc-950/50
                             hover:border-slate-300 dark:hover:border-zinc-700
-                            hover:bg-slate-50/50 dark:hover:bg-zinc-800/25 }
+                            /* hover:bg-slate-50/50 dark:hover:bg-zinc-800/25  */
+                            hover:bg-fg/2 dark:hover:bg-fg/8
+                          }
 
-@utility info-card        { @apply card-border card-bg2 p-5 rounded-xl }
+@utility info-card        { @apply card-border card-bg p-5 rounded-xl }
 
 /* Button */
 @theme {
-  --color-button-base:          light-dark(--alpha(var(--color-slate-200)   / 100%), --alpha(var(--color-zinc-800)    /  50%));
-  --color-button-base-hover:    light-dark(--alpha(var(--color-slate-300)   /  80%), --alpha(var(--color-zinc-700)    /  50%));
-  --color-button-base-active:   light-dark(--alpha(var(--color-slate-300)   /  95%), --alpha(var(--color-zinc-700)    /  40%));
-  
-  --color-button-subtle:        light-dark(--alpha(var(--color-slate-200)   /  50%), --alpha(var(--color-zinc-800)    /  25%));
-  --color-button-subtle-hover:  light-dark(--alpha(var(--color-slate-200)   /  80%), --alpha(var(--color-zinc-700)    /  25%));
-  --color-button-subtle-active: light-dark(--alpha(var(--color-slate-200)   / 100%), --alpha(var(--color-zinc-700)    /  17%));
+  --color-skeue-bg: light-dark(var(--color-surface), --alpha(var(--color-fg3)/20%));
+  --color-skeue-border: light-dark(var(--color-border4), #0007);
+  --shadow-skeue-highlight: inset 0px  0.5px 0px 0.5px light-dark(#fff8, #fff1),
+                           inset 0px -1.5px 0px 0.5px light-dark(--alpha(var(--color-contrast)/10%), #0002);
+  --color-skeue-bg-hover: light-dark(color-mix(in oklab, var(--color-bg), var(--color-surface) 70%), --alpha(var(--color-fg3)/16%));
+  --color-skeue-bg-active: light-dark(color-mix(in oklab, var(--color-bg), var(--color-surface) 50%), --alpha(var(--color-fg3)/13%));
+
+  --shadow-skeue-inner: inset 0px 1px 0px 0.5px light-dark(--alpha(var(--color-contrast)/10%), #0003);
+
+  --color-select-bg-hover: light-dark(--alpha(var(--color-contrast) / 8%), var(--color-skeue-bg-hover));
+  --color-select-bg-active: light-dark(--alpha(var(--color-contrast) / 11%), var(--color-skeue-bg-active));
 }
-                            /* Todo: Focus outline color */
+                            /* Todo: Focus outline color */  
 @utility button-common    { @apply clickableUI text-sm text-fg flex items-center justify-center
-                            rounded-md gap-2 px-2.5 py-2 focus:outline-none disabled:pointer-events-none }
-@utility button-base      { @apply button-common bg-button-base   hover:bg-button-base-hover   active:bg-button-base-active   disabled:opacity-25  }
-@utility button-subtle    { @apply button-common bg-button-subtle hover:bg-button-subtle-hover active:bg-button-subtle-active disabled:opacity-25 }
-@utility button-ghost     { @apply button-common                    hover:bg-button-subtle-hover active:bg-button-subtle-active disabled:opacity-25 }
+                                   rounded-md gap-2 px-2.5 py-2   
+                                   active:translate-y-px
+                                   focus:outline-none
+                                   disabled:opacity-25
+                                   disabled:pointer-events-none
+                          }
+@utility button-base-color { @apply bg-skeue-bg 
+                              hover:bg-skeue-bg-hover 
+                             active:bg-skeue-bg-active 
+                             active:shadow-none border border-skeue-border
+                             shadow-skeue-highlight
+                             disabled:shadow-none
+                           }
+@utility button-base      { @apply button-common button-base-color }
+@utility button-subtle-color { @apply bg-contrast/6 
+                                hover:bg-select-bg-hover 
+                               active:bg-select-bg-active 
+                               active:shadow-skeue-inner
+                          }
+@utility button-subtle    { @apply button-common button-subtle-color }
+@utility button-ghost     { @apply button-common 
+                                           hover:bg-select-bg-hover 
+                                          active:bg-select-bg-active 
+                                          active:shadow-skeue-inner 
+                          }
                           /* Button Sizes */
 @utility button-icon-sm   { @apply p-0 size-5 }
 @utility button-icon      { @apply p-0 size-7 }
@@ -154,33 +193,63 @@
 
 
 
+
 /* Popover */
-@utility popover-base       { @apply base outline-hidden }
-@utility popover-rounded    { @apply rounded-lg }
-@utility popover-bg         { @apply bg-bg }
-@utility popover-border     { @apply border-slate-300/75 dark:border-zinc-700 border }
-@utility popover-shadow     { @apply shadow-slate-600/15 dark:shadow-zinc-950/50 shadow-md dark:shadow-lg }
-@utility popover-transition { @apply transition-[scale,opacity] duration-75 ease-out 
-                                     data-starting-style:scale-[0.95] data-starting-style:opacity-0
-                                     data-ending-style:scale-[0.95]   data-ending-style:opacity-0 }
+@theme {
+  --color-dark: light-dark(color-mix(in oklch, var(--color-slate-700),var(--color-contrast) 25%), var(--color-zinc-950))
+}
 @utility popover-backdrop   { @apply fixed inset-0 min-h-dvh
-                                     bg-black/20 dark:bg-black/65
-                                     transition-opacity opacity-150
-                                     data-ending-style:opacity-0 data-starting-style:opacity-0
-                                     supports-[-webkit-touch-callout:none]:absolute }
+                                     bg-dark/40 dark:bg-dark/65
+                                     transition-opacity duration-100
+                                                opacity-150
+                            data-starting-style:opacity-0
+                              data-ending-style:opacity-0 
+                                     supports-[-webkit-touch-callout:none]:absolute 
+                            }
+@utility popover-transition { @apply transition-[scale,opacity] duration-100 ease-out 
+                                     data-starting-style:scale-[0.95] data-starting-style:opacity-0
+                                       data-ending-style:scale-[0.95]   data-ending-style:opacity-0 
+                            }
+@utility popover-surface    { @apply outline-hidden rounded-lg 
+                                     bg-surface2
+                                     border-border3 border
+                                     shadow-dark/30 dark:shadow-dark/50 shadow-lg
+                                     popover-transition
+                            }
+@utility popover-surface-large-border { @apply border-transparent dark:border-border3 border }
+@utility popover-surface-large-shadow { @apply shadow-dark/30 dark:shadow-zinc-950/50 shadow-lg }
+@utility popover-surface-large { @apply border-transparent dark:border-border3 border
+                                        shadow-dark/50 dark:shadow-zinc-950/50 shadow-lg
+                                        rounded-2xl
+                            }
 @utility popover-menu-item  { @apply clickableUI rounded-md outline-hidden 
                                      data-highlighted:bg-slate-100 dark:data-highlighted:bg-zinc-800 
-                                     p-1 }
+                                     p-1 
+                            }
 
-                                     
+
 
 /* Tab */
-@utility tab-container         { @apply bg-slate-100/20 dark:bg-zinc-950/50
-                                        border-slate-200/50 dark:border-zinc-800
-                                        flex self-start gap-1 border rounded-xl }
-@utility tab-item              { @apply p-2 rounded-md px-3 w-40 border border-transparent
-                                        flex items-center gap-2 clickableUI }
-@utility tab-item-selected     { @apply bg-white dark:bg-zinc-800 
-                                        border-slate-200 dark:border-zinc-700/50  border 
-                                        shadow-slate-200 dark:shadow-zinc-950 shadow-sm }
-@utility tab-item-not-selected { @apply hover:bg-slate-200/75 dark:hover:bg-zinc-800/50 }
+@theme {
+  --color-debossed: light-dark(--alpha(var(--color-contrast)/15%), --alpha(var(--color-dark)/35%));
+  --color-debossed-hover: light-dark(--alpha(var(--color-contrast)/15%), --alpha(var(--color-fg3)/10%));
+  --shadow-tab-shadow: 0px 3px 5px light-dark(--alpha(var(--color-contrast)/20%), --alpha(var(--color-dark)/80%)),
+                           inset 0px  0.5px 0px 0.5px light-dark(#fff8, #fff1),
+                           inset 0px -1.5px 0px 0.5px light-dark(--alpha(var(--color-contrast)/10%), #0002);
+  --color-tab-border: light-dark(--alpha(var(--color-contrast)/35%), var(--color-skeue-border));
+  /* --color-tab-border: red; */
+}
+@utility tab-container         { @apply bg-debossed p-1
+                                        border-debossed
+                                        shadow-(--color-skeue-inner)
+                                        flex self-start gap-1 border rounded-xl 
+                               }
+@utility tab-item              { @apply p-2 rounded-md px-3 w-40 border
+                                        flex items-center gap-2 clickableUI 
+                               }        
+@utility tab-item-selected     { @apply button-base-color 
+                                        border 
+                                        border-tab-border
+                                        shadow-tab-shadow pointer-events-none
+                               }
+@utility tab-item-not-selected { @apply hover:bg-debossed-hover button-subtle-color border-transparent bg-transparent  }

@@ -1,8 +1,8 @@
 import { cns } from "@/design-system"
 import { LucideArrowUpRight } from "@/ui/icons"
 import Link from "next/link"
-import { LoginDialog } from "../page.client"
 import { cn } from "@/ui/cn"
+import { LoginDialog } from "./login-auth"
 
 export const registerLink = "https://spacedock.info/register"
 

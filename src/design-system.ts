@@ -32,17 +32,10 @@ export const cns = ({
 
   // Common Components
   surface: cnr("my-0 first:pt-0"),
-  surface2: cnr("bg-card-bg2"),
   listBullet: cnr(" bg-slate-700    dark:bg-zinc-300"),
   placeholder: cnr("bg-slate-100/60 dark:bg-zinc-800/20"),
   bgMuted: cnr("    bg-slate-200    dark:bg-zinc-700"),
 
-  card: cnr("card"),
-  errorCard: cnr("error-card"),
-  linkCard: cnr("link-card"),
-  infoCard: cnr("info-card"),
-
-  clickableUI: cnr("select-none cursor-pointer"),
 
   tabBase: cnr("tab-container"),
   tabItem: (sel: boolean) => cnr("tab-item", sel ? "tab-item-selected" : "tab-item-not-selected"),
@@ -56,29 +49,23 @@ export const cns = ({
   buttonPresetGroup: cnr("button-subtle", "text-xs p-1 px-1.5 rounded-xs first:rounded-l-lg last:rounded-r-lg w-10 shrink-0"),
 
   popoverBackdrop: cnr("popover-backdrop"),
-  popoverBase: cnr(
-    "popover-base",
-    "popover-rounded",
-    "popover-bg",
-    "popover-border",
-    "popover-transition",
-    "popover-shadow",
-  ),
+  popoverSurface: cnr("popover-surface",),
+  popoverSurfaceLargeBorder: cnr("popover-surface-large-border"),
+  popoverSurfaceLargeShadow: cnr("popover-surface-large-shadow"),
   popoverItem: cnr("popover-menu-item"),
   popoverSelectItemLayout: cnr(
     "grid grid-cols-[0.5rem_1fr]",
     "items-center gap-2",
   ),
 
-  sliderTrack: cnr("bg-slate-200 dark:bg-zinc-800"),
-  sliderIndicator: cnr(
-    "bg-slate-400 dark:bg-zinc-400",
-    "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"),
-  sliderThumb: cnr(
-    "bg-slate-400 dark:bg-zinc-400",
-    "group-hover:bg-slate-300 group-hover:dark:bg-zinc-300"
-  ),
+  sliderTrack: cnr("bg-contrast/10"),
+  sliderIndicator: cnr("bg-fg3 group-hover:bg-fg2"),
+  sliderThumb: cnr("bg-fg3 group-hover:bg-fg2"),
 
+  card: cnr("card"),
+  errorCard: cnr("error-card"),
+  linkCard: cnr("link-card"),
+  infoCard: cnr("info-card"),
 
 
   // Specials
