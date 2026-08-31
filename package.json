@@ -22,6 +22,7 @@
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-flip-children": "^0.3.5",
     "set-cookie-parser": "^3.1.2",
     "sharp": "^0.35.3",
     "tailwind-merge": "^3.6.0",

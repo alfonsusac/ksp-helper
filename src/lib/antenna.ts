@@ -150,3 +150,16 @@ export function getScienceBonusfromSignalStrength(signalStrength: number) {
   }
 }
 
+
+// Antenna Helpers
+
+export function getRelayAntennaCount(antennaPayload: AntennaPayload, antennas: AntennaData) {
+  let count = 0
+  antennaPayload.forEach((value, key) => {
+    if (value === 0) return
+    const antenna = antennas.find(a => a.id === key)
+    if (!antenna) return
+    if (antenna.type === "relay") count++
+  })
+  return count
+}

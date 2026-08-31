@@ -66,6 +66,12 @@ export const cns = ({
   sliderThumb: cnr("bg-fg3 group-hover:bg-fg2"),
 
   card: cnr("card"),
+  cardHeader: cnr("flex gap-1 items-center"),
+  cardDescription: cnr("text-xs"),
+  cardOpenTransition: (open: boolean) => cn(
+    "transition-all duration-300 opacity-0 blur-sm -translate-y-1/2",
+    open && "opacity-100 blur-none translate-y-0"
+  ),
   errorCard: cnr("error-card"),
   linkCard: cnr("link-card"),
   infoCard: cnr("info-card"),

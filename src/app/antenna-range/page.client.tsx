@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useState } from "react"
 import { Slider, CheckboxRow, SelectRow, TabSelectRow } from "../../ui/input"
 import { ShareAppURLButton } from "../../ui/button"
-import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, type AntennaPayload, type BodyPayload } from "../../lib/antenna"
+import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, getRelayAntennaCount, type AntennaPayload, type BodyPayload } from "../../lib/antenna"
 import { prettyNum } from "../../lib/pretty-num"
 import { EosIconsPod, IcRoundSatelliteAlt, LucideArrowRight, LucideBadgeQuestionMark } from "../../ui/icons"
 import { cn } from "../../ui/cn"
@@ -20,6 +20,9 @@ import { WhatIsThisSection } from "@/ui/prose"
 import SignalStrengthItems from "@/ui/signal-strength"
 import { SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import type { Metadata } from "next"
+import { CollapsibleRow } from "@/ui/collapsible"
+import { Collapsible } from "@/ui/collapsible-client"
+import { InvisibleText } from "../spacedock/_components/commons"
 
 
 export const metadata: Metadata = {
@@ -103,18 +106,23 @@ export function AntennaRange_Client() {
       <BodyDetailInput which={1} payload={data[ 1 ]} onChange={(n) => changeData(1, n)} dsnModifier={dsnModifier} mode={mode} antennas={antennas} settings={settings} />
       <Divider className="mt-2" />
 
-      {
-        zeroReason &&
-        <div className={cns.errorCard("mb-8")}>
-          <div className="flex gap-1 items-center">
-            <LucideBadgeQuestionMark />
-            <div>Reason why its zero</div>
-          </div>
-          <div className={cns.errorTextMuted("text-xs")}>
-            {zeroReason}
-          </div>
-        </div>
-      }
+      <Collapsible opened={!!zeroReason} className="mb-8"
+        render={opened => {
+          return (
+            <div className={cns.errorCard(cns.cardOpenTransition(opened))}>
+              <div className={cns.cardHeader()}>
+                <LucideBadgeQuestionMark />
+                <div>Reason why its zero</div>
+              </div>
+              <div className={cns.errorTextMuted(cns.cardDescription())}>
+                {zeroReason}<InvisibleText />
+              </div>
+            </div>
+          )
+        }}
+      >
+      </Collapsible>
+
 
       <header>
         <div className={cns.textMuted("text-xs")}>Output</div>
@@ -407,7 +415,22 @@ function BodyDetailInput(props: {
                 return a.type === "relay"
               } : undefined}
             />
-            {/* {props.payload.isRelay && props.payload.antennas.} */}
+            <Collapsible opened={props.payload.isRelay && !getRelayAntennaCount(props.payload.antennas, props.antennas)}
+              render={open => {
+                return <>
+                  <div className={cns.errorCard(cns.cardOpenTransition(open))}>
+                    <div className={cns.cardHeader()}>
+                      <LucideBadgeQuestionMark />
+                      <div>No Relay Satellite</div>
+                    </div>
+                    <div className={cns.errorTextMuted(cns.cardDescription())}>
+                      Ship acts a relay but has no relay satellite. Please add a relay satellite.
+                    </div>
+                  </div>
+                </>
+              }}
+            >
+            </Collapsible>
           </div>
       }
     </div>
