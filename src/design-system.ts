@@ -122,7 +122,7 @@ export const cns = ({
     "[&_h1]:mt-12",
     "[&_h1]:my-4",
     "[&_h1]:text-2xl",
-    "[&_h1]:font-semibold",
+    "[&_h1]:font-[600]",
     "[&_h1]:tracking-[-0.035rem]",
     // "[&_h1]:font-bold",
     // "[&_h1]:tracking-[-0.035rem]",
@@ -131,7 +131,7 @@ export const cns = ({
     "[&_h2]:mt-8",
     "[&_h2]:text-[1.15rem]",
     "[&_h2]:text-fg",
-    "[&_h2]:font-semibold",
+    "[&_h2]:font-[550]",
     "[&_h2]:tracking-[-0.025rem]",
     // "[&_h2]:font-bold",
     // "[&_h2]:tracking-[-0.025rem]",
@@ -140,10 +140,10 @@ export const cns = ({
     "[&_h3]:mt-4",
     "[&_h3]:text-[0.95rem]",
     // "[&_h3]:text-fg2",
-    "[&_h3]:font-bold",
+    "[&_h3]:font-[600]",
     "[&_h1+h3]:mt-4",
     
-    "[&_strong]:font-bold!",
+    "[&_strong]:font-[600]!",
     "[&_strong]:text-fg",
 
 
@@ -153,6 +153,7 @@ export const cns = ({
     "[&>p]:my-[0.25lh]",
     "[&_img]:my-[1lh]",
     "[&_table]:my-[1lh]",
+    "[&_hr]:my-[1lh]",
 
     "[&_ul]:my-[0.25lh]",
     "[&_ul_p+ul]:mt-1.5",

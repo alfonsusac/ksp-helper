@@ -11,15 +11,9 @@ export function TabLink(props: ComponentProps<typeof Link>) {
   return <>
     <Link
       {...props}
-      className={cns.buttonGhost(
-        "text-base",
-        "font-semibold border border-transparent",
-        isActive && [
-          "pointer-events-none",
-          cns.infoCard(),
-          "opacity-100"
-        ],
-        "py-2 px-4",
+      className={cns.tabItem(isActive)(
+        "rounded-xl",
+        "w-auto px-5 justify-center",
       )}
     >
     </Link>

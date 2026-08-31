@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { SpacedockNext } from "../../_data-cache/cached-functions"
 import { cnr, cns } from "@/design-system"
-import { LucideArrowUpRight, LucideCalendar, LucideCalendarArrowUp, LucideDownload, LucideGlobe, LucideHandHeart, LucideHeart, LucideScale, LucideTerminal } from "@/ui/icons"
+import { LucideArrowUpRight, LucideCalendar, LucideCalendarArrowUp, LucideCircleUser, LucideDownload, LucideGlobe, LucideHandHeart, LucideHeart, LucideScale, LucideTerminal } from "@/ui/icons"
 import Link from "next/link"
 import { Suspense, type ReactNode } from "react"
 import { cn } from "@/ui/cn"
@@ -65,7 +65,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
       <header className="flex flex-col md:flex-row pt-6 gap-4">
         <div className="flex flex-col grow">
-          <h1 className="justify-end text-xl tracking-tight font-bold">
+          <h1 className="justify-end text-xl tracking-tight font-semibold">
             {mod.name}
           </h1>
           <p className={cns.textMuted("text-base pt-2")}>
@@ -91,12 +91,12 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
         </div>
       </header>
 
-      <section className="flex mt-4 -mb-2">
-        <div className={("flex gap-1 border-b-0 rounded-b-none")}>
-          <TabLink href={`/spacedock/mod/${ mod.id }`} className={cns.buttonGhost("text-base")}>
+      <section className="flex mt-4">
+        <div className={cns.tabBase("rounded-2xl p-0 bg-transparent border-transparent")}>
+          <TabLink href={`/spacedock/mod/${ mod.id }`}>
             Description
           </TabLink>
-          <TabLink href={`/spacedock/mod/${ mod.id }/versions`} className={cns.buttonGhost("text-base")}>
+          <TabLink href={`/spacedock/mod/${ mod.id }/versions`}>
             Versions
           </TabLink>
         </div>
@@ -112,7 +112,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
         <div className="flex flex-col gap-2">
 
           <div className={cns.infoCard("w-full flex flex-col gap-1")}>
-            <div className={cns.textMuted()}>
+            <div className={cns.textFaint("text-sm")}>
               Authors
             </div>
             <div className="-mx-2 -mb-2">
@@ -126,7 +126,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
           </div>
 
           <div className={cns.infoCard("w-full flex flex-col gap-1")}>
-            <div className={cns.textMuted()}>
+            <div className={cns.textFaint("text-sm")}>
               Links
             </div>
             <div className="-mx-2 -mb-2">
@@ -189,7 +189,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 }
 
 
-const cardButton = cnr(cns.buttonGhost("flex gap-2 items-center justify-start p-2"))
+const cardButton = cnr(cns.buttonGhost("flex gap-2 items-center justify-start p-2 text-fg2"))
 const cardButtonIcon = cnr("size-4")
 
 async function AuthorRow(props: {
@@ -198,8 +198,11 @@ async function AuthorRow(props: {
   href?: string,
 }) {
   const content = <>
-    <div className={cardButtonIcon("size-4 bg-current/50 rounded-full")}>
-      {props.avatarSrc && <img className="" />}
+    <div className={cardButtonIcon("size-4 rounded-full")}>
+      {props.avatarSrc
+        ? <img className="" src={props.avatarSrc} />
+        : <LucideCircleUser className="size-full text-fgBlue" />
+      }
     </div>
     <div>
       {props.displayname}

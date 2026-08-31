@@ -17,6 +17,7 @@
   --color-fg2:     light-dark(var(--color-slate-500), var(--color-zinc-400));
   --color-fg3:     light-dark(var(--color-slate-400), var(--color-zinc-500));
   --color-fgGreen: light-dark(var(--color-emerald-600), var(--color-emerald-500));
+  --color-fgBlue:  light-dark(var(--color-sky-600), var(--color-sky-500));
   --color-error:   light-dark(var(--color-red-500), var(--color-red-400));
   --color-error2:  light-dark(var(--color-red-400), --alpha(var(--color-red-500) / 100%));
 
