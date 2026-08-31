@@ -930,7 +930,7 @@ function VisViewport(props: ComponentProps<"div">) {
 function VisViewportSkybox(props: ComponentProps<"div">) {
   {/* Skybox (with screen blend) */ }
   return (
-    <div {...props} className={cn("absolute inset-0 bg-[url(/skybox.jpeg)] bg-cover mix-blend-lighten", props.className)}>
+    <div {...props} className={cn("absolute inset-0 bg-[url(/skybox.jpeg)] bg-cover mix-blend-lighten bg-black", props.className)}>
     </div>
   )
 }
@@ -1493,8 +1493,8 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
         Restart
       </button>
     </div>
-    <VisViewport>
-      <div className="z-20 absolute top-0 left-0 flex flex-col w-full">
+    <VisViewport className="bg-black">
+      <div className="z-40 absolute top-0 left-0 flex flex-col w-full">
         <KSPBox outerClassName={"min-w-1/2 w-fit"}>
           {targetTime === 0 ? "Press 'Next' to start visualization" : timeline.helperText}
         </KSPBox>
@@ -1512,7 +1512,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
         semiMinorAxis={timeline.semiMinorAxis}
         disableAnimation={true}
         className={cn(
-          "border-[#008C92] border-2 z-10",
+          "border-[#008C92] border-2 z-30",
         )}
       >
         {/* Plane */}
@@ -1526,7 +1526,7 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
               scale: `2.5`,
             }}
           >
-            <GlyphsPolyRocket className="absolute z-10" />
+            <GlyphsPolyRocket className="absolute z-30" />
             <OpenmojiFire
               style={{
                 transformOrigin: "bottom center",
@@ -1565,14 +1565,13 @@ function TutorialAnimation(result: ReturnType<typeof getResult>) {
         semiMinorAxis={result.orbitRadius}
         disableAnimation={true}
         className={cn(
-          "border-zinc-400/50 border-dashed -z-10",
+          "border-zinc-400/50 border-dashed z-20",
         )}
       >
         {Array.from({ length: relayCount }, (_, i) => {
           const phase = timeline.parts[ `satellite${ i + 1 }Phase` ]
           const opacity = timeline.parts[ `satellite${ i + 1 }Opacity` ]
           const scale = timeline.parts[ `satellite${ i + 1 }Scale` ]
-          // console.log("sa  tellite", i + 1, phase)
           if (Number.isNaN(scale)) return null
           return (
             <VisViewportObjectAlongOrbit
