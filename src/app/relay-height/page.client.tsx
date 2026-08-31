@@ -22,6 +22,7 @@ import { formatCss, interpolate as color_interpolate } from "culori"
 import { Fragment, useEffect, useState, type ComponentProps, type CSSProperties, type ReactNode } from "react"
 import { bezier, constant, easeInOutCubic, easeInOutSine, easeOutBack, lerp, sequencer, slideshowSequencer, type InterpolatorFn, type SlideshowSequenceItem } from "@/lib/relay-height/animation"
 import { FieldBlock, numberField, useField } from "@/ui/input-field"
+import { Collapsible } from "@/ui/collapsible-client"
 
 
 export function RelayHeight_Client() {
@@ -652,7 +653,7 @@ function OverrideHeight(props: ReturnType<typeof getResult> & {
   onValueChange: (n: number | undefined) => void
 }) {
 
-  const [commitedValue, setCommittedValue] = useState<number>()
+  const [ commitedValue, setCommittedValue ] = useState<number>()
 
   const overrideField = useField(numberField({
     initialData: () => props.overrideHeight ?? props.orbitHeight ?? NaN,
@@ -1123,26 +1124,31 @@ function OrbitInformations(props: ReturnType<typeof getResult> & {
 function WarningsSection(result: ReturnType<typeof getResult> & {
   className?: string,
 }) {
+
   return (
     <>
       {result.status === "impossible" && <>
-        <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-          <div className={cns.errorTextBase("text-xs flex items-center gap-1 pb-1")}>
-            <LucideTriangleAlert className={cns.errorTextBase()} />
-            warning
+        <div className={cns.card("text-pretty col-span-2 starting:opacity-0 starting:-translate-y-10 transition")}>
+          <div className={cns.errorTextBase(cns.cardHeader(""))}>
+            <LucideTriangleAlert className={cns.cardHeaderIcon()} />
+            Warning
           </div>
-          {result.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
-          {result.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(result.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
-          {result.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(result.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
+          <div className={cns.cardDescription()}>
+            {result.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
+            {result.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(result.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
+            {result.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(result.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
+          </div>
         </div>
       </>}
       {result.resonantOrbit?.status === "missing data" && <>
-        <div className={cns.card("text-sm text-pretty col-span-2 mb-1 starting:opacity-0 starting:-translate-y-10 transition")}>
-          <div className={cns.errorTextBase("text-xs flex items-center gap-1 pb-1")}>
-            <LucideTriangleAlert className={cns.errorTextBase()} />
-            warning
+        <div className={cns.card("text-pretty col-span-2 starting:opacity-0 starting:-translate-y-10 transition")}>
+          <div className={cns.errorTextBase(cns.cardHeader(""))}>
+            <LucideTriangleAlert className={cns.cardHeaderIcon()} />
+            Warning
           </div>
-          Unable to calculate Resonant Orbit. The Gravitational Parameter for this planet is not provided.
+          <div className={cns.cardDescription()}>
+            Unable to calculate Resonant Orbit. The Gravitational Parameter for this planet is not provided.
+          </div>
         </div>
       </>}
     </>
