@@ -235,11 +235,13 @@
                                         rounded-2xl
                             }
 @utility popover-menu-item  { @apply clickableUI rounded-md outline-hidden 
-                                     data-highlighted:bg-slate-100 dark:data-highlighted:bg-zinc-800 
+                                     /* data-highlighted:bg-slate-100 dark:data-highlighted:bg-zinc-800  */
+                                     data-highlighted:bg-select-bg-hover
                                      p-1 
                             }
-
-
+/* 
+  --color-select-bg-hover: light-dark(--alpha(var(--color-contrast) / 8%), var(--color-skeue-bg-hover));
+  --color-select-bg-active: light-dark(--alpha(var(--color-contrast) / 11%), var(--color-skeue-bg-active)); */
 
 /* Tab */
 @theme {
