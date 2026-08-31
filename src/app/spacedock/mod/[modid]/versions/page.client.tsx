@@ -64,11 +64,17 @@ export function VersionPageClientSection(props: {
                 </p>
                 <h2 className="text-xl flex gap-2 items-center">
                   {v.friendly_version} for {v.game_version}
-                  {props.default_version_id === v.id && <span className={cns.infoCard("text-xs p-1 px-2 inline-block text-current/75")}>Default</span>}
+                  {props.default_version_id === v.id && <span className={cns.infoCard("text-xs p-1 px-2 inline-block text-fg2 bg-contrast/10")}>Default</span>}
                 </h2>
               </div>
               {v.html ?
-                <div dangerouslySetInnerHTML={{ __html: v.html }} className={cns.docunment(cns.infoCard("py-0 wrap-break-word"))}>
+                <div className={cns.infoCard("wrap-break-word bg-contrast/5 min-w-0 w-full")}>
+                  <div className={cns.textFaint('text-xs')}>
+                    Changelog
+                  </div>
+                  <div dangerouslySetInnerHTML={{ __html: v.html }}
+                    className={cns.docunment("wrap-break-word min-w-0")}>
+                  </div>
                 </div>
                 :
                 <div className={cns.textFaint(cns.infoCard("py-2"))}>
