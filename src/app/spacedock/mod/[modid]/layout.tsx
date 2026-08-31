@@ -51,11 +51,13 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
         </div>
       </div>
 
-      <div className="aspect-[3.5/1] overflow-hidden rounded-xl -z-10 relative">
+      <div className="aspect-[3.5/1] overflow-hidden rounded-xl relative">
         {mod.background ?
           <>
             <img className="absolute size-full object-contain z-10 object-center" src={mod.background} />
-            <img className="absolute size-full object-cover object-center blur-lg brightness-50" src={mod.background} />
+            <div className="absolute size-full overflow-hidden">
+              <img className="object-cover object-center size-full scale-125 min-h-0 min-w-0 dark:brightness-25 brightness-150 blur-xl" src={mod.background} />
+            </div>
           </>
           : <></>
         }
@@ -81,7 +83,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
         </div>
         <div className="shrink-0 flex gap-2 items-start">
           <DownloadButton
-            downloadPath={mod.versions[0].download_path}
+            downloadPath={mod.versions[ 0 ].download_path}
           />
           <button className={cns.buttonBase("text-base p-2 px-5")}>
             Follow

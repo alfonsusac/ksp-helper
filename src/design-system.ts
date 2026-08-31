@@ -113,72 +113,103 @@ export const cns = ({
 
   // Prose/Documents
   docunment: cnr(
+    // "tracking-[-0.015rem]",
+    "font-normal",
+    "leading-[1.65]",
+    "text-fg",
+    // "subpixel-antialiased",
+
+    "[&_h1]:mt-12",
     "[&_h1]:my-4",
     "[&_h1]:text-2xl",
-
+    "[&_h1]:font-semibold",
+    "[&_h1]:tracking-[-0.035rem]",
+    // "[&_h1]:font-bold",
+    // "[&_h1]:tracking-[-0.035rem]",
+    
+    
     "[&_h2]:mt-8",
-    "[&_h2]:text-xl",
-    "dark:[&_h2]:opacity-50",
+    "[&_h2]:text-[1.15rem]",
+    "[&_h2]:text-fg",
+    "[&_h2]:font-semibold",
+    "[&_h2]:tracking-[-0.025rem]",
+    // "[&_h2]:font-bold",
+    // "[&_h2]:tracking-[-0.025rem]",
     "[&_h1+h2]:mt-6",
-
-    "[&_h3]:mt-6",
-    "[&_h3]:text-lg",
-    "dark:[&_h3]:opacity-80",
+    
+    "[&_h3]:mt-4",
+    "[&_h3]:text-[0.95rem]",
+    // "[&_h3]:text-fg2",
+    "[&_h3]:font-bold",
     "[&_h1+h3]:mt-4",
+    
+    "[&_strong]:font-bold!",
+    "[&_strong]:text-fg",
 
 
+    // "[&>p]:text-current/90",
+    // "[&>p]:text-fg",
+    // "[&>p]:dark:text-current/80",
+    "[&>p]:my-[0.25lh]",
+    "[&_img]:my-[1lh]",
+    "[&_table]:my-[1lh]",
 
-    "[&>p]:my-4",
+    "[&_ul]:my-[0.25lh]",
+    "[&_ul_p+ul]:mt-1.5",
+    "[&_ul_p+ul]:mb-4",
+    // "[&_ul>li]:before:content-['']",
+    // "[&_ul>li]:before:inline-block",
+    // "[&_ul>li]:before:size-1.5!",
+    // "[&_ul>li]:before:rounded-lg",
+    // "[&_ul>li]:before:bg-current",
+    // "[&_ul>li]:before:opacity-25",
+    // "[&_ul>li]:before:-ml-4.5",
+    // "[&_ul>li]:before:mr-3",
+    // "[&_ul>li]:before:mb-[0.1rem]",
 
-    "[&_ul]:my-4",
-    "[&_ul>li]:before:content-['']",
-    "[&_ul>li]:before:inline-block",
-    "[&_ul>li]:before:size-1.5!",
-    "[&_ul>li]:before:rounded-lg",
-    "[&_ul>li]:before:bg-current",
-    "[&_ul>li]:before:opacity-25",
-    "[&_ul>li]:before:-ml-6",
-    "[&_ul>li]:before:mr-4",
-    "[&_ul]:pl-7",
+    "[&_ul]:marker:text-fg3",
+    "[&_ul]:list-disc",
+    "[&_ul]:ml-4",
+
+
+    "[&_ul]:pl-5",
     "[&_ul]:ml-1",
 
-    "[&_ol]:my-4",
-    "[&_ol]:list-decimal",
+    "[&_ol]:my-[0.25lh]",
     "[&_ol]:list-decimal",
     "[&_ol]:pl-7",
     "[&_ol]:ml-1",
-    "[&_ol>li]:marker:text-current/50",
+    "[&_ol>li]:marker:text-fg3",
+    "[&_ol>li]:marker:font-medium",
 
     "[&_li]:my-1.5",
     "[&_li>p]:inline",
 
     "[&_img]:rounded-md",
 
-    "[&_hr]:border-current/25",
+
+    "[&_hr]:border-border2",
 
     "[&_code]:px-1",
-    "[&_code]:bg-current/7",
+    "[&_code]:bg-contrast/7",
     "[&_code]:border",
     "[&_code]:border-current/10",
     "[&_code]:rounded-sm",
-    "[&_code]:text-current/75",
+    "[&_code]:text-fg",
 
     "[&_th]:border",
     "[&_td]:border",
 
-    "[&_th]:border-current/15",
-    "[&_td]:border-current/15",
+    "[&_th]:border-border",
+    "[&_td]:border-border",
 
     "[&_th]:p-2",
     "[&_td]:p-2",
 
     "[&_strong]:font-extrabold",
 
-    "[&_a]:text-slate-500/75             [&_a]:dark:text-zinc-500",
-    "[&_a]:decoration-slate-300          [&_a]:dark:decoration-zinc-700",
-    "[&_a]:hover:text-slate-500          [&_a]:dark:hover:text-zinc-400",
-    "[&_a]:hover:decoration-slate-500/50 [&_a]:dark:hover:decoration-zinc-600",
-    "[&_a]:underline underline-offset-3 ",
+    "[&_a]:link-underline",
+    "[&_a]:link-text",
 
     "[&_pre]:overflow-auto",
     "[&_pre]:w-full",

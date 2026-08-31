@@ -1,18 +1,18 @@
 import type { Metadata } from "next"
-import { JetBrains_Mono, Open_Sans } from "next/font/google"
+import { Cascadia_Code, Fira_Code, Geist, Geist_Mono, JetBrains_Mono, Source_Code_Pro } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { cn } from "@/ui/cn"
 import { cns } from "@/design-system"
 
 
-const mono = JetBrains_Mono({
+const mono = Geist_Mono({
   variable: "--font-next-mono",
   subsets: [ "latin" ],
   weight: 'variable'
 })
 
-const sans = Open_Sans({
+const sans = Geist({
   variable: "--font-next-sans",
   subsets: [ 'latin' ]
 })
