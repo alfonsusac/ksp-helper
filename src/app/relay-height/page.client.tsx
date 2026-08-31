@@ -193,10 +193,13 @@ export function RelayHeight_Client() {
               onOrbitRatioChange={changeResultOrbitRatio}
               setIsDraggingORbit={setIsDraggingOrbit}
             />
-            <OverrideHeight {...result} onValueChange={(n) => {
-              data.overrideHeight = n
-              setData({ ...data })
-            }} />
+            {
+              result.isAdjustable &&
+              <OverrideHeight {...result} onValueChange={(n) => {
+                data.overrideHeight = n
+                setData({ ...data })
+              }} />
+            }
             <OrbitInformations {...result} className="lg:hidden" />
           </div>
 
@@ -414,7 +417,11 @@ function getResult(
   }).value
   const maxRadiusFromVessel =
     notlandable ? Infinity :
-      getMaximumRelayHeightRelativeToVessel(relayCount, getDistance(antennaRangeToVessel, data.strength), effectiveOccludedPlanetRadius) + effectiveOccludedPlanetRadius
+      getMaximumRelayHeightRelativeToVessel(
+        relayCount,
+        getDistance(antennaRangeToVessel, data.strength),
+        effectiveOccludedPlanetRadius
+      ) + planetRadius
 
 
   // Get min, max, mid, status, and reason
@@ -445,6 +452,12 @@ function getResult(
     const maxRadius = Math.max(Math.min(maxRadiusFromRelays, maxRadiusFromVessel, soiRadius), minRadius)
 
     const suggestedRadius = ((maxRadius - minRadius) * orbitRatio) + minRadius
+
+    if (maxRadiusFromVessel < minRadius) return {
+      status: "impossible" as const,
+      reason: "max vessel range below min height" as const,
+      suggestedRadius, minRadius, maxRadius,
+    }
 
     return {
       status: "ok" as const,
@@ -549,6 +562,8 @@ function getResult(
     }
   })()
 
+  const isAdjustable = minRadius !== undefined && maxRadius !== undefined && minRadius !== maxRadius
+
   return {
     status,
     reason,
@@ -574,6 +589,8 @@ function getResult(
     maxHeight,
 
     resonantOrbit,
+
+    isAdjustable,
 
     // -- commons --
     overrideHeight,
@@ -609,11 +626,13 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
 
   if (props.status === "no planet data") return <></>
 
+  const isSameMinMax = props.minRadius === props.maxRadius
+
   return <div className="flex flex-col gap-2">
     <div className={cns.surface("grid grid-cols-[auto_8rem] gap-2 text-sm leading-4")}>
       <p className={cns.textMuted("col-span-2 text-xs opacity-75")}>Adjust Height</p>
       <div className="grid grid-cols-[2fr_3fr_2fr] col-span-2 items-center">
-        <div className="text-sm">
+        <div className={cn("text-sm")}>
           <p className={cns.textMuted()}>Min Height</p>
           <p className="">{prettyNum(props.minHeight ?? NaN).toLocaleString()}m</p>
         </div>
@@ -623,12 +642,12 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
           <p className="">{prettyNum(props.orbitHeight ?? NaN).toLocaleString()}m</p>
         </div>
 
-        <div className="text-sm text-end">
+        <div className={cn("text-sm text-end")}>
           <p className={cns.textMuted()}>Max Height</p>
           <p className="">{prettyNum(props.maxHeight ?? NaN).toLocaleString()}m</p>
         </div>
       </div>
-      {props.minRadius && props.maxRadius &&
+      {props.isAdjustable &&
         <div className="col-span-2 flex gap-2 items-center">
           <Slider
             min={0} max={1} step={0.01} className="grow"
@@ -1128,7 +1147,7 @@ function WarningsSection(result: ReturnType<typeof getResult> & {
   return (
     <>
       {result.status === "impossible" && <>
-        <div className={cns.card("text-pretty col-span-2 starting:opacity-0 starting:-translate-y-10 transition")}>
+        <div key={result.reason} className={cns.card("text-pretty col-span-2 starting:opacity-0 starting:-translate-y-10 transition")}>
           <div className={cns.errorTextBase(cns.cardHeader(""))}>
             <LucideTriangleAlert className={cns.cardHeaderIcon()} />
             Warning
@@ -1137,6 +1156,7 @@ function WarningsSection(result: ReturnType<typeof getResult> & {
             {result.reason === "no relay satellite" && "No Relay Satellite. Please add a relay antenna to your relay satellite."}
             {result.reason === "no inter-relay connection" && `Relay Antenna can't reach target strength (${ strengthNum(result.relayStrength) }). Upgrade relay antenna or reduce target signal.`}
             {result.reason === "no vessel connection" && `Vessel Antenna can't reach target strength (${ strengthNum(result.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
+            {result.reason === "max vessel range below min height" && `Relay Height can't go any lower to reach target strength between relay and vessel (${ strengthNum(result.vessel?.strength ?? 0) }). Upgrade vessel antenna or reduce target signal.`}
           </div>
         </div>
       </>}
