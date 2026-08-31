@@ -403,7 +403,11 @@ function BodyDetailInput(props: {
               value={props.payload.antennas}
               onChange={changeAntennaPayload}
               antennas={props.antennas}
+              filter={props.payload.isRelay ? (a) => {
+                return a.type === "relay"
+              } : undefined}
             />
+            {/* {props.payload.isRelay && props.payload.antennas.} */}
           </div>
       }
     </div>

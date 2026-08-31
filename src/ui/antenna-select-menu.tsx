@@ -117,7 +117,6 @@ export function AntennaInput(props: {
           render={
             <button className={cns.buttonGhost("text-sm justify-start")}>
               <LucidePlus />
-              {/* <StreamlineWifiAntennaRemix className="size-4 mr-1" /> */}
               Add Antenna
             </button>
           }
@@ -152,16 +151,21 @@ export function AntennaInput(props: {
                           </div>
                           <div className="flex flex-col gap-1">
                             <div className="text-sm leading-3.5">{antenna.label}</div>
-                            <div className={cns.textMuted("text-xs")}>
-                              {prettyNum(antenna.rating)}
-                              <div className="h-full border-l border-border inline mx-2 " />
-                              <span>
-                                {antenna.combinabilityExponent === 0 ?
-                                  <span className="text-faint">non-combinable</span> :
-                                  antenna.combinabilityExponent > 0.75 ?
-                                    "very combinable" : "combinable"
-                                }
-                              </span>
+                            <div className="flex flex-col">
+                              <div className={cns.textMuted("text-xs")}>
+                                {prettyNum(antenna.rating)}
+                                <div className="h-full border-l border-border inline mx-2 " />
+                                <span>
+                                  {antenna.combinabilityExponent === 0 ?
+                                    <span className="text-faint">non-combinable</span> :
+                                    antenna.combinabilityExponent > 0.75 ?
+                                      "very combinable" : "combinable"
+                                  }
+                                </span>
+                              </div>
+                              <div className={cns.textMuted("text-xs capitalize")}>
+                                {antenna.type}
+                              </div>
                             </div>
                           </div>
                         </MenuItem>
