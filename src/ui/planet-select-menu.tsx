@@ -3,7 +3,7 @@ import { packages, type PackageNames, type PlanetData, type PlanetItemData } fro
 import { Menu } from "@base-ui/react"
 import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { LucideChevronDown } from "./icons"
-import { cns, menuTrigger } from "@/design-system"
+import { cns } from "@/design-system"
 import { Fragment } from "react/jsx-runtime"
 import type { GlobalSettings } from "./settings-section"
 
@@ -38,7 +38,7 @@ export function PlanetSelectMenu(props: {
 
   return (
     <Menu.Root>
-      <Menu.Trigger className={menuTrigger()}>
+      <Menu.Trigger className={cns.menuTrigger()}>
         <div className="grow">
           {props.value}
         </div>

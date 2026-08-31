@@ -77,6 +77,8 @@ export const cns = ({
   linkCard: cnr("link-card"),
   infoCard: cnr("info-card"),
 
+  menuTrigger: cnr("menu-trigger"),
+
 
   // Specials
   bgScience: cnr("       bg-blue-200     dark:bg-blue-500"),
@@ -193,9 +195,11 @@ export const cns = ({
 })
 
 
-export const menuTrigger = cnr(
-  cns.inputBox(
-    cns.buttonBase(),
-    "w-32",
-  )
-)
+// export const menuTrigger = cnr(
+//   cns.inputBox(
+//     "clickableUI",
+//     "button-common",
+//     // cns.buttonBase(),
+//     "w-32",
+//   )
+// )
