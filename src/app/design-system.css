@@ -76,11 +76,23 @@
   }
 }
 /* TODO: make autofill reset styles */
+@theme {
+  --radius-input: var(--radius-lg)
+}
 @utility input-reset         { @apply outline-none }
-@utility input-reset-padding { @apply -mx-3 px-3 -my-2 py-2 }
+@utility input-box-inner     { @apply px-3 py-2 self-stretch flex items-center grow outline-none 
+                                      first:rounded-l-input
+                                      last:rounded-r-input
+                             }
+@utility input-box-inner-adornment { @apply my-1 first:ml-1 last:mr-1 flex items-center 
+                                            first:rounded-l-input
+                                            last:rounded-r-input
+                                   } 
 @utility input-box           { @apply /* Outer Ring */
                                      transition-[outline,border] duration-50
                                      outline outline-transparent 
+
+                                     has-[>.input-box-inner]:p-0
 
                                      focus-within-and-hover:outline-4
                                      focus-within-and-hover:outline-border4/50 
@@ -93,7 +105,7 @@
                                      autofill-text-blue-500! autofill-border-blue-500!
 
                                      /* Layout */
-                                     flex items-center gap-2 min-w-30 rounded-lg
+                                     flex items-center min-w-30 max-w-72 grow shrink-0 rounded-input min-h-9
                                      px-3 p-2
                                      bg-input caret-fg text-start
                                      border-border3 border
@@ -108,7 +120,7 @@
                                      dark:focus-within-and-hover:border-error2/50
                                      focus-within-and-hover:outline-error2/20
                             }
-@utility input-label        { @apply text-fg2 text-sm }
+@utility input-label        { @apply text-fg2 text-sm group-focus-within:text-fg }
 @utility input-group        { @apply flex flex-col gap-1 }
 
 
@@ -239,10 +251,12 @@
   --color-tab-border: light-dark(--alpha(var(--color-contrast)/35%), var(--color-skeue-border));
   /* --color-tab-border: red; */
 }
-@utility tab-container         { @apply bg-debossed p-1
+@utility tab-container         { @apply bg-debossed 
+                                        p-0.5 rounded-lg gap-0.5
+                                        /* p-1 rounded-xl gap-0.5 */
                                         border-debossed
                                         shadow-(--color-skeue-inner)
-                                        flex self-start gap-1 border rounded-xl 
+                                        flex self-start  border 
                                }
 @utility tab-item              { @apply p-2 rounded-md px-3 w-40 border
                                         flex items-center gap-2 clickableUI 

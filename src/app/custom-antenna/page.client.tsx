@@ -1,20 +1,21 @@
 "use client"
 
 import { cns } from "@/design-system"
+import { checkDuplicates } from "@/lib/get-duplicates"
 import { prettyNum } from "@/lib/pretty-num"
 import { HomeButton, Muted } from "@/ui/common"
 import { BackOrHomeButtonClient } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"
 import { EmojioneMonotoneSatelliteAntenna } from "@/ui/icons"
-import { NumberInput, TabSelectRow, TextInput } from "@/ui/input"
-import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
+import { TabSelectRow } from "@/ui/input"
+import { useFieldArray, type FieldArrayItem } from "@/ui/input-array"
+import { numberField, FieldBlock, useField } from "@/ui/input-field"
+import { useGlobalSettings, type GlobalSettings, type GlobalSettingsSetter } from "@/ui/settings-section"
 import { Suspense, useEffect, useState } from "react"
 
 
 export function CustomAntennaPage_Client() {
   const [ settings, setSettings ] = useGlobalSettings()
-  const [ refreshId, setRefreshId ] = useState(Math.random())
-
   if (!settings) return null
 
   return (
@@ -31,39 +32,10 @@ export function CustomAntennaPage_Client() {
       </header>
 
       <div className="flex flex-col gap-1">
-
-        <div className="flex flex-col gap-8" key={refreshId}>
-          {settings.customAntennas.length === 0 && <div className={cns.textMuted("text-xs")}>No Custom Antenna Added</div>}
-          {settings.customAntennas.map((a, i) => {
-            return (
-              <AntennaItem key={i}
-                value={a}
-                onDelete={() => {
-                  settings.customAntennas = settings.customAntennas.filter((e, ei) => ei !== i)
-                  setSettings({ ...settings })
-                  setRefreshId(Math.random())
-                }}
-                onChange={(nv) => {
-                  setSettings({ ...settings, customAntennas: settings.customAntennas.map((p, j) => i === j ? nv : p) })
-                }}
-                labels={settings.customAntennas.filter((_, f) => f !== i).map(p => p.label)}
-              />
-            )
-          })}
-          <button className={cns.buttonBase()} onClick={() => {
-            settings.customAntennas.push({
-              label: `New Antenna ${ settings.customAntennas.length }`,
-              combinabilityExponent: 0.75,
-              rating: 100_000,
-              type: "direct",
-            })
-            setSettings({ ...settings })
-            setRefreshId(Math.random())
-          }}>
-            Add Custom Antenna
-          </button>
-        </div>
-
+        <CustomAntennaPageForm
+          settings={settings}
+          setSettings={setSettings}
+        />
       </div>
       <Footer />
     </div>
@@ -71,15 +43,86 @@ export function CustomAntennaPage_Client() {
 }
 
 
-function AntennaItem(props: {
-  value: GlobalSettings[ 'customAntennas' ][ number ],
-  onDelete: () => void,
-  onChange: (newValue: GlobalSettings[ 'customAntennas' ][ number ]) => void
-  labels: string[],
+
+function CustomAntennaPageForm(props: {
+  settings: GlobalSettings
+  setSettings: GlobalSettingsSetter
 }) {
-  const value = props.value
+  const { settings, setSettings } = props
+
+  const customAntennaFields = useFieldArray<GlobalSettings[ 'customAntennas' ][ number ]>({
+    newItem: () => ({
+      label: `New Antenna ${ settings?.customAntennas.length }`,
+      combinabilityExponent: 0.75,
+      rating: 100_000,
+      type: "direct" as "direct" | "relay",
+    }),
+    initial: () => settings.customAntennas,
+    onValidChange: (n) => {
+      settings.customAntennas = n
+      setSettings({ ...settings })
+    },
+    validate: (n, err) => {
+      checkDuplicates(n, (t) => t.value.label,
+        (t) => err.set(t.id, { label: "Duplicate Labels" })
+      )
+      return err
+    },
+  })
+
+  return (
+    <div className="flex flex-col gap-8">
+      {customAntennaFields.isEmpty &&
+        <div className={cns.textMuted("text-xs")}>No Custom Antenna Added</div>
+      }
+      {customAntennaFields.fields.map((field) =>
+        <AntennaItem key={field.id} field={field} />
+      )}
+      <button className={cns.buttonBase()} onClick={
+        () => customAntennaFields.append()
+      }>
+        Add Custom Antenna
+      </button>
+    </div>
+  )
+}
+
+
+function AntennaItem(props: {
+  field: FieldArrayItem<GlobalSettings[ 'customAntennas' ][ number ]>,
+}) {
+  const {
+    value,
+    errors,
+    onChange,
+    onDelete,
+  } = props.field
 
   const [ confirmDelete, setConfirmDelete ] = useState(false)
+
+  const labelField = useField({
+    error: errors?.label,
+    initialData: () => value.label,
+    onValidChange: (n) => onChange(({ ...value, label: n })),
+    noempty: 1,
+  })
+
+  const ratingField = useField(numberField({
+    initialData: () => value.rating,
+    onValidChange: (n) => onChange(({ ...value, rating: n })),
+    nonnegative: 1,
+    noempty: 1,
+  }))
+
+  const combinabilityExponentField = useField(numberField({
+    initialData: () => value.combinabilityExponent,
+    onValidChange: n => onChange(({ ...value, combinabilityExponent: n })),
+    nonnegative: 1,
+    noempty: 1,
+    validate: v => {
+      if (v > 1) throw "Can't be more than one"
+    }
+  }))
 
   useEffect(() => {
     if (confirmDelete) {
@@ -101,41 +144,24 @@ function AntennaItem(props: {
     <div className="flex flex-col w-full">
       <div className="grid grid-cols-[6rem_auto] items-baseline gap-x-2 gap-y-1 text-sm">
         <Muted>label:</Muted>
-        <div className="flex flex-col">
-          <TextInput
-            initialValue={value.label}
-            onValueChange={(v) => {
-              props.onChange(({ ...value, label: v }))
-            }}
-            validate={(val) => {
-              if (val === '') return "Label is required"
-              return props.labels.includes(val) ? "Label already exists" : undefined
-            }}
-          />
-        </div>
+        <FieldBlock
+          field={labelField}
+          hideReset
+        />
 
         <Muted>rating:</Muted>
-        <NumberInput
-          initialValue={value.rating}
-          onValueChange={(n) => props.onChange(({ ...value, rating: n }))}
-          onEmpty={() => "Can't be empty"}
-          validate={(n) => {
-            return n < 1 ? "Can't be negative" : undefined
-          }}
+        <FieldBlock
+          field={ratingField}
+          savedValue={prettyNum(value.rating, 'k')}
+          hideReset
         />
-        <div className="text-end col-span-2">= {prettyNum(value.rating, 'k')}</div>
 
         <Muted>combinability exponent:</Muted>
-        <NumberInput
-          initialValue={value.combinabilityExponent}
-          onValueChange={(n) => props.onChange(({ ...value, combinabilityExponent: n }))}
-          onEmpty={() => "Can't be empty"}
-          validate={(n) => {
-            if (n < 0) return "Can't be negative"
-            if (n > 1) return "Can't be more than one"
-          }}
+        <FieldBlock
+          field={combinabilityExponentField}
+          savedValue={prettyNum(value.combinabilityExponent, 'k')}
+          hideReset
         />
-        <div className="text-end col-span-2">= {prettyNum(value.combinabilityExponent, 'k')}</div>
 
         <Muted>type:</Muted>
         <TabSelectRow
@@ -144,15 +170,13 @@ function AntennaItem(props: {
             { label: "Relay", value: "relay" },
           ]}
           value={value.type}
-          onValueChange={(type) => props.onChange({ ...value, type })}
+          onValueChange={(type) => onChange({ ...value, type })}
           itemClassName="p-1 w-auto grow"
         />
-
-
       </div>
 
       {confirmDelete ? <div className="flex gap-2">
-        <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={props.onDelete}>
+        <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={onDelete}>
           Confirm Delete
         </button>
         <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={() => setConfirmDelete(false)}>

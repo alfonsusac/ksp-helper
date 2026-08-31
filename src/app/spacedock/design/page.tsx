@@ -87,14 +87,18 @@ export default function DesignSystemPage() {
                 <p className={cns.errorTextMuted("text-sm")}>Something went wrong</p>
               </div>
               <div className={cns.inputBox("flex")}>
-                <input className="input-reset input-reset-padding grow" />
-                kg
+                <input className={"input-box-inner"} />
+                <div className={cns.inputAdornment("pr-2 text-muted")}>
+                  kg
+                </div>
               </div>
               <div className={cns.inputBox("flex")}>
-                <input className="input-reset input-reset-padding grow" />
-                <button className={"button-base -my-1 -mr-2"}>
-                  Search
-                </button>
+                <input className="input-box-inner" />
+                <div className="input-box-inner-adornment">
+                  <button className={"button-base"}>
+                    Search
+                  </button>
+                </div>
               </div>
               <Slider
                 className="grow"

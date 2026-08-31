@@ -212,9 +212,6 @@ export function GenericInput(props: ComponentProps<"input"> & InputComponentProp
   const { onValueChange, validate, error, onRawValueChange, initialValue, preprocessRaw, onEmpty, unit, ...rest } = props
   const [ val, setVal ] = useState(props.initialValue)
   const [ err, setErr ] = useState<string | undefined>(undefined)
-  // useEffect(() => {
-  //   setVal(props.initialValue)
-  // }, [ props.initialValue ])
 
   return (
     <div className="flex flex-col max-w-none grow">
@@ -276,26 +273,26 @@ type InputComponentProps<T> = Omit<ComponentProps<"input">, "value"> & {
   unit?: string,
 }
 
-export function NumberInput(props: InputComponentProps<number>) {
-  const { onValueChange, ...rest } = props
-  return (
-    <GenericInput {...rest}
-      initialValue={String(props.initialValue)}
-      onValueChange={(v) => {
-        if (v === "") return
-        if (isValidNumberInput(v)) props.onValueChange(Number(v))
-      }}
-      preprocessRaw={(raw) => {
-        const normalised = raw.replaceAll(',', '').replaceAll('_', '').replaceAll(' ', '')
-        return props.preprocessRaw ? props.preprocessRaw(normalised) : normalised
-      }}
-      validate={(val) => {
-        if (Number.isNaN(Number(val))) return "Invalid number"
-        return props.validate(Number(val), val)
-      }}
-    />
-  )
-}
+// export function NumberInput(props: InputComponentProps<number>) {
+//   const { onValueChange, ...rest } = props
+//   return (
+//     <GenericInput {...rest}
+//       initialValue={String(props.initialValue)}
+//       onValueChange={(v) => {
+//         if (v === "") return
+//         if (isValidNumberInput(v)) props.onValueChange(Number(v))
+//       }}
+//       preprocessRaw={(raw) => {
+//         const normalised = raw.replaceAll(',', '').replaceAll('_', '').replaceAll(' ', '')
+//         return props.preprocessRaw ? props.preprocessRaw(normalised) : normalised
+//       }}
+//       validate={(val) => {
+//         if (Number.isNaN(Number(val))) return "Invalid number"
+//         return props.validate(Number(val), val)
+//       }}
+//     />
+//   )
+// }
 
 export function TextInput(props: InputComponentProps<string>) {
   const { onValueChange, ...rest } = props
@@ -317,7 +314,7 @@ export function InputWrapper(props: {
   error?: string | null
 }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-1">
       <label className="text-sm">{props.label}</label>
       <div className="flex gap-2 items-center">
         {props.children}
@@ -344,31 +341,31 @@ export function UnitInputWrapper(props: {
   )
 }
 
-export function NumberInputBlock(props: {
-  label: string,
-  onChange: (n: number) => void,
-  value: number,
-  resetValue?: number,
-  step: string,
-  error?: string,
-}) {
-  return (
-    <InputWrapper label={props.label}>
-      <NumberInput
-        error={props.error}
-        initialValue={props.value}
-        validate={() => undefined}
-        step={props.step}
-        onValueChange={props.onChange}
-      />
-      {props.resetValue &&
-        <ResetSettingsIconButton onClick={() => props.resetValue && props.onChange(props.resetValue)}>
-          <LucideRotateCcw />
-        </ResetSettingsIconButton>
-      }
-    </InputWrapper>
-  )
-}
+// export function NumberInputBlock(props: {
+//   label: string,
+//   onChange: (n: number) => void,
+//   value: number,
+//   resetValue?: number,
+//   step: string,
+//   error?: string,
+// }) {
+//   return (
+//     <InputWrapper label={props.label}>
+//       <NumberInput
+//         error={props.error}
+//         initialValue={props.value}
+//         validate={() => undefined}
+//         step={props.step}
+//         onValueChange={props.onChange}
+//       />
+//       {props.resetValue &&
+//         <ResetSettingsIconButton onClick={() => props.resetValue && props.onChange(props.resetValue)}>
+//           <LucideRotateCcw />
+//         </ResetSettingsIconButton>
+//       }
+//     </InputWrapper>
+//   )
+// }
 
 export function TextInputBlock(props: {
   label: ReactNode,

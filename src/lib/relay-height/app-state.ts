@@ -28,7 +28,7 @@ export const initialData = () => {
 
 export function useRelayHeightAppState() {
   return useAppState<RelayHeightData>("relay-height", initialData, (s) => {
-    console.log(s)
+    // console.log(s)
     if (typeof s !== 'object' || s === null) return 'state is not an object'
     if ('vessel' in s === false) return 'vessel not in state object'
     if ('relay' in s === false) return 'relay not in state object'

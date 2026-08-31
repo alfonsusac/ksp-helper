@@ -1,11 +1,12 @@
 import { cns } from "@/design-system"
 import { packageNames, packages, type PackageNames } from "@/packages/_process-packages"
-import { CheckboxRow, NumberInputBlock } from "./input"
+import { CheckboxRow } from "./input"
 import { IcRoundSatelliteAlt, LucideEarth, LucideRotateCcw } from "./icons"
 import { useAppState } from "@/lib/use-app-state"
 import type { ComponentProps } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
+import { numberField, FieldBlock, useField } from "./input-field"
 
 
 // function constructGlobalSettings(v: unknown) {
@@ -82,7 +83,7 @@ export function getInitialGlobalSettings(): GlobalSettings {
 
 export function ResetSettingsIconButton(props: ComponentProps<"button">) {
   return (
-    <button {...props} className={cns.buttonGhost(cns.buttonIcon(), props.className)}>
+    <button {...props} className={cns.buttonGhost(cns.buttonIcon("shrink-0"), props.className)}>
       <LucideRotateCcw />
     </button>
   )
@@ -102,6 +103,8 @@ export function useGlobalSettings() {
   return [ settings, setSettings ] as const
 }
 
+export type GlobalSettingsSetter = ReturnType<typeof useGlobalSettings>[1]
+
 
 export function SettingsSection(props: {
   settings: GlobalSettings,
@@ -115,6 +118,35 @@ export function SettingsSection(props: {
   const changeContentToggle = (which: PackageNames, value: boolean) => {
     props.onSettingsChange({ ...props.settings, contents: { ...props.settings.contents, [ which ]: value } })
   }
+
+  const rangeModifierField = useField(numberField({
+    initialData: () => props.settings.rangeModifier,
+    onValidChange: (v) => changeModifier("rangeModifier", v),
+    resetValue: () => getInitialGlobalSettings().rangeModifier,
+    nonnegative: true,
+  }))
+  const dsnModifierField = useField(numberField({
+    initialData: () => props.settings.dsnModifier,
+    onValidChange: (v) => changeModifier("dsnModifier", v),
+    resetValue: () => getInitialGlobalSettings().dsnModifier,
+    nonnegative: true,
+  }))
+  const occlusionModifierAtmField = useField(numberField({
+    initialData: () => props.settings.occlusionModifierAtm,
+    onValidChange: (v) => changeModifier("occlusionModifierAtm", v),
+    resetValue: () => getInitialGlobalSettings().occlusionModifierAtm,
+    nonnegative: true,
+  }))
+  const occlusionModifierVacField = useField(numberField({
+    initialData: () => props.settings.occlusionModifierVac,
+    onValidChange: (v) => changeModifier("occlusionModifierVac", v),
+    resetValue: () => getInitialGlobalSettings().occlusionModifierVac,
+    nonnegative: true,
+  }))
+
+
+
+
 
   return <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
     <div className="flex flex-col gap-0.5">
@@ -156,7 +188,7 @@ export function SettingsSection(props: {
       </div>
     </div>
 
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-6">
 
 
       <div className="flex gap-px pb-2">
@@ -194,48 +226,52 @@ export function SettingsSection(props: {
               ...props.settings,
               ...e
             })
+            rangeModifierField.setValue(e.rangeModifier)
           }} className={cns.buttonPresetGroup("w-20 py-2")}>
             {e.label}
           </button>
         })}
       </div>
 
+      <div className="flex flex-col gap-4">
 
-      {/* The value of this slider is a multiplier value that is applied to the power levels of all antennae */}
-      <NumberInputBlock
-        label="Range Modifier"
-        value={props.settings.rangeModifier}
-        onChange={n => changeModifier("rangeModifier", n)}
-        resetValue={getInitialGlobalSettings().rangeModifier}
-        step="0.01"
-      />
+        {/* The value of this slider is a multiplier value that is applied to the power levels of all antennae */}
+        <FieldBlock
+          label="Range Modifier"
+          field={rangeModifierField}
+          savedValue={props.settings.rangeModifier}
+        />
 
-      {/* The value of this slider is a multiplier value that is applied to the power level of the DSN Network */}
-      <NumberInputBlock
-        label="DSN Modifier"
-        value={props.settings.dsnModifier}
-        onChange={n => changeModifier("dsnModifier", n)}
-        resetValue={getInitialGlobalSettings().dsnModifier}
-        step="0.01"
-      />
+        {/* The value of this slider is a multiplier value that is applied to the power level of the DSN Network */}
+        <FieldBlock
+          label="DSN Modifier"
+          field={dsnModifierField}
+          savedValue={props.settings.rangeModifier}
+        />
 
-      {/* The value of this slider is a multiplier value that is applied to the effective size of atmosphereless bodies that can block signals between antennas. */}
-      <NumberInputBlock
-        label="Occlusion Modifier, Atm"
-        value={props.settings.occlusionModifierAtm}
-        onChange={n => changeModifier("occlusionModifierAtm", n)}
-        resetValue={getInitialGlobalSettings().occlusionModifierAtm}
-        step="0.01"
-      />
+        {/* The value of this slider is a multiplier value that is applied to the effective size of atmosphereless bodies that can block signals between antennas. */}
+        <FieldBlock
+          label="Occlusion Modifier, Atm"
+          field={occlusionModifierAtmField}
+          savedValue={props.settings.occlusionModifierAtm}
+        />
 
-      {/* The value of this slider is a multiplier value that is applied to the effective size of bodies with atmospheres that can block signals between antennas. */}
-      <NumberInputBlock
-        label="Occlusion Modifier, Vac"
-        value={props.settings.occlusionModifierVac}
-        onChange={n => changeModifier("occlusionModifierVac", n)}
-        resetValue={getInitialGlobalSettings().occlusionModifierVac}
-        step="0.01"
-      />
+        {/* The value of this slider is a multiplier value that is applied to the effective size of bodies with atmospheres that can block signals between antennas. */}
+        <FieldBlock
+          label="Occlusion Modifier, Vac"
+          field={occlusionModifierVacField}
+          savedValue={props.settings.occlusionModifierVac}
+        />
+
+
+        <button
+          className={cns.buttonBase("mt-4")}
+          onClick={() => props.onSettingsChange(getInitialGlobalSettings())}
+        >
+          <LucideRotateCcw />
+          Reset All Data
+        </button>
+      </div>
 
       {/* <div className="flex flex-col gap-0.5">
         <label className="text-sm">Occlusion Modifier, Vac</label>
@@ -251,13 +287,7 @@ export function SettingsSection(props: {
         </div>
       </div> */}
 
-      <button
-        className={cns.buttonBase("mt-4")}
-        onClick={() => props.onSettingsChange(getInitialGlobalSettings())}
-      >
-        <LucideRotateCcw />
-        Reset All Data
-      </button>
+
     </div>
   </div>
 }

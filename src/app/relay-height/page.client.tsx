@@ -6,21 +6,22 @@ import { getData, type AntennaData, type PlanetData } from "@/packages/_process-
 import { fixedNum, ordinal, prettyNum } from "@/lib/pretty-num"
 import { prettyPeriod } from "@/lib/pretty-period"
 import { useRelayHeightAppState, type RelayHeightData } from "@/lib/relay-height/app-state"
-import { getMaximumRelayHeightRelativeToEachOther, getMaximumRelayHeightRelativeToVessel, getMinimumRelayHeight, getResonantOrbit, lawOfCosineFindAngle, lawOfCosineFindSide, mid } from "@/lib/relay-height/math"
+import { getMaximumRelayHeightRelativeToEachOther, getMaximumRelayHeightRelativeToVessel, getMinimumRelayHeight, getResonantOrbit } from "@/lib/relay-height/math"
 import { AntennaInput } from "@/ui/antenna-select-menu"
 import { ShareAppURLButton } from "@/ui/button"
 import { cn } from "@/ui/cn"
 import { Divider, Green, HomeButton, KSPBox } from "@/ui/common"
 import { Footer } from "@/ui/footer"
 import { EmojioneSatellite, GlyphsPolyRocket, LucideTriangleAlert, MdiTriangle, OpenmojiFire } from "@/ui/icons"
-import { InputBlock, NumberInput, Slider } from "@/ui/input"
+import { InputBlock, Slider } from "@/ui/input"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 import { WhatIsThisSection } from "@/ui/prose"
 import { ResetSettingsIconButton, SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
 import SignalStrengthItems, { strengthNum } from "@/ui/signal-strength"
 import { formatCss, interpolate as color_interpolate } from "culori"
 import { Fragment, useEffect, useState, type ComponentProps, type CSSProperties, type ReactNode } from "react"
-import { bezier, constant, easeInOutCubic, easeInOutQuad, easeInOutQuart, easeInOutSine, easeOutBack, interp, lerp, multiSequencer, sequencer, slideshowSequencer, step, type InterpolatorFn, type SlideshowSequenceItem } from "@/lib/relay-height/animation"
+import { bezier, constant, easeInOutCubic, easeInOutSine, easeOutBack, lerp, sequencer, slideshowSequencer, type InterpolatorFn, type SlideshowSequenceItem } from "@/lib/relay-height/animation"
+import { FieldBlock, numberField, useField } from "@/ui/input-field"
 
 
 export function RelayHeight_Client() {
@@ -650,30 +651,40 @@ function AdjustHeight(props: ReturnType<typeof getResult> & {
 function OverrideHeight(props: ReturnType<typeof getResult> & {
   onValueChange: (n: number | undefined) => void
 }) {
-  const [ val, setVal ] = useState(props.overrideHeight ?? props.orbitHeight ?? NaN)
+
+  const [commitedValue, setCommittedValue] = useState<number>()
+
+  const overrideField = useField(numberField({
+    initialData: () => props.overrideHeight ?? props.orbitHeight ?? NaN,
+    // onValidChange: props.onValueChange,
+    onValidChange: setCommittedValue,
+    nonnegative: true,
+    validate: n => {
+      if (props.minHeight && n < props.minHeight) throw "Can't be less than the minimum height"
+    }
+  }))
+
   useEffect(() => {
-    setVal(props.overrideHeight ?? props.orbitHeight ?? NaN)
+    overrideField.setValue(props.overrideHeight ?? props.orbitHeight ?? NaN)
   }, [ props.orbitHeight ])
 
   return (
     <div className="flex flex-col gap-2">
       <InputBlock label="Override Height" row>
-        <NumberInput
-          key={props.orbitHeight}
-          className="max-w-none"
-          initialValue={props.overrideHeight ?? props.orbitHeight ?? NaN}
-          onValueChange={setVal}
-          validate={(n) => {
-            if (n < 0) return "Can't be negative"
-            if (props.minHeight && n < props.minHeight) return "Can't be less than the minimum height"
-            return undefined
-          }}
-          unit="m"
+        <FieldBlock
+          field={overrideField}
+          endAdornment="m"
+          hideReset
         />
       </InputBlock>
 
       <div className="grid grid-cols-2 gap-2">
-        <button className={cns.buttonBase()} onClick={() => props.onValueChange(val)}>
+        <button className={cns.buttonBase()}
+          disabled={overrideField.isInvalid}
+          onClick={
+            () => props.onValueChange(commitedValue)
+          }
+        >
           Set Height Override
         </button>
         <button className={cns.buttonBase()} onClick={() => {
@@ -698,14 +709,14 @@ function Visualization(props: ReturnType<typeof getResult> & {
 
   // Probably would've been more performant using SVG / canvas
   return <VisViewport className={cns.card(
-    props.soiRadius === Infinity ? "bg-black" : "bg-zinc-900/50!",
+    props.soiRadius === Infinity ? "bg-black" : "bg-zinc-900!",
   )}>
     {/* Below SOI Circle */}
     {props.soiRadius !== Infinity &&
       <Circle maxHeight={maxViewportScale} height={props.soiRadius} disableAnimation={props.disableAnimation}
         className="bg-black"
       >
-        <div className="absolute text-xs left-1/2 -translate-y-full opacity-50">SOI</div>
+        <div className="absolute text-xs left-1/2 -translate-y-full text-white/40">SOI</div>
       </Circle>
     }
     {/* Max Radius */}

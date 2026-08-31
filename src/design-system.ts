@@ -19,7 +19,10 @@ export const cns = ({
   inputLabel: cnr('input-label'),
   inputReset: cnr("input-reset"),
   inputBox: cnr("input-box"),
-  inputBoxError: cnr("input-border-error"),
+  inputBoxWithError: (error: any) => cnr("input-box", error ? "input-box-error" : ""),
+  inputInner: cnr("input-reset input-box-inner"),
+  inputAdornment: cnr("input-box-inner-adornment min-w-6 min-h-6 "),
+  inputBoxError: cnr("input-box-error"),
 
   errorBorder: cnr("error-border"),
   errorBg: cnr("error-bg"),

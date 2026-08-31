@@ -1,18 +1,18 @@
 "use client"
 
 import { cns } from "@/design-system"
+import { checkDuplicates } from "@/lib/get-duplicates"
 import { prettyNum } from "@/lib/pretty-num"
 import { HomeButton, Muted } from "@/ui/common"
 import { BackOrHomeButtonClient } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"
-import { NumberInput, TextInput, UnitInputWrapper } from "@/ui/input"
-import { useGlobalSettings, type GlobalSettings } from "@/ui/settings-section"
+import { useFieldArray, type FieldArrayItem } from "@/ui/input-array"
+import { FieldBlock, numberField, textField, useField } from "@/ui/input-field"
+import { useGlobalSettings, type GlobalSettings, type GlobalSettingsSetter } from "@/ui/settings-section"
 import { Suspense, useEffect, useState } from "react"
 
 export function CustomPlanetsPage_Client() {
   const [ settings, setSettings ] = useGlobalSettings()
-  const [ refreshId, setRefreshId ] = useState(Math.random())
-
   if (!settings) return null
 
   return (
@@ -30,37 +30,7 @@ export function CustomPlanetsPage_Client() {
 
       <div className="flex flex-col gap-1">
 
-        <div className="flex flex-col gap-8" key={refreshId}>
-          {settings.customPlanets.length === 0 && <div className={cns.textMuted("text-xs")}>No Custom Celestial Body Added</div>}
-          {settings.customPlanets.map((e, i) => {
-            return (
-              <CelestialBodyItem key={i} value={e}
-                onDelete={() => {
-                  settings.customPlanets = settings.customPlanets.filter((e, ei) => ei !== i)
-                  setSettings({ ...settings })
-                  setRefreshId(Math.random())
-                }}
-                onChange={(nv) => {
-                  setSettings({ ...settings, customPlanets: settings.customPlanets.map((p, j) => i === j ? nv : p) })
-                }}
-                labels={settings.customPlanets.filter((_, f) => f !== i).map(p => p.label)}
-              />
-            )
-          })}
-          <button className={cns.buttonBase()} onClick={() => {
-            settings.customPlanets.push({
-              label: `New Planet ${ settings.customPlanets.length }`,
-              atmHeight: 70_000,
-              radius: 600_000,
-              soiHeight: 84_159_286 - 600_000,
-              mass: 5.2915158e22,
-            })
-            setSettings({ ...settings })
-            setRefreshId(Math.random())
-          }}>
-            Add Celestial Body
-          </button>
-        </div>
+        <CustomPlanetsForm settings={settings} setSettings={setSettings} />
 
       </div>
       <Footer />
@@ -69,13 +39,62 @@ export function CustomPlanetsPage_Client() {
 }
 
 
-function CelestialBodyItem(props: {
-  value: GlobalSettings[ 'customPlanets' ][ number ],
-  onDelete: () => void,
-  onChange: (newValue: GlobalSettings[ 'customPlanets' ][ number ]) => void
-  labels: string[],
+
+function CustomPlanetsForm(props: {
+  settings: GlobalSettings,
+  setSettings: GlobalSettingsSetter
 }) {
-  const value = props.value
+  const { settings, setSettings } = props
+
+  const customBodyFields = useFieldArray<GlobalSettings[ 'customPlanets' ][ number ]>({
+    newItem: () => ({
+      label: `New Body ${ settings?.customPlanets.length }`,
+      atmHeight: 70_000,
+      radius: 600_000,
+      soiHeight: 84_159_286 - 600_000,
+      mass: 5.2915158e22,
+    }),
+    initial: () => settings.customPlanets,
+    onValidChange: (n) => {
+      settings.customPlanets = n
+      setSettings({ ...settings })
+    },
+    validate: (n, err) => {
+      checkDuplicates(n, (t) => t.value.label,
+        (t) => err.set(t.id, { label: "Duplicate Labels" })
+      )
+      return err
+    }
+  })
+
+  return (
+    <div className="flex flex-col gap-8">
+      {customBodyFields.isEmpty &&
+        <div className={cns.textMuted("text-xs")}>No Custom Celestial Body Added</div>}
+      {customBodyFields.fields.map((field) =>
+        <CelestialBodyItem key={field.id} field={field} />
+      )}
+      <button className={cns.buttonBase()} onClick={
+        () => customBodyFields.append()
+      }>
+        Add Celestial Body
+      </button>
+    </div>
+  )
+}
+
+
+
+function CelestialBodyItem(props: {
+  field: FieldArrayItem<GlobalSettings[ 'customPlanets' ][ number ]>,
+
+}) {
+  const {
+    value,
+    errors,
+    onChange,
+    onDelete,
+  } = props.field
 
   const [ confirmDelete, setConfirmDelete ] = useState(false)
 
@@ -91,21 +110,38 @@ function CelestialBodyItem(props: {
     <div className="flex flex-col w-full">
       <div className="grid grid-cols-[5rem_auto] items-baseline gap-x-2 gap-y-1 text-sm">
         <Muted>label:</Muted>
-        <div className="flex flex-col">
+        <FieldBlock
+          fieldDef={textField({
+            error: errors?.label,
+            initialData: () => value.label,
+            onValidChange: v => onChange(({ ...value, label: v })),
+            noempty: 1,
+          })}
+          hideReset
+        />
+        {/* <div className="flex flex-col">
           <TextInput
             initialValue={value.label}
-            onValueChange={(v) => {
-              props.onChange(({ ...value, label: v }))
-            }}
+
             validate={(val) => {
               if (val === '') return "Label is required"
               return props.labels.includes(val) ? "Label already exists" : undefined
             }}
           />
-        </div>
+        </div> */}
 
         <Muted>radius:</Muted>
-        <UnitInputWrapper unit="m">
+        <FieldBlock
+          fieldDef={numberField({
+            initialData: () => value.radius,
+            onValidChange: v => onChange(({ ...value, radius: v })),
+            noempty: 1,
+            nonnegative: 1
+          })}
+          hideReset
+          endAdornment={<>m</>}
+        />
+        {/* <UnitInputWrapper unit="m">
           <NumberInput
             initialValue={value.radius}
             onValueChange={(n) => props.onChange(({ ...value, radius: n }))}
@@ -114,56 +150,87 @@ function CelestialBodyItem(props: {
               return n < 0 ? "Can't be negative" : undefined
             }}
           />
-        </UnitInputWrapper>
+      </UnitInputWrapper> */}
 
         <div className="text-end col-span-2">= {prettyNum(value.radius, 'k', 'm')}</div>
 
         <Muted>soi:</Muted>
-        <UnitInputWrapper unit="m">
-          <NumberInput
+        <FieldBlock
+          fieldDef={numberField({
+            initialData: () => value.soiHeight,
+            onValidChange: v => onChange(({ ...value, soiHeight: v })),
+            onEmpty: () => Infinity,
+            nonnegative: 1
+          })}
+          hideReset
+          endAdornment={<>m</>}
+        />
+        {/* <UnitInputWrapper unit="m"> */}
+        {/* <NumberInput
             initialValue={value.soiHeight}
             onValueChange={(n) => props.onChange(({ ...value, soiHeight: n }))}
             onEmpty={() => props.onChange(({ ...value, soiHeight: Number.POSITIVE_INFINITY }))}
             validate={n => {
               return n < 0 ? "Can't be negative" : undefined
             }}
-          />
-        </UnitInputWrapper>
+          /> */}
+        {/* </UnitInputWrapper> */}
 
         <div className="text-end col-span-2">= {prettyNum(value.soiHeight, 'k', 'm')}</div>
 
         <Muted>atm height:</Muted>
-        <UnitInputWrapper unit="m">
-          <NumberInput
+        <FieldBlock
+          fieldDef={numberField({
+            initialData: () => value.atmHeight,
+            onValidChange: v => onChange(({ ...value, atmHeight: v })),
+            onEmpty: () => 0,
+            nonnegative: 1
+          })}
+          hideReset
+          endAdornment={<>m</>}
+        />
+        {/* <UnitInputWrapper unit="m"> */}
+        {/* <NumberInput
             initialValue={value.atmHeight}
             onValueChange={(n) => props.onChange(({ ...value, atmHeight: n }))}
             onEmpty={() => props.onChange(({ ...value, atmHeight: 0 }))}
             validate={n => {
               return n < 0 ? "Can't be negative" : undefined
             }}
-          />
-        </UnitInputWrapper>
+          /> */}
+        {/* </UnitInputWrapper> */}
 
         <div className="text-end col-span-2">= {prettyNum(value.atmHeight, 'k', 'm')}</div>
 
         <Muted>mass:</Muted>
-        <UnitInputWrapper unit="kg">
-          <NumberInput
+        <FieldBlock
+          fieldDef={numberField({
+            initialData: () => value.mass,
+            onValidChange: v => onChange(({ ...value, mass: v })),
+            onEmpty: () => 0,
+            nonnegative: 1
+          })}
+          hideReset
+          endAdornment={<>kg</>}
+        />
+        {/* <UnitInputWrapper unit="kg"> */}
+
+        {/* <NumberInput
             initialValue={value.mass}
             onValueChange={(n) => props.onChange(({ ...value, mass: n }))}
             onEmpty={() => props.onChange(({ ...value, mass: 0 }))}
             validate={n => {
               return n < 0 ? "Can't be negative" : undefined
             }}
-          />
-        </UnitInputWrapper>
+          /> */}
+        {/* </UnitInputWrapper> */}
 
         <div className="text-end col-span-2">= {prettyNum(value.mass, 'k', 'g')}</div>
 
       </div>
 
       {confirmDelete ? <div className="flex gap-2">
-        <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={props.onDelete}>
+        <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={onDelete}>
           Confirm Delete
         </button>
         <button className={cns.buttonBase("mt-2 text-xs py-1.5 w-full")} onClick={() => setConfirmDelete(false)}>
@@ -175,7 +242,7 @@ function CelestialBodyItem(props: {
         </button>
       }
     </div>
-  </div>
+  </div >
 }
 
 
