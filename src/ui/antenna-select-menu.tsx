@@ -9,6 +9,7 @@ import { MenuHelperText, MenuItem, MenuPopup } from "./input"
 import { cn } from "./cn"
 import type { GlobalSettings } from "./settings-section"
 import { Divider } from "./common"
+import { AnimateChildren } from "react-flip-children"
 
 export function AntennaInput(props: {
   value: AntennaPayload,
@@ -71,7 +72,7 @@ export function AntennaInput(props: {
             const qty = props.value.get(antenna.id) ?? 0
             if (qty === 0) return null
             return (
-              <div key={antenna.id} className="flex items-start">
+              <div key={antenna.id} className="flex items-start transition data-[adding]:opacity-0 opacity-100 data-[deleting]:opacity-0">
                 <div className={cns.card(
                   "grow h-full",
                   "p-2 flex gap-2 text-sm tracking-tight",

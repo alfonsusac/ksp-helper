@@ -6,8 +6,9 @@ import { prettyNum } from "@/lib/pretty-num"
 import { HomeButton, Muted } from "@/ui/common"
 import { BackOrHomeButtonClient } from "@/ui/common.client"
 import { Footer } from "@/ui/footer"
+import { LucideCircleAlert } from "@/ui/icons"
 import { useFieldArray, type FieldArrayItem } from "@/ui/input-array"
-import { FieldBlock, numberField, textField, useField } from "@/ui/input-field"
+import { FieldBlock, numberField, textField } from "@/ui/input-field"
 import { useGlobalSettings, type GlobalSettings, type GlobalSettingsSetter } from "@/ui/settings-section"
 import { Suspense, useEffect, useState } from "react"
 
@@ -28,7 +29,17 @@ export function CustomPlanetsPage_Client() {
         </h1>
       </header>
 
-      <div className="flex flex-col gap-1">
+      <div className={cns.card()}>
+        <div className={cns.cardHeader()}>
+          <LucideCircleAlert />
+          <div>Heads up!</div>
+        </div>
+        <div className={cns.cardDescription(cns.textMuted())}>
+          Custom planets will only appear in /relay-height calculator. This is because in antenna-range, the distance between each individual planets needs to be known.
+        </div>
+      </div>
+      
+      <div className="flex flex-col gap-1 pt-4">
 
         <CustomPlanetsForm settings={settings} setSettings={setSettings} />
 
