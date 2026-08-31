@@ -111,7 +111,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
         <div className="flex flex-col gap-2">
 
-          <div className={cns.infoCard("w-full flex flex-col gap-1")}>
+          <div className={sidecard("gap-1")}>
             <div className={cns.textFaint("text-sm")}>
               Authors
             </div>
@@ -125,7 +125,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
           </div>
 
-          <div className={cns.infoCard("w-full flex flex-col gap-1")}>
+          <div className={sidecard("gap-1")}>
             <div className={cns.textFaint("text-sm")}>
               Links
             </div>
@@ -149,7 +149,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
           </div>
 
-          <div className={cns.infoCard("w-full flex flex-col gap-3 text-sm")}>
+          <div className={sidecard("gap-3")}>
             <div className="flex items-baseline gap-2">
               <LucideScale className={cardButtonIcon(cns.textMuted("self-start shrink-0"))} />
               <div className={cns.textMuted("shrink-0")}>
@@ -191,6 +191,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
 const cardButton = cnr(cns.buttonGhost("flex gap-2 items-center justify-start p-2 text-fg2"))
 const cardButtonIcon = cnr("size-4")
+const sidecard = cnr(cns.infoCard("w-full flex flex-col gap-1 text-sm p-4.5"))
 
 async function AuthorRow(props: {
   displayname?: ReactNode,
