@@ -239,28 +239,28 @@ export function SettingsSection(props: {
         <FieldBlock
           label="Range Modifier"
           field={rangeModifierField}
-          savedValue={props.settings.rangeModifier}
+          displayValue={props.settings.rangeModifier}
         />
 
         {/* The value of this slider is a multiplier value that is applied to the power level of the DSN Network */}
         <FieldBlock
           label="DSN Modifier"
           field={dsnModifierField}
-          savedValue={props.settings.rangeModifier}
+          displayValue={props.settings.rangeModifier}
         />
 
         {/* The value of this slider is a multiplier value that is applied to the effective size of atmosphereless bodies that can block signals between antennas. */}
         <FieldBlock
           label="Occlusion Modifier, Atm"
           field={occlusionModifierAtmField}
-          savedValue={props.settings.occlusionModifierAtm}
+          displayValue={props.settings.occlusionModifierAtm}
         />
 
         {/* The value of this slider is a multiplier value that is applied to the effective size of bodies with atmospheres that can block signals between antennas. */}
         <FieldBlock
           label="Occlusion Modifier, Vac"
           field={occlusionModifierVacField}
-          savedValue={props.settings.occlusionModifierVac}
+          displayValue={props.settings.occlusionModifierVac}
         />
 
 

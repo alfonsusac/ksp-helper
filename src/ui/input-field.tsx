@@ -22,7 +22,7 @@ export function ResetIconButton(props: {
 
 export function FieldBlock<T>(props: {
   label?: string,
-  savedValue?: any,
+  displayValue?: any,
   endAdornment?: ReactNode,
   hideReset?: boolean,
 } & (
@@ -34,7 +34,7 @@ export function FieldBlock<T>(props: {
   return (
     <InputGroup
       label={props.label}
-      raw={props.savedValue}
+      raw={props.displayValue}
       id={field.id}
       error={field.error}
     >

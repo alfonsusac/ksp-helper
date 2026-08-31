@@ -38,7 +38,7 @@ export function CustomPlanetsPage_Client() {
           Custom planets will only appear in /relay-height calculator. This is because in antenna-range, the distance between each individual planets needs to be known.
         </div>
       </div>
-      
+
       <div className="flex flex-col gap-1 pt-4">
 
         <CustomPlanetsForm settings={settings} setSettings={setSettings} />
@@ -130,19 +130,10 @@ function CelestialBodyItem(props: {
           })}
           hideReset
         />
-        {/* <div className="flex flex-col">
-          <TextInput
-            initialValue={value.label}
-
-            validate={(val) => {
-              if (val === '') return "Label is required"
-              return props.labels.includes(val) ? "Label already exists" : undefined
-            }}
-          />
-        </div> */}
 
         <Muted>radius:</Muted>
         <FieldBlock
+          displayValue={prettyNum(value.radius, 'k', 'm')}
           fieldDef={numberField({
             initialData: () => value.radius,
             onValidChange: v => onChange(({ ...value, radius: v })),
@@ -152,21 +143,10 @@ function CelestialBodyItem(props: {
           hideReset
           endAdornment={<>m</>}
         />
-        {/* <UnitInputWrapper unit="m">
-          <NumberInput
-            initialValue={value.radius}
-            onValueChange={(n) => props.onChange(({ ...value, radius: n }))}
-            onEmpty={() => "Can't be empty"}
-            validate={(n) => {
-              return n < 0 ? "Can't be negative" : undefined
-            }}
-          />
-      </UnitInputWrapper> */}
-
-        <div className="text-end col-span-2">= {prettyNum(value.radius, 'k', 'm')}</div>
 
         <Muted>soi:</Muted>
         <FieldBlock
+          displayValue={prettyNum(value.soiHeight, 'k', 'm')}
           fieldDef={numberField({
             initialData: () => value.soiHeight,
             onValidChange: v => onChange(({ ...value, soiHeight: v })),
@@ -176,21 +156,12 @@ function CelestialBodyItem(props: {
           hideReset
           endAdornment={<>m</>}
         />
-        {/* <UnitInputWrapper unit="m"> */}
-        {/* <NumberInput
-            initialValue={value.soiHeight}
-            onValueChange={(n) => props.onChange(({ ...value, soiHeight: n }))}
-            onEmpty={() => props.onChange(({ ...value, soiHeight: Number.POSITIVE_INFINITY }))}
-            validate={n => {
-              return n < 0 ? "Can't be negative" : undefined
-            }}
-          /> */}
-        {/* </UnitInputWrapper> */}
 
-        <div className="text-end col-span-2">= {prettyNum(value.soiHeight, 'k', 'm')}</div>
+        <div className="text-end col-span-2"></div>
 
         <Muted>atm height:</Muted>
         <FieldBlock
+          displayValue={prettyNum(value.atmHeight, 'k', 'm')}
           fieldDef={numberField({
             initialData: () => value.atmHeight,
             onValidChange: v => onChange(({ ...value, atmHeight: v })),
@@ -200,21 +171,10 @@ function CelestialBodyItem(props: {
           hideReset
           endAdornment={<>m</>}
         />
-        {/* <UnitInputWrapper unit="m"> */}
-        {/* <NumberInput
-            initialValue={value.atmHeight}
-            onValueChange={(n) => props.onChange(({ ...value, atmHeight: n }))}
-            onEmpty={() => props.onChange(({ ...value, atmHeight: 0 }))}
-            validate={n => {
-              return n < 0 ? "Can't be negative" : undefined
-            }}
-          /> */}
-        {/* </UnitInputWrapper> */}
-
-        <div className="text-end col-span-2">= {prettyNum(value.atmHeight, 'k', 'm')}</div>
 
         <Muted>mass:</Muted>
         <FieldBlock
+          displayValue={prettyNum(value.mass, 'k', 'g')}
           fieldDef={numberField({
             initialData: () => value.mass,
             onValidChange: v => onChange(({ ...value, mass: v })),
@@ -224,19 +184,6 @@ function CelestialBodyItem(props: {
           hideReset
           endAdornment={<>kg</>}
         />
-        {/* <UnitInputWrapper unit="kg"> */}
-
-        {/* <NumberInput
-            initialValue={value.mass}
-            onValueChange={(n) => props.onChange(({ ...value, mass: n }))}
-            onEmpty={() => props.onChange(({ ...value, mass: 0 }))}
-            validate={n => {
-              return n < 0 ? "Can't be negative" : undefined
-            }}
-          /> */}
-        {/* </UnitInputWrapper> */}
-
-        <div className="text-end col-span-2">= {prettyNum(value.mass, 'k', 'g')}</div>
 
       </div>
 

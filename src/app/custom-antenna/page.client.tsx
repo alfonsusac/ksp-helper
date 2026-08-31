@@ -152,14 +152,14 @@ function AntennaItem(props: {
         <Muted>rating:</Muted>
         <FieldBlock
           field={ratingField}
-          savedValue={prettyNum(value.rating, 'k')}
+          displayValue={prettyNum(value.rating, 'k')}
           hideReset
         />
 
         <Muted>combinability exponent:</Muted>
         <FieldBlock
           field={combinabilityExponentField}
-          savedValue={prettyNum(value.combinabilityExponent, 'k')}
+          displayValue={prettyNum(value.combinabilityExponent, 'k')}
           hideReset
         />
 
