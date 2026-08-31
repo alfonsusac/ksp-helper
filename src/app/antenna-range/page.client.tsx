@@ -5,7 +5,7 @@ import { Slider, CheckboxRow, SelectRow, TabSelectRow } from "../../ui/input"
 import { ShareAppURLButton } from "../../ui/button"
 import { getMaximumRange, getPowerPowerRating, getScienceBonusfromSignalStrength, getStrength, getRelayAntennaCount, type AntennaPayload, type BodyPayload } from "../../lib/antenna"
 import { prettyNum } from "../../lib/pretty-num"
-import { EosIconsPod, IcRoundSatelliteAlt, LucideArrowRight, LucideBadgeQuestionMark } from "../../ui/icons"
+import { EosIconsPod, IcRoundSatelliteAlt, LucideArrowRight, LucideBadgeQuestionMark, LucideRotateCcw } from "../../ui/icons"
 import { cn } from "../../ui/cn"
 import { getSignalStrengthDistanceMap } from "../../lib/distance"
 import { formatCss, interpolate } from "culori"
@@ -400,11 +400,13 @@ function BodyDetailInput(props: {
               />
               <div className="grow" />
               <button
-                className={cns.buttonGhost("w-fit text-sm")}
+                className={cns.buttonFaint("w-fit text-sm")}
                 onClick={() => {
                   props.antennas.forEach(antenna => clearAntenna(antenna.id))
                 }}
-              >Reset All</button>
+              >
+                <LucideRotateCcw/>
+                Reset</button>
             </div>
             <AntennaInput
               setting={props.settings}

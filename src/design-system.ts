@@ -46,6 +46,7 @@ export const cns = ({
   buttonBase: cnr("button-base"),
   buttonSubtle: cnr("button-subtle"),
   buttonGhost: cnr("button-ghost"),
+  buttonFaint: cnr("button-faint"),
   buttonIcon: cnr("button-icon"),
   buttonIconSm: cnr("button-icon-sm"),
   buttonIconLg: cnr("button-icon-lg"),
