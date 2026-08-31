@@ -66,7 +66,7 @@ export const cns = ({
   sliderIndicator: cnr("bg-fg3 group-hover:bg-fg2"),
   sliderThumb: cnr("bg-fg3 group-hover:bg-fg2"),
 
-  card: cnr("card flex flex-col gap-1"),
+  card: cnr("card"),
   cardHeader: cnr("flex gap-1 items-center text-sm"),
   cardHeaderIcon: cnr("mb-0.5"),
   cardDescription: cnr("text-xs"),
