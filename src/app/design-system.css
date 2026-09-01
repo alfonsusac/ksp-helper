@@ -249,7 +249,8 @@
 @theme {
   --color-debossed: light-dark(--alpha(var(--color-contrast)/15%), --alpha(var(--color-dark)/35%));
   --color-debossed-hover: light-dark(--alpha(var(--color-contrast)/15%), --alpha(var(--color-fg3)/10%));
-  --shadow-tab-shadow: 0px 3px 5px light-dark(--alpha(var(--color-contrast)/20%), --alpha(var(--color-dark)/80%)),
+  --color-dark-shadow: light-dark(--alpha(var(--color-contrast)/20%), --alpha(var(--color-dark)/80%));
+  --shadow-tab-shadow: 0px 3px 5px var(--color-dark-shadow),
                            inset 0px  0.5px 0px 0.5px light-dark(#fff8, #fff1),
                            inset 0px -1.5px 0px 0.5px light-dark(--alpha(var(--color-contrast)/10%), #0002);
   --color-tab-border: light-dark(--alpha(var(--color-contrast)/35%), var(--color-skeue-border));
