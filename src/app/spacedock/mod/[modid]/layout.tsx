@@ -95,7 +95,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
           </div>
         </header>
 
-        <section className="flex flex-col mt-4 shadow-[0rem_1rem_1rem_-1rem_--alpha(var(--color-contrast)/40%)]">
+        <section className="flex flex-col mt-4 shadow-[0rem_1rem_1rem_-1rem_--alpha(var(--color-dark)/40%)]">
           <div className={cns.tabBase("rounded-2xl bg-transparent p-0 border-0")}>
             <TabLink href={`/spacedock/mod/${ mod.id }`}>
               Description
