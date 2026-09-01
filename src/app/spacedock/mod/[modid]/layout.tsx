@@ -37,21 +37,23 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
   return <>
 
-    <div>
+    <div className="grid lg:grid-cols-[auto_18rem] grid-cols-1 grid-flow-row gap-4">
 
-      <div className="flex mb-3 gap-3 text-sm">
-        <Link href={`/spacedock/${ mod.game_id }`} className={cns.navigationLink()}>
+      {/* Breadcrumbs */}
+      <div className="col-span-full flex mb-3 gap-3 text-sm">
+        <Link href={`/spacedock/${ mod.game_id }`} className={cns.navigationLink("text-nowrap text-ellipsis overflow-hidden shrink-0")}>
           {mod.game}
         </Link>
         <div className={cns.textFaint()}>
           {'>'}
         </div>
-        <div className={cns.textMuted()}>
+        <div className={cns.textMuted("text-nowrap text-ellipsis overflow-hidden min-w-0")}>
           {mod.id} - {mod.name}
         </div>
       </div>
 
-      <div className="aspect-[3.5/1] overflow-hidden rounded-xl relative">
+      {/* Image Header */}
+      <div className="col-start-1 col-span-full aspect-[3.5/1] overflow-hidden rounded-xl relative ">
         {mod.background ?
           <>
             <img className="absolute size-full object-contain z-10 object-center" src={mod.background} />
@@ -63,53 +65,58 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
         }
       </div>
 
-      <header className="flex flex-col md:flex-row pt-6 gap-4">
-        <div className="flex flex-col grow">
-          <h1 className="justify-end text-xl tracking-tight font-semibold">
-            {mod.name}
-          </h1>
-          <p className={cns.textMuted("text-base pt-2")}>
-            {mod.short_description}
-          </p>
-          <div className={cns.textMuted("flex items-baseline gap-4 pt-0.5 pt-3")}>
-            <span>
-              <LucideDownload className="inline mr-1.5 align-[-0.1rem]" />
-              {mod.downloads.toLocaleString()} <span className="">Downloads</span></span>
-            <div className={cns.bgMuted("size-1.5 rounded-full")} />
-            <span>
-              <LucideHeart className="inline mr-1.5 align-[-0.1rem]" />
-              {mod.followers.toLocaleString()} <span className="">Followers</span></span>
+      {/* Main Content  */}
+      <div className="col-start-1 flex flex-col gap-2 max-w-180 mx-auto">
+        <header className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col grow">
+            <h1 className="justify-end text-xl tracking-tight font-semibold">
+              {mod.name}
+            </h1>
+            <p className={cns.textMuted("text-base pt-2")}>
+              {mod.short_description}
+            </p>
+            <div className={cns.textMuted("flex items-baseline gap-4 pt-0.5 pt-3")}>
+              <span>
+                <LucideDownload className="inline mr-1.5 align-[-0.1rem]" />
+                {mod.downloads.toLocaleString()} <span className="">Downloads</span></span>
+              <div className={cns.bgMuted("size-1.5 rounded-full")} />
+              <span>
+                <LucideHeart className="inline mr-1.5 align-[-0.1rem]" />
+                {mod.followers.toLocaleString()} <span className="">Followers</span></span>
+            </div>
           </div>
-        </div>
-        <div className="shrink-0 flex gap-2 items-start">
-          <DownloadButton
-            downloadPath={mod.versions[ 0 ].download_path}
-          />
-          <button className={cns.buttonBase("text-base p-2 px-5")}>
-            Follow
-          </button>
-        </div>
-      </header>
+          <div className="shrink-0 flex gap-2 items-start">
+            <DownloadButton
+              downloadPath={mod.versions[ 0 ].download_path}
+            />
+            <button className={cns.buttonBase("text-base p-2 px-5")}>
+              Follow
+            </button>
+          </div>
+        </header>
 
-      <section className="flex mt-4">
-        <div className={cns.tabBase("rounded-2xl p-0 bg-transparent border-transparent")}>
-          <TabLink href={`/spacedock/mod/${ mod.id }`}>
-            Description
-          </TabLink>
-          <TabLink href={`/spacedock/mod/${ mod.id }/versions`}>
-            Versions
-          </TabLink>
-        </div>
-      </section>
+        <section className="flex flex-col mt-4 border-b border-border">
+          <div className={cns.tabBase("rounded-2xl bg-transparent p-0 border-0")}>
+            <TabLink href={`/spacedock/mod/${ mod.id }`}>
+              Description
+            </TabLink>
+            <TabLink href={`/spacedock/mod/${ mod.id }/versions`}>
+              Versions
+            </TabLink>
+          </div>
+        </section>
 
+        <section className="relative grid items-start gap-2">
+          <div className="min-w-0 z-10">
+            {props.children}
+          </div>
+        </section>
+      </div>
 
-      <section className="grid grid-cols-[auto_18rem] items-start gap-2 my-4">
-
-        <div className="min-w-0">
-          {props.children}
-        </div>
-
-        <div className="flex flex-col gap-2">
+      {/* Extra Info */}
+      <aside className="-col-start-2 z-20 max-w-180 mx-auto w-full">
+        {/* Mod Details Sidebar */}
+        <div className="flex flex-col gap-2 z-10">
 
           <div className={sidecard("gap-1")}>
             <div className={cns.textFaint("text-sm")}>
@@ -181,7 +188,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
           </div>
         </div>
-      </section>
+      </aside>
 
     </div>
   </>

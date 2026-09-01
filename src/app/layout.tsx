@@ -36,12 +36,13 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(
-        `${ sans.variable } ${ mono.variable } h-full antialiased`,
+        `${ sans.variable } ${ mono.variable } antialiased min-h-full overflow-x-clip`,
       )}
     >
       <body className={cn(
         cns.base(),
-        "min-h-full font-mono",
+        "font-mono",
+        "min-h-full overflow-x-clip",
         "base",
       )}>
         <div className="root">

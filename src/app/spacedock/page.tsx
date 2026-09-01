@@ -9,32 +9,31 @@ import { Spacedock } from "@/lib/spacedock-core/package"
 import { FeaturedModSection, TopModSection } from "./_components/mod-list-row-variants"
 import { SearchBox } from "./_components/search-box"
 import { SpacedockNext } from "./_data-cache/cached-functions"
+import { cn } from "@/ui/cn"
 
 export const metadata: Metadata = {
   title: "SpaceDock",
   description: "Browse Mods from Spacedocs.",
 }
 
-const maxWidth = cnr("max-w-280 mx-auto w-full")
+const maxWidth = "max-w-280"
+// const maxWidth = cnr("max-w-280 mx-auto w-full")
 
 export default function SpaceDockPage() {
 
   return (
     <div className="flex flex-col gap-16 pt-20">
 
-      {/* Header */}
-      {/* <SpacedockNavbar hideLogo /> */}
-
       <section className={("flex flex-col items-center")}>
-        <header className="flex flex-col gap-0 items-center">
-          <h1 className={cns.pageTitle("text-5xl font-bold")}>./spacedock</h1>
+        <header className="flex flex-col gap-4 items-center">
+          <h1 className={cns.pageTitle("text-5xl font-semibold")}>./spacedock</h1>
           <p className={cns.textMuted()}>Unofficial spacedock wrapper to browse mods</p>
         </header>
 
         <SearchBox className="w-full self-center mt-8" />
       </section>
 
-      <section className={maxWidth("flex flex-col gap-4 pt-8 pb-6")}>
+      <section className={cn(maxWidth, "flex flex-col gap-4 pt-8 pb-6")}>
         <h2 className="text-xl">Games</h2>
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           <Suspense fallback={Array.from({ length: 6 }, (_, i) => <GameListItem key={i} />)}>
@@ -44,16 +43,16 @@ export default function SpaceDockPage() {
       </section>
 
       <FeaturedModSection
-        maxWidth={maxWidth()}
+        maxWidth={maxWidth}
         showGameLabel
       />
 
       <TopModSection
-        maxWidth={maxWidth()}
+        maxWidth={maxWidth}
         showGameLabel
       />
 
-      <section className={maxWidth("max-w-195 flex flex-col gap-4")}>
+      <section className={cn(maxWidth, "max-w-195 flex flex-col gap-4 mx-auto")}>
         <header className="flex flex-col gap-1">
           <h2 className={"text-xl grow"}>Get involed</h2>
         </header>

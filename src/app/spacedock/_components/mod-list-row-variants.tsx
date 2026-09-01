@@ -3,7 +3,7 @@ import { ModListRow } from "./mod-list-row"
 
 
 export function FeaturedModSection(props: {
-  maxWidth: string,
+  maxWidth: `max-w-${string}`,
   gameid?: number,
   // shown in homepage and game details so might need to be hidden
   showGameLabel?: boolean
@@ -25,7 +25,7 @@ export function FeaturedModSection(props: {
 
 
 export function TopModSection(props: {
-  maxWidth: string,
+  maxWidth: `max-w-${string}`,
   // gameid?: number, // not viable to get top mod because we have to index the entire mod...
   showGameLabel?: boolean
   showUpdatedAt?: boolean,
@@ -46,7 +46,7 @@ export function TopModSection(props: {
 
 
 export function NewestModSection(props: {
-  maxWidth: string,
+  maxWidth: `max-w-${string}`,
   gameid?: number,
   showGameLabel?: boolean
   showUpdatedAt?: boolean,
@@ -67,7 +67,7 @@ export function NewestModSection(props: {
 
 
 export function RecentlyUpdatedModSection(props: {
-  maxWidth: string,
+  maxWidth: `max-w-${string}`,
   gameid?: number,
   showGameLabel?: boolean
   showUpdatedAt?: boolean,
@@ -91,15 +91,15 @@ export function RecentlyUpdatedModSection(props: {
 
 
 
-export function TestModSection() {
-  return <ModListRow
-    maxWidth={""}
-    title="Test Row"
-    emptyLabel="No new mods"
-    seeMore={{
-      href: "",
-      label: ""
-    }}
-    data={new Promise(res => setTimeout(() => res([]), 5000))}
-  />
-}
+// export function TestModSection() {
+//   return <ModListRow
+//     maxWidth={"max-w-800"}
+//     title="Test Row"
+//     emptyLabel="No new mods"
+//     seeMore={{
+//       href: "",
+//       label: ""
+//     }}
+//     data={new Promise(res => setTimeout(() => res([]), 5000))}
+//   />
+// }

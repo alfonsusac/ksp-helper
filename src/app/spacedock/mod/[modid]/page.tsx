@@ -15,7 +15,7 @@ export default async function ModPage(props: PageProps<'/spacedock/mod/[modid]'>
   if (mod === "not published") return <div></div>
 
   return <>
-    <section className={cns.infoCard("wrap-break-word min-w-0 pt-4 p-8")}>
+    <section className={cns.infoCard("wrap-break-word min-w-0 pt-4 p-5 sm:p-8")}>
       <div dangerouslySetInnerHTML={{ __html: mod.description_html }} className={cns.docunment()} />
     </section>
   </>

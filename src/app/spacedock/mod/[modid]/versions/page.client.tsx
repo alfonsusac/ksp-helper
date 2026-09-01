@@ -122,7 +122,11 @@ function SelectVersionFilterDropdown(props: {
         ))
       }}
     >
-      <Select.Trigger className={cns.inputBox("min-w-50 rounded-xl")}>
+      <Select.Trigger className={cns.inputBox(
+        "transition",
+        "data-popup-open:translate-y-px",
+        "max-w-50 rounded-xl",
+      )}>
         <Select.Value className="grow" >
           {(() => {
             if (selected.length === 0) return 'Game Versions'
@@ -131,7 +135,10 @@ function SelectVersionFilterDropdown(props: {
             return firstLanguage + additionalLanguages
           })()}
         </Select.Value>
-        <Select.Icon>
+        <Select.Icon className={cn(
+          "data-popup-open:shadow-none",
+          "data-popup-open:rotate-180 transition",
+        )}>
           <LucideChevronDown />
         </Select.Icon>
       </Select.Trigger>

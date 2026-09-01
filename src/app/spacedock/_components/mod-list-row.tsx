@@ -4,7 +4,13 @@ import { Suspense, type ReactNode } from "react"
 import { ModItemCard } from "./mod-item-card"
 import { LucideArrowRight } from "@/ui/icons"
 import Link from "next/link"
-import { cns } from "@/design-system"
+import { cnr, cns } from "@/design-system"
+
+const style = {
+  sectionBlock: cnr("flex flex-col gap-4"),
+  sectionInner: cnr("flex"),
+  sectionTitle: cnr("text-xl grow"),
+}
 
 
 export function PageSection1(props: {
@@ -14,9 +20,9 @@ export function PageSection1(props: {
   action?: ReactNode,
 }) {
   return <>
-    <section className="flex flex-col gap-4">
-      <div className={cn("flex", props.maxWidth)}>
-        <h2 className={"text-xl grow"}>{props.title}</h2>
+    <section className={style.sectionBlock()}>
+      <div className={style.sectionInner("flex", props.maxWidth)}>
+        <h2 className={style.sectionTitle()}>{props.title}</h2>
         <Suspense>
           {props.action}
         </Suspense>
@@ -31,10 +37,15 @@ export function FullWidthOverflowRow(props: {
   children?: ReactNode
 }) {
   return (
-    <div className={cn("flex -mx-8 justify-center", props.className)}>
+    <div className={cn("flex justify-center -mx-8 relative", props.className)}>
+
+      {/* Shadows */}
+      <div className="absolute left-0 inset-y-0 w-8 dark:w-12 z-20  bg-linear-to-r from-bg/50 dark:from-bg to-transparent" />
+      <div className="absolute right-0 inset-y-0 w-8 dark:w-12 z-20  bg-linear-to-l from-bg/50 dark:from-bg to-transparent" />
+
       <div className={cn(
-        "flex gap-2 overflow-scroll pb-8",
-        // "px-14"
+        "flex gap-2 overflow-scroll pb-8! px-8",
+        // "-mx-8 px-8"
       )}>
         {props.children}
       </div>
@@ -43,7 +54,7 @@ export function FullWidthOverflowRow(props: {
 }
 
 export function ModListRow(props: {
-  maxWidth: string
+  maxWidth: `max-w-${string}`
   title: string
   data: Promise<ModList>
   seeMore: {
@@ -94,13 +105,18 @@ async function ModListRow_SeeMoreButton(props: {
 }) {
   const list = await props.data
   if (list.length === 0) return <></>
-  return <Link href={props.href} className={cns.buttonBase("self-end w-fit px-4")}>
-    {props.label} <LucideArrowRight />
-  </Link>
+  return <>
+    <Link href={props.href} className={cns.buttonBase("self-end w-fit px-4 max-sm:hidden")}>
+      {props.label} <LucideArrowRight />
+    </Link>
+    <Link href={props.href} className={cns.buttonBase("self-end w-fit px-4 sm:hidden")}>
+      See More <LucideArrowRight />
+    </Link>
+  </>
 }
 
 async function ModListElementArray(props: {
-  maxWidth: string
+  maxWidth: `max-w-${ string }`
   data: Promise<ModList>
   showGameLabel?: boolean,
   showUpdatedAt?: boolean,
@@ -131,3 +147,4 @@ async function ModListElementArray(props: {
     </FullWidthOverflowRow>
   </>
 }
+

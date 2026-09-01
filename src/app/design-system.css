@@ -134,7 +134,7 @@
 @utility error-card       { @apply card error-border error-bg error-text }
 
 /* Page */
-@utility page             { @apply base p-8 flex flex-col gap-4 max-w-200 w-screen min-h-screen }
+@utility page             { @apply base p-6 px-4 xs:p-8 flex flex-col gap-4 max-w-200 w-screen min-h-screen }
 @utility page-title       { @apply text-xl tracking-tighter font-semibold leading-6 mb-2 }
 @utility page-description { @apply text-muted font-semibold }
 
@@ -267,7 +267,9 @@
 @utility tab-item-selected     { @apply button-base-color 
                                         border 
                                         border-tab-border
-                                        shadow-tab-shadow pointer-events-none
+                                        shadow-none
+                                        /* shadow-tab-shadow  */
+                                        pointer-events-none
                                }
 @utility tab-item-not-selected { @apply hover:bg-debossed-hover button-subtle-color border-transparent bg-transparent  }
 
