@@ -5,7 +5,7 @@ import { Breadcrumb, Lorem } from "../../_components/shared"
 import { cn } from "@/ui/cn"
 import { cns } from "@/design-system"
 import { prettyNum } from "@/lib/pretty-num"
-import { LucideArrowUpRight, LucideDownload, LucideHeart, LucideLink, LucidePackage, LucideTerminal } from "@/ui/icons"
+import { LucideArrowUpRight, LucideDownload, LucideHeart, LucideLink, LucidePackage, LucideTerminal, MdiTwitter, PhRedditLogoFill } from "@/ui/icons"
 import Link from "next/link"
 import { SearchBox } from "../../_components/search-box"
 import { DateTooltip } from "@/ui/tooltip-date"
@@ -41,7 +41,7 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
   // mods []
 
   return <>
-    <div className="grid lg:grid-cols-[20rem_auto] grid-cols-1 grid-flow-row gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-[20rem_auto]  grid-flow-row gap-4">
 
       {/* Breadcrumbs */}
       <Breadcrumb
@@ -52,7 +52,7 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
       />
 
       {/* User Profile Card */}
-      <div className={cn("col-start-1 flex flex-col gap-2 self-start", cns.infoCard())}>
+      <div className={cn("col-start-1 flex flex-col gap-2 self-start max-w-[36rem] mx-auto", cns.infoCard())}>
         <div className="-mx-5 -mt-5 rounded-t-xl aspect-[3.5/1] bg-dark/50 relative">
           {/* Umm..... No API for user background? */}
         </div>
@@ -62,9 +62,15 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
             on spacedock
           </div>
         </div>
-        <div className="text-sm">
-          {user.description}
-        </div>
+        {user.description ?
+          <div className="text-sm">
+            {user.description}
+          </div>
+          :
+          <div className={cns.textFaint("text-sm italic")}>
+            Bio not provided
+          </div>
+        }
 
         <hr className={cns.divider("my-2")} />
 
@@ -82,7 +88,7 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
         {user.hasSocials && <>
           <hr className={cns.divider("my-2")} />
 
-          <div className="flex flex-col">
+          <div className="flex flex-col last:-mb-2">
             {user.forumUsername &&
               <Link href={user.forumUsername} className={cns.cardButton("-mx-2")} target="_blank">
                 <LucideLink className={cns.cardButtonIcon()} />
@@ -99,14 +105,14 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
             }
             {user.redditUsername &&
               <Link href={`https://www.reddit.com/user/${ user.redditUsername }`} className={cns.cardButton("-mx-2")} target="_blank">
-                <LucideLink className={cns.cardButtonIcon()} />
+                <PhRedditLogoFill className={cns.cardButtonIcon()} />
                 <div>Reddit Profile</div>
                 <LucideArrowUpRight />
               </Link>
             }
             {user.twitterUsername &&
               <Link href={`https://twitter.com/${ user.twitterUsername }`} className={cns.cardButton("-mx-2")} target="_blank">
-                <LucideLink className={cns.cardButtonIcon()} />
+                <MdiTwitter className={cns.cardButtonIcon()} />
                 <div>Twitter Profile</div>
                 <LucideArrowUpRight />
               </Link>
@@ -118,7 +124,7 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
       </div>
 
       {/* Mod List */}
-      <div className="col-start-2 flex flex-col gap-2 max-w-180 mx-auto w-full">
+      <div className="col-start-1 lg:col-start-2 flex flex-col gap-2 max-w-180 mx-auto w-full">
         {/* <input
           className={cns.inputBox("grow-0")}
           placeholder={`Search ${ user.username }'s mods`}
@@ -130,8 +136,9 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
           return (
             <Link key={m.id}
               href={`/spacedock/mod/${ m.id }`}
-              className={cns.linkCard("h-26 overflow-hidden flex gap-3")}>
-              <div className="h-26 aspect-video bg-dark/50 -ml-3 -my-2">
+              className={cns.linkCard("overflow-hidden flex flex-col sm:flex-row sm:h-26 gap-3")}
+            >
+              <div className="h-26 aspect-video bg-dark/50 -mx-3 -mt-2 sm:-ml-3 sm:-my-2 sm:mr-0">
                 {m.background && <img src={m.background} className={"size-full object-cover"} />}
               </div>
               <div className="flex gap-2 w-full">
@@ -148,7 +155,8 @@ export default async function ModPageLayout(props: PageProps<'/spacedock/profile
                       {m.short_description}
                     </div>
                   </div>
-                  <div className={cns.badge()}>{m.game}</div>
+
+                  <div className={cns.badge("mt-2")}>{m.game}</div>
                 </div>
                 <div className="flex flex-col shrink-0 text-sm">
                   <div className="flex gap-2.5">
