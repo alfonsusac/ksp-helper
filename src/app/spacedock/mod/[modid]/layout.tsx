@@ -153,6 +153,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
                 <LucideArrowUpRight />
               </Link>}
 
+
             </div>
           </div>
 
@@ -187,6 +188,11 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
               </div>
             </div>
           </div>
+
+          <Link href={`https://spacedock.info/mod/${ mod.id }`} className={cardButton("justify-center")} target="_blank">
+            <div>Open in Spacedocks</div>
+            <LucideArrowUpRight />
+          </Link>
         </div>
       </aside>
 

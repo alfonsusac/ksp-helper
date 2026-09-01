@@ -45,7 +45,6 @@ export function FullWidthOverflowRow(props: {
 
       <div className={cn(
         "flex gap-2 overflow-scroll pb-8! px-8",
-        // "-mx-8 px-8"
       )}>
         {props.children}
       </div>
