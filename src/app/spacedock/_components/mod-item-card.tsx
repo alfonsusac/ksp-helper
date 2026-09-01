@@ -1,7 +1,7 @@
 import { cns } from "@/design-system"
 import { cn } from "@/ui/cn"
 import Link from "next/link"
-import { InvisibleText } from "./commons"
+import { InvisibleText } from "./shared"
 import { LucideDownload, MaterialSymbolsPackage2Sharp } from "@/ui/icons"
 import { relativeDate } from "@/lib/format-relative-date"
 

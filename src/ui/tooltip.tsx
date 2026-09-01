@@ -1,6 +1,5 @@
-import type { ComponentRenderFn, HTMLProps, TooltipTriggerState } from '@base-ui/react'
 import { Tooltip } from '@base-ui/react/tooltip'
-import type { JSXElementConstructor, ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { cn } from './cn'
 
 const triggerClass =
@@ -12,11 +11,11 @@ const arrowClass =
 
 const style = {
   popup: cn(
-    "relative px-2 py-1",
-    "rounded-sm",
+    "relative px-2.5 py-1.5",
+    "rounded-md",
     "flex flex-col",
     "border border-border2 bg-surface2",
-    "text-sm text-fg",
+    "text-base text-fg",
     "origin-[var(--transform-origin)]",
     "shadow-md shadow-dark/25",
     "transition-[transform,opacity] duration-100 ease-out ",
@@ -45,12 +44,13 @@ const style = {
 
 
 export function TooltipSimple(props: {
-  trigger?: ReactElement<unknown, string | JSXElementConstructor<any>> | ComponentRenderFn<HTMLProps, TooltipTriggerState> | undefined
+  trigger?: Tooltip.Trigger.Props['render']
   content?: ReactNode
 }) {
   return (
     <Tooltip.Provider
-      delay={250}
+      delay={150}
+      timeout={0}
     >
       <Tooltip.Root>
         <Tooltip.Trigger aria-label="Bold" render={props.trigger}>

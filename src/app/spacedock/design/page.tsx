@@ -7,7 +7,7 @@ import { SignalSymbol } from "@/ui/common"
 import { LucideArrowRight, LucideArrowUpRight, LucideCalendar } from "@/ui/icons"
 import { SelectRow, Slider, TabSelectRow } from "@/ui/input"
 import { useState, type ReactNode } from "react"
-import { Lorem } from "../_components/commons"
+import { Lorem } from "../_components/shared"
 import { PlanetSelectMenu } from "@/ui/planet-select-menu"
 
 export default function DesignSystemPage() {

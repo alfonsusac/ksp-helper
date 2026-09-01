@@ -22,7 +22,7 @@ import { SettingsSection, useGlobalSettings, type GlobalSettings } from "@/ui/se
 import type { Metadata } from "next"
 import { CollapsibleRow } from "@/ui/collapsible"
 import { Collapsible } from "@/ui/collapsible-client"
-import { InvisibleText } from "../spacedock/_components/commons"
+import { InvisibleText } from "../spacedock/_components/shared"
 
 
 export const metadata: Metadata = {

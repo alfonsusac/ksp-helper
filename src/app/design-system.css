@@ -91,6 +91,7 @@
                                             first:rounded-l-input
                                             last:rounded-r-input
                                    } 
+                                   
 @utility input-box           { @apply /* Outer Ring */
                                      transition-[outline,border] duration-50
                                      outline outline-transparent 
@@ -150,6 +151,11 @@
 @utility card-rounded     { @apply rounded-md }
 @utility card-clickable   { @apply clickableUI }
 @utility card             { @apply card-border card-shadow card-bg card-padding card-rounded }
+@utility card-header      { @apply flex gap-1 items-center text-sm }
+@utility card-header-icon { @apply mb-0.5 }
+@utility card-button      { @apply button-ghost flex gap-2 items-center justify-start p-2 text-fg2 }
+@utility card-button-icon { @apply card-header-icon size-4 }
+
 
 @utility link-card        { @apply card card-clickable transition-all duration-75 hover:shadow-lg
                             hover:shadow-slate-500/10 dark:hover:shadow-zinc-950/50

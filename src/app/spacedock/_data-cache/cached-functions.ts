@@ -54,7 +54,13 @@ export const SpacedockNext = {
     if (res.status === 403) return "private user"
     if (res.status === 404) return null
     if (res.status !== 200) throw new SpacedockNextError("Error fetching user", args, res)
-    return res.payload
+    const payload = res.payload
+    const totalDownloads = payload.mods.reduce((prev, curr) => {
+      prev += curr.downloads
+      return prev
+    }, 0)
+    const hasSocials = payload.forumUsername || payload.ircNick || payload.redditUsername || payload.twitterUsername 
+    return { ...res.payload, totalDownloads, hasSocials }
   }),
 
 

@@ -9,6 +9,9 @@ import type { Metadata } from "next"
 import { TabLink } from "@/ui/next-tab-link"
 import { DownloadButton } from "../../_components/download-button"
 import { DateTooltip } from "@/ui/tooltip-date"
+import { TooltipSimple } from "@/ui/tooltip"
+import { Breadcrumb, styles } from "../../_components/shared"
+import { ExtraInfo, ExtraInfoCard, MainContent, PageDetail } from "../../_components/page-detail-components"
 
 export async function generateMetadata(props: LayoutProps<'/spacedock/mod/[modid]'>) {
   const params = await props.params
@@ -37,20 +40,15 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
   return <>
 
-    <div className="grid lg:grid-cols-[auto_18rem] grid-cols-1 grid-flow-row gap-4">
+    <PageDetail>
 
       {/* Breadcrumbs */}
-      <div className="col-span-full flex mb-3 gap-3 text-sm">
-        <Link href={`/spacedock/${ mod.game_id }`} className={cns.navigationLink("text-nowrap text-ellipsis overflow-hidden shrink-0")}>
-          {mod.game}
-        </Link>
-        <div className={cns.textFaint()}>
-          {'>'}
-        </div>
-        <div className={cns.textMuted("text-nowrap text-ellipsis overflow-hidden min-w-0")}>
-          {mod.id} - {mod.name}
-        </div>
-      </div>
+      <Breadcrumb
+        items={[
+          { label: mod.game, href: `/spacedock/${ mod.game_id }` },
+          { label: `${ mod.id } - ${ mod.name }` }
+        ]}
+      />
 
       {/* Image Header */}
       <div className="col-start-1 col-span-full aspect-[3.5/1] overflow-hidden rounded-xl relative ">
@@ -66,7 +64,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
       </div>
 
       {/* Main Content  */}
-      <div className="col-start-1 flex flex-col gap-2 max-w-180 mx-auto w-full">
+      <MainContent>
         <header className="flex flex-col md:flex-row gap-4">
           <div className="flex flex-col grow">
             <h1 className="justify-end text-xl tracking-tight font-semibold">
@@ -103,6 +101,20 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             <TabLink href={`/spacedock/mod/${ mod.id }/versions`}>
               Versions
             </TabLink>
+            <TooltipSimple
+              content={
+                "To spacedock.info"
+              }
+              trigger={
+                <TabLink
+                  target={"_blank"}
+                  href={`https://spacedock.info/mod/${ mod.id }#stats`}>
+                  Stats <LucideArrowUpRight />
+                </TabLink>
+              }
+            />
+
+
           </div>
         </section>
 
@@ -111,106 +123,73 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             {props.children}
           </div>
         </section>
-      </div>
+      </MainContent>
 
       {/* Extra Info */}
-      <aside className="-col-start-2 z-20 max-w-180 mx-auto w-full">
+      <ExtraInfo>
         {/* Mod Details Sidebar */}
-        <div className="flex flex-col gap-2 z-10">
 
-          <div className={sidecard("gap-1")}>
-            <div className={cns.textFaint("text-sm")}>
-              Authors
-            </div>
-            <div className="-mx-2 -mb-2">
-              <AuthorRowFetched username={mod.author} />
-              {mod.shared_authors.map((e, i) =>
-                <Suspense key={i} fallback={<AuthorRow displayname={"Loading..."} />}>
-                  <AuthorRowFetched username={e.username} />
-                </Suspense>
-              )}
-            </div>
-          </div>
+        <ExtraInfoCard title="Authors">
+          <AuthorRowFetched username={mod.author} />
+          {mod.shared_authors.map((e, i) =>
+            <Suspense key={i} fallback={<AuthorRow displayname={"Loading..."} />}>
+              <AuthorRowFetched username={e.username} />
+            </Suspense>
+          )}
+        </ExtraInfoCard>
 
-          <div className={sidecard("gap-1")}>
-            <div className={cns.textFaint("text-sm")}>
-              Links
-            </div>
-            <div className="-mx-2 -mb-2">
-              {mod.source_code && <Link href={mod.source_code} className={cardButton()} target="_blank">
-                <LucideTerminal className={cardButtonIcon()} />
-                <div>View Source</div>
-                <LucideArrowUpRight />
-              </Link>}
-              {mod.website && <Link href={mod.website} className={cardButton()} target="_blank">
-                <LucideGlobe className={cardButtonIcon()} />
-                <div>View Website</div>
-                <LucideArrowUpRight />
-              </Link>}
-              {mod.donations && <Link href={mod.donations} className={cardButton()} target="_blank">
-                <LucideHandHeart className={cardButtonIcon()} />
-                <div>Donate</div>
-                <LucideArrowUpRight />
-              </Link>}
-
-
-            </div>
-          </div>
-
-
-
-          <div className={sidecard("gap-3")}>
-            {[
-              {
-                icon: LucideScale,
-                title: "Licence",
-                value: mod.license
-              },
-              {
-                icon: LucideCalendar,
-                title: "Published",
-                value: <DateTooltip value={mod.versions.at(-1)?.created} />
-              },
-              {
-                icon: LucideCalendarArrowUp,
-                title: "Updated",
-                value: <DateTooltip value={mod.versions.at(0)?.created} />
-              },
-            ].map((e, i) => {
-              return (
-                <div key={i} className="flex gap-2">
-                  <div>
-                    <e.icon className={cardButtonIcon(cns.textMuted("self-start shrink-0"))} />
-                  </div>
-                  <div>
-                    <span className={cns.textMuted("shrink-0")}>
-                      {e.title}:
-                    </span>
-                    <span className="wrap-break-word ml-1">
-                      {e.value}
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          <Link href={`https://spacedock.info/mod/${ mod.id }`} className={cardButton("justify-center")} target="_blank">
-            <div>Open in Spacedocks</div>
+        <ExtraInfoCard title="Links">
+          {mod.source_code && <Link href={mod.source_code} className={cns.cardButton()} target="_blank">
+            <LucideTerminal className={cns.cardButtonIcon()} />
+            <div>View Source</div>
             <LucideArrowUpRight />
-          </Link>
-        </div>
-      </aside>
+          </Link>}
+          {mod.website && <Link href={mod.website} className={cns.cardButton()} target="_blank">
+            <LucideGlobe className={cns.cardButtonIcon()} />
+            <div>View Website</div>
+            <LucideArrowUpRight />
+          </Link>}
+          {mod.donations && <Link href={mod.donations} className={cns.cardButton()} target="_blank">
+            <LucideHandHeart className={cns.cardButtonIcon()} />
+            <div>Donate</div>
+            <LucideArrowUpRight />
+          </Link>}
+        </ExtraInfoCard>
 
-    </div>
+        <ExtraInfoCard
+          infos={[
+            {
+              icon: LucideScale,
+              title: "Licence",
+              value: mod.license
+            },
+            {
+              icon: LucideCalendar,
+              title: "Published",
+              value: <DateTooltip value={mod.versions.at(-1)?.created} />
+            },
+            {
+              icon: LucideCalendarArrowUp,
+              title: "Updated",
+              value: <DateTooltip value={mod.versions.at(0)?.created} />
+            },
+            ]}
+        >
+        </ExtraInfoCard>
+
+        <Link href={`https://spacedock.info/mod/${ mod.id }`} className={cns.cardButton("justify-center")} target="_blank">
+          <div>Open in Spacedocks</div>
+          <LucideArrowUpRight />
+        </Link>
+
+      </ExtraInfo>
+    </PageDetail>
   </>
-
 }
 
 
-const cardButton = cnr(cns.buttonGhost("flex gap-2 items-center justify-start p-2 text-fg2"))
-const cardButtonIcon = cnr("size-4", cns.cardHeaderIcon())
-const sidecard = cnr(cns.infoCard("w-full flex flex-col gap-1 text-sm p-4.5"))
+// const cardButton = cnr(cns.buttonGhost("flex gap-2 items-center justify-start p-2 text-fg2"))
+// const cardButtonIcon = cnr("size-4", cns.cardHeaderIcon())
 
 async function AuthorRow(props: {
   displayname?: ReactNode,
@@ -218,7 +197,7 @@ async function AuthorRow(props: {
   href?: string,
 }) {
   const content = <>
-    <div className={cardButtonIcon("size-4 rounded-full")}>
+    <div className={cns.cardButtonIcon("size-4 rounded-full")}>
       {props.avatarSrc
         ? <img className="" src={props.avatarSrc} />
         : <LucideCircleUser className="size-full text-fgBlue" />
@@ -230,12 +209,12 @@ async function AuthorRow(props: {
   </>
 
   if (props.href) {
-    return <Link href={props.href} className={cardButton()}>
+    return <Link href={props.href} className={cns.cardButton()}>
       {content}
     </Link>
   }
 
-  return <div className={cn(cardButton(), "pointer-events-none")}>
+  return <div className={cn(cns.cardButton(), "pointer-events-none")}>
     {content}
   </div>
 }
@@ -249,6 +228,6 @@ async function AuthorRowFetched(props: {
   if (user === "private user") return <AuthorRow displayname={props.username} />
   return <AuthorRow
     displayname={user.username}
-    href={`/spacedock/user/${ user.username }`}
+    href={`/spacedock/profile/${ user.username }`}
   />
 }
