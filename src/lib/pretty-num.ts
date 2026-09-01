@@ -1,14 +1,15 @@
-export function prettyNum(val: number, unitIfZero: 'k' | 'M' | 'G' = 'k', suffix: string = '',) {
-  if (val >= 1_000_000_000_000) return round2dp(val / 1_000_000_000_000) + ' T' + suffix
-  if (val >= 1_000_000_000) return round2dp(val / 1_000_000_000) + ' G' + suffix
-  if (val >= 1_000_000) return round2dp(val / 1_000_000) + ' M' + suffix
-  if (val >= 1_000) return round2dp(val / 1_000) + ' k' + suffix
-  if (val === 0) return '0.00 ' + unitIfZero + suffix
-  return round2dp(val) + ' ' + suffix
+export function prettyNum(val: number, unitIfZero: 'k' | 'M' | 'G' | '' = 'k', suffix: string = '', dp: 0 | 2 = 2) {
+  if (val >= 1_000_000_000_000) return roundDp(val / 1_000_000_000_000) + ' T' + suffix
+  if (val >= 1_000_000_000) return roundDp(val / 1_000_000_000) + ' G' + suffix
+  if (val >= 1_000_000) return roundDp(val / 1_000_000) + ' M' + suffix
+  if (val >= 1_000) return roundDp(val / 1_000) + ' k' + suffix
+  if (val === 0) return (0).toFixed(dp) + unitIfZero + suffix
+  return roundDp(val, dp) + ' ' + suffix
 }
 
-export function round2dp(val: number) {
-  return (Math.round(val * 100) / 100).toFixed(2)
+export function roundDp(val: number, dp: 0 | 2 = 2) {
+  // if (dp === 0) return Math.round(val).toFixed()
+  return (Math.round(val * 100) / 100).toFixed(dp)
 }
 
 export function fixedNum(val: number) {
@@ -37,24 +38,24 @@ export function ordinal(n: number) {
  * 
  * @return Formatted string.
  */
-export function humanFileSize(bytes: number, si=false, dp=1) {
-  const thresh = si ? 1000 : 1024;
+export function humanFileSize(bytes: number, si = false, dp = 1) {
+  const thresh = si ? 1000 : 1024
 
   if (Math.abs(bytes) < thresh) {
-    return bytes + ' B';
+    return bytes + ' B'
   }
 
-  const units = si 
-    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
-    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-  let u = -1;
-  const r = 10**dp;
+  const units = si
+    ? [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ]
+    : [ 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB' ]
+  let u = -1
+  const r = 10 ** dp
 
   do {
-    bytes /= thresh;
-    ++u;
-  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+    bytes /= thresh
+    ++u
+  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1)
 
 
-  return bytes.toFixed(dp) + ' ' + units[u];
+  return bytes.toFixed(dp) + ' ' + units[ u ]
 }

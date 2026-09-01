@@ -39,6 +39,8 @@ export const cns = ({
   placeholder: cnr("bg-slate-100/60 dark:bg-zinc-800/20"),
   bgMuted: cnr("    bg-slate-200    dark:bg-zinc-700"),
 
+  badge: cnr("info-card text-xs p-1 px-2 inline-block text-fg2 bg-contrast/10"),
+
 
   tabBase: cnr("tab-container"),
   tabItem: (sel: boolean) => cnr("tab-item", sel ? "tab-item-selected" : "tab-item-not-selected"),
