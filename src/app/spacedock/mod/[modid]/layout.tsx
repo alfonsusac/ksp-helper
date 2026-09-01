@@ -5,10 +5,10 @@ import { LucideArrowUpRight, LucideCalendar, LucideCalendarArrowUp, LucideCircle
 import Link from "next/link"
 import { Suspense, type ReactNode } from "react"
 import { cn } from "@/ui/cn"
-import { relativeDate } from "@/lib/format-relative-date"
 import type { Metadata } from "next"
 import { TabLink } from "@/ui/next-tab-link"
 import { DownloadButton } from "../../_components/download-button"
+import { DateTooltip } from "@/ui/tooltip-date"
 
 export async function generateMetadata(props: LayoutProps<'/spacedock/mod/[modid]'>) {
   const params = await props.params
@@ -66,7 +66,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
       </div>
 
       {/* Main Content  */}
-      <div className="col-start-1 flex flex-col gap-2 max-w-180 mx-auto">
+      <div className="col-start-1 flex flex-col gap-2 max-w-180 mx-auto w-full">
         <header className="flex flex-col md:flex-row gap-4">
           <div className="flex flex-col grow">
             <h1 className="justify-end text-xl tracking-tight font-semibold">
@@ -95,7 +95,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
           </div>
         </header>
 
-        <section className="flex flex-col mt-4 border-b border-border">
+        <section className="flex flex-col mt-4 shadow-[0rem_1rem_1rem_-1rem_--alpha(var(--color-contrast)/40%)]">
           <div className={cns.tabBase("rounded-2xl bg-transparent p-0 border-0")}>
             <TabLink href={`/spacedock/mod/${ mod.id }`}>
               Description
@@ -157,36 +157,42 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
             </div>
           </div>
 
+
+
           <div className={sidecard("gap-3")}>
-            <div className="flex items-baseline gap-2">
-              <LucideScale className={cardButtonIcon(cns.textMuted("self-start shrink-0"))} />
-              <div className={cns.textMuted("shrink-0")}>
-                License:
-              </div>
-              <div className="wrap-break-word">
-                {mod.license}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <LucideCalendar className={cardButtonIcon(cns.textMuted())} />
-              <div className={cns.textMuted()}>
-                Published:
-              </div>
-              <div className="break-all">
-                {relativeDate(mod.versions.at(-1)?.created ?? "")}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <LucideCalendarArrowUp className={cardButtonIcon(cns.textMuted())} />
-              <div className={cns.textMuted()}>
-                Updated:
-              </div>
-              <div className="break-all">
-                {relativeDate(mod.versions.at(0)?.created ?? "")}
-              </div>
-            </div>
+            {[
+              {
+                icon: LucideScale,
+                title: "Licence",
+                value: mod.license
+              },
+              {
+                icon: LucideCalendar,
+                title: "Published",
+                value: <DateTooltip value={mod.versions.at(-1)?.created} />
+              },
+              {
+                icon: LucideCalendarArrowUp,
+                title: "Updated",
+                value: <DateTooltip value={mod.versions.at(0)?.created} />
+              },
+            ].map((e, i) => {
+              return (
+                <div key={i} className="flex gap-2">
+                  <div>
+                    <e.icon className={cardButtonIcon(cns.textMuted("self-start shrink-0"))} />
+                  </div>
+                  <div>
+                    <span className={cns.textMuted("shrink-0")}>
+                      {e.title}:
+                    </span>
+                    <span className="wrap-break-word ml-1">
+                      {e.value}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
           </div>
 
           <Link href={`https://spacedock.info/mod/${ mod.id }`} className={cardButton("justify-center")} target="_blank">
@@ -203,7 +209,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
 
 
 const cardButton = cnr(cns.buttonGhost("flex gap-2 items-center justify-start p-2 text-fg2"))
-const cardButtonIcon = cnr("size-4")
+const cardButtonIcon = cnr("size-4", cns.cardHeaderIcon())
 const sidecard = cnr(cns.infoCard("w-full flex flex-col gap-1 text-sm p-4.5"))
 
 async function AuthorRow(props: {
