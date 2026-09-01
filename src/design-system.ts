@@ -150,7 +150,7 @@ export const cns = ({
     // "[&>p]:text-current/90",
     // "[&>p]:text-fg",
     // "[&>p]:dark:text-current/80",
-    "[&>p]:my-[0.25lh]",
+    "[&>p]:my-[0.65lh]",
     "[&_img]:my-[1lh]",
     "[&_table]:my-[1lh]",
     "[&_hr]:my-[1lh]",
@@ -210,7 +210,7 @@ export const cns = ({
     "[&_strong]:font-extrabold",
 
     "[&_a]:link-underline",
-    "[&_a]:link-text",
+    "[&_a]:link-text-blue",
 
     "[&_pre]:overflow-auto",
     "[&_pre]:w-full",

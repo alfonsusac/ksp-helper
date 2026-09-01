@@ -17,7 +17,7 @@
   --color-fg2:     light-dark(var(--color-slate-500), var(--color-zinc-400));
   --color-fg3:     light-dark(var(--color-slate-400), var(--color-zinc-500));
   --color-fgGreen: light-dark(var(--color-emerald-600), var(--color-emerald-500));
-  --color-fgBlue:  light-dark(var(--color-sky-600), var(--color-sky-500));
+  --color-fgBlue:  light-dark(var(--color-sky-600), var(--color-sky-600));
   --color-error:   light-dark(var(--color-red-500), var(--color-red-400));
   --color-error2:  light-dark(var(--color-red-400), --alpha(var(--color-red-500) / 100%));
 
@@ -56,11 +56,12 @@
 
 
 /* Links */
-@utility link-text         { @apply text-fg2 hover:text-fg }
+@utility link-text         { @apply text-fg2 hover:text-fg decoration-fg2/20 hover:decoration-fg2/60 }
+@utility link-text-blue    { @apply text-fgBlue/80 hover:text-fgBlue decoration-fgBlue/20 hover:decoration-fgBlue/60 }
 @utility link-article      { @apply link-text link-underline clickable }
 @utility link-navigation   { @apply link-text clickable }
 @utility link-underline    { @apply underline underline-offset-3 
-                                    decoration-fg2/20 hover:decoration-fg2/60 }
+                                     }
 
 
 /* Strokes */

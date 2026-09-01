@@ -58,7 +58,7 @@ export default async function ModPageLayout(props: LayoutProps<'/spacedock/mod/[
           <>
             <img className="absolute size-full object-contain z-10 object-center" src={mod.background} />
             <div className="absolute size-full overflow-hidden">
-              <img className="object-cover object-center size-full scale-125 min-h-0 min-w-0 dark:brightness-25 brightness-150 blur-xl" src={mod.background} />
+              <img className="object-cover object-center size-full scale-125 min-h-0 min-w-0 dark:brightness-25 brightness-90 blur-xl" src={mod.background} />
             </div>
           </>
           : <></>
